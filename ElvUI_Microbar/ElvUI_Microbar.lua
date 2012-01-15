@@ -1,4 +1,16 @@
-﻿local E, L, DF = unpack(ElvUI); --Engine
+﻿--------------------------------------------------------
+-- Thanks to / Благодарности: --
+-- Elv and ElvUI community
+--
+--------------------------------------------------------
+--
+-- Usage / Использование:
+-- Just install and configure for yourself
+-- Устанавливаем, настраиваем и получаем профит
+--
+--------------------------------------------------------
+
+local E, L, DF = unpack(ElvUI); --Engine
 local AB = E:GetModule('ActionBars', 'AceHook-3.0', 'AceEvent-3.0');
 
 DF.alpha = 1 --Set defalt alpha to 100%
@@ -34,7 +46,7 @@ E.Options.args.microbar = {
 					name = L['Set Alpha'],
 					desc = L['Sets alpha of the microbar'],
 					type = "range",
-					min = 0.5, max = 1, step = 0.01,
+					min = 0.2, max = 1, step = 0.01,
 					get = function(info) return E.db.alpha end,
 					set = function(info, value) E.db.alpha = value end,
 				},
