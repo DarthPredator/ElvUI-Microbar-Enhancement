@@ -8,4 +8,6 @@ L['Microbar'] = true;
 L['Module for adding micromenu to ElvUI.'] = true;
 L['On Mouse Over'] = true;
 L['Hide microbar unless you mouse over it.'] = true;
+L['Set Alpha'] = true;
+L['Sets alpha of the microbar'] = true;
 end

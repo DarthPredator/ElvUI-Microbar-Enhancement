@@ -1,6 +1,9 @@
 ﻿local E, L, DF = unpack(ElvUI); --Engine
 local AB = E:GetModule('ActionBars', 'AceHook-3.0', 'AceEvent-3.0');
 
+DF.alpha = 1 --Set defalt alpha to 100%
+
+--OPTIONS
 E.Options.args.microbar = {
 	type = "group",
 	name = L['Microbar'],
@@ -17,15 +20,24 @@ E.Options.args.microbar = {
 			name = L["General"],
 			guiInline = true,
 			args = {
-				mouseover = {
-					order = 4,
+				mouseover = { --Enable/disable moue over function
+					order = 1,
 					type = "toggle",
 					name = L['On Mouse Over'],
 					desc = L['Hide microbar unless you mouse over it.'],
 					get = function(info) return E.db.mouseover end,
 					set = function(info, value) E.db.mouseover = value end,
 				},
-
+				alpha = { --Set transparency
+					type = "range",
+					order = 2,
+					name = L['Set Alpha'],
+					desc = L['Sets alpha of the microbar'],
+					type = "range",
+					min = 0.5, max = 1, step = 0.01,
+					get = function(info) return E.db.alpha end,
+					set = function(info, value) E.db.alpha = value end,
+				},
 			},
 		},
 	}
@@ -64,15 +76,15 @@ f:SetScript("OnUpdate", function(self,event,...)
 	CharacterMicroButton.SetPoint = E.dummy
 	CharacterMicroButton.ClearAllPoints = E.dummy
 	
-	--Mouseover showing. Hiding when not mouseovering. Commented out cause I don't need it
+	--Mouseover function
 	if E.db.mouseover then
 		if (MouseIsOver(MicroParent)) then
-			MicroParent:SetAlpha(1)
+			MicroParent:SetAlpha(E.db.alpha)
 		else	
 			MicroParent:SetAlpha(0)
 		end
 	else
-		MicroParent:SetAlpha(1)
+		MicroParent:SetAlpha(E.db.alpha)
 	end
 	
 end)
