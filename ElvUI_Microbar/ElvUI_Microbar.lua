@@ -69,7 +69,8 @@ f:SetScript("OnUpdate", function(self,event,...)
 	MicroParent:SetWidth(((CharacterMicroButton:GetWidth() + 4) * 9) + 12)
 	MicroParent:SetHeight(CharacterMicroButton:GetHeight() - 26)
 	--MicroParent:CreateShadow("Default") -- actually that's not needed. Just helped to see real frame border
-
+	E:CreateMover(MicroParent, "MicroMover", L['Microbar'])
+	
 	--Setting first button properties
 	CharacterMicroButton:ClearAllPoints()
 	CharacterMicroButton:SetPoint("BOTTOMLEFT", MicroParent, "BOTTOMLEFT", -2,  -2)
