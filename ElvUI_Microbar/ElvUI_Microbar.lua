@@ -1,6 +1,6 @@
 ﻿--------------------------------------------------------
 -- Thanks to / Благодарности: --
--- Elv and ElvUI community
+-- Elv and ElvUI community (especially BlackNet)
 --
 --------------------------------------------------------
 --
@@ -19,7 +19,7 @@ DF.alpha = 1 --Set defalt alpha to 100%
 E.Options.args.microbar = {
 	type = "group",
 	name = L['Microbar'],
-	order = 11,
+	order = 5,
 	args = {
 		intro = {
 			order = 1,
@@ -70,25 +70,25 @@ local microbuttons = {
 	"AchievementMicroButton"
 }
 
-local f = CreateFrame("Frame", "MicroParent", E.UIParent); --Setting a main frame for Menu
+local f -- = CreateFrame("Frame", "MicroParent", E.UIParent); --Setting a main frame for Menu
 
---Recreate frame after portals and so on
+do
+	f = CreateFrame("Frame", "MicroParent", E.UIParent);
+	f:Hide()
+	f:SetScript('OnShow', function(self)
+		--UpdateMicroButtonsParent(f)
+		self:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2); 
+		self:SetWidth(((CharacterMicroButton:GetWidth() + 4) * 9) + 12)
+		self:SetHeight(CharacterMicroButton:GetHeight() - 26) 
+				
+		E:CreateMover(self, "MicroMover", L['Microbar'])
+	end)
+	
+end
+			
+--On update functions. Mouseover and transparency
 f:SetScript("OnUpdate", function(self,event,...) 
-	UpdateMicroButtonsParent(f)
 
-	--Setting menu properties
-	MicroParent:SetPoint("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2) --Default microbar position. Edit this to move it.
-	MicroParent:SetWidth(((CharacterMicroButton:GetWidth() + 4) * 9) + 12)
-	MicroParent:SetHeight(CharacterMicroButton:GetHeight() - 26)
-	--MicroParent:CreateShadow("Default") -- actually that's not needed. Just helped to see real frame border
-	E:CreateMover(MicroParent, "MicroMover", L['Microbar'])
-	
-	--Setting first button properties
-	CharacterMicroButton:ClearAllPoints()
-	CharacterMicroButton:SetPoint("BOTTOMLEFT", MicroParent, "BOTTOMLEFT", -2,  -2)
-	CharacterMicroButton.SetPoint = E.dummy
-	CharacterMicroButton.ClearAllPoints = E.dummy
-	
 	--Mouseover function
 	if E.db.mouseover then
 		if (MouseIsOver(MicroParent)) then
@@ -99,7 +99,6 @@ f:SetScript("OnUpdate", function(self,event,...)
 	else
 		MicroParent:SetAlpha(E.db.alpha)
 	end
-	
 end)
 
 --Create buttons
@@ -143,4 +142,19 @@ function AB:CreateMenu()
 		end
 		
 	end
+	
 end
+
+--For recreate after portals and so on
+f:SetScript("OnEvent", function(self,event,...) 
+	UpdateMicroButtonsParent(f)
+	f:Show();
+	
+	--Setting first button properties
+	CharacterMicroButton:ClearAllPoints()
+	CharacterMicroButton:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", -2,  -2)
+	CharacterMicroButton.SetPoint = E.dummy
+	CharacterMicroButton.ClearAllPoints = E.dummy
+	
+end)
+f:RegisterEvent("PLAYER_ENTERING_WORLD")	
