@@ -13,7 +13,8 @@
 local E, L, DF = unpack(ElvUI); --Engine
 local AB = E:GetModule('ActionBars', 'AceHook-3.0', 'AceEvent-3.0');
 
-DF.alpha = 1 --Set defalt alpha to 100%
+DF.alpha = 1 --Set default alpha to 100%
+DF.microdrop = 1 --Set showing backdrop showing on default
 
 --OPTIONS
 E.Options.args.microbar = {
@@ -32,7 +33,7 @@ E.Options.args.microbar = {
 			name = L["General"],
 			guiInline = true,
 			args = {
-				mouseover = { --Enable/disable moue over function
+				mouseover = { --Enable/disable mouse over function
 					order = 1,
 					type = "toggle",
 					name = L['On Mouse Over'],
@@ -49,6 +50,14 @@ E.Options.args.microbar = {
 					min = 0.2, max = 1, step = 0.01,
 					get = function(info) return E.db.alpha end,
 					set = function(info, value) E.db.alpha = value end,
+				},
+				microdrop = { --Enable/disable bar bacground and border
+					order = 1,
+					type = "toggle",
+					name = L['Backdrop'],
+					desc = L['Show backdrop for micromenu'],
+					get = function(info) return E.db.microdrop end,
+					set = function(info, value) E.db.microdrop = value end,
 				},
 			},
 		},
@@ -70,24 +79,34 @@ local microbuttons = {
 	"AchievementMicroButton"
 }
 
-local f -- = CreateFrame("Frame", "MicroParent", E.UIParent); --Setting a main frame for Menu
+local f --Setting a main frame for Menu
 
 do
-	f = CreateFrame("Frame", "MicroParent", E.UIParent);
+	f = CreateFrame('Frame', "MicroParent", E.UIParent);
 	f:Hide()
 	f:SetScript('OnShow', function(self)
-		--UpdateMicroButtonsParent(f)
 		self:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2); 
-		self:SetWidth(((CharacterMicroButton:GetWidth() + 4) * 9) + 12)
-		self:SetHeight(CharacterMicroButton:GetHeight() - 26) 
-				
+		self:SetWidth(((CharacterMicroButton:GetWidth() + 4) * 9) + 15)
+		self:SetHeight(CharacterMicroButton:GetHeight() - 21)
+								
 		E:CreateMover(self, "MicroMover", L['Microbar'])
 	end)
 	
+	--Backdrop creation
+	f:CreateBackdrop('Default');
+	f.backdrop:SetAllPoints();
+	
 end
 			
---On update functions. Mouseover and transparency
+--On update functions. Mouseover, backdrop and transparency
 f:SetScript("OnUpdate", function(self,event,...) 
+
+	--Backdrop show/hide
+	if E.db.microdrop then
+		f.backdrop:Show();
+	else
+		f.backdrop:Hide();
+	end
 
 	--Mouseover function
 	if E.db.mouseover then
@@ -152,7 +171,7 @@ f:SetScript("OnEvent", function(self,event,...)
 	
 	--Setting first button properties
 	CharacterMicroButton:ClearAllPoints()
-	CharacterMicroButton:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", -2,  -2)
+	CharacterMicroButton:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 0,  0)
 	CharacterMicroButton.SetPoint = E.dummy
 	CharacterMicroButton.ClearAllPoints = E.dummy
 	
