@@ -10,4 +10,5 @@ L['On Mouse Over'] = true;
 L['Hide microbar unless you mouse over it.'] = true;
 L['Set Alpha'] = true;
 L['Sets alpha of the microbar'] = true;
+L['Show backdrop for micromenu'] = true;
 end
