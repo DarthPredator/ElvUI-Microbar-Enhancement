@@ -10,5 +10,7 @@ L['On Mouse Over'] = "При наведении";
 L['Hide microbar unless you mouse over it.'] = "Показывать меню при наведении курсора.";
 L['Set Alpha'] = "Прозрачность";
 L['Sets alpha of the microbar'] = "Устанавливает прозрачность меню";
-L['Show backdrop for micromenu'] = "Показывать фон микроменю"
+L['Show backdrop for micromenu'] = "Показывать фон микроменю";
+L['Set Scale'] = "Масштаб";
+L['Sets Scale of the microbar'] = "Устанавливает масштаб микроменю";
 end

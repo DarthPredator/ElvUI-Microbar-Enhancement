@@ -1,6 +1,7 @@
 ﻿--------------------------------------------------------
 -- Thanks to / Благодарности: --
 -- Elv and ElvUI community (especially BlackNet)
+-- Slipslop for scale option
 --
 --------------------------------------------------------
 --
@@ -15,6 +16,7 @@ local AB = E:GetModule('ActionBars', 'AceHook-3.0', 'AceEvent-3.0');
 
 DF.alpha = 1 --Set default alpha to 100%
 DF.microdrop = 1 --Set showing backdrop showing on default
+DF.scale = 1 --Set default scale to 100%
 
 --OPTIONS
 E.Options.args.microbar = {
@@ -43,7 +45,7 @@ E.Options.args.microbar = {
 				},
 				alpha = { --Set transparency
 					type = "range",
-					order = 2,
+					order = 3,
 					name = L['Set Alpha'],
 					desc = L['Sets alpha of the microbar'],
 					type = "range",
@@ -52,12 +54,23 @@ E.Options.args.microbar = {
 					set = function(info, value) E.db.alpha = value end,
 				},
 				microdrop = { --Enable/disable bar bacground and border
-					order = 1,
+					order = 2,
 					type = "toggle",
 					name = L['Backdrop'],
 					desc = L['Show backdrop for micromenu'],
 					get = function(info) return E.db.microdrop end,
 					set = function(info, value) E.db.microdrop = value end,
+				},
+				scale = { --Set scale
+					type = "range",
+					order = 4,
+					name = L['Set Scale'],
+					desc = L['Sets Scale of the microbar'],
+					type = "range",
+					min = 0.3, max = 2, step = 0.01,
+					isPercent = true,
+					get = function(info) return E.db.scale end,
+					set = function(info, value) E.db.scale = value end,
 				},
 			},
 		},
@@ -118,6 +131,9 @@ f:SetScript("OnUpdate", function(self,event,...)
 	else
 		MicroParent:SetAlpha(E.db.alpha)
 	end
+	
+	MicroParent:SetScale(E.db.scale)
+	
 end)
 
 --Create buttons
