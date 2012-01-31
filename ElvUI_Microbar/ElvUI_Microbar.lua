@@ -103,12 +103,11 @@ do
 		self:SetHeight(CharacterMicroButton:GetHeight() - 21)
 										
 		E:CreateMover(self, "MicroMover", L['Microbar'])
-end)
+	end)
 	
 	--Backdrop creation
 	f:CreateBackdrop('Default');
 	f.backdrop:SetAllPoints();
-	
 end
 			
 --On update functions. Mouseover, backdrop and transparency
@@ -193,4 +192,5 @@ f:SetScript("OnEvent", function(self,event,...)
 	CharacterMicroButton.ClearAllPoints = E.dummy
 	
 end)
-f:RegisterEvent("PLAYER_ENTERING_WORLD")	
+f:RegisterEvent("PLAYER_ENTERING_WORLD")
+f:RegisterEvent("UNIT_EXITED_VEHICLE")	
