@@ -101,9 +101,9 @@ do
 		self:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2); 
 		self:SetWidth(((CharacterMicroButton:GetWidth() + 4) * 9) + 15)
 		self:SetHeight(CharacterMicroButton:GetHeight() - 21)
-								
+										
 		E:CreateMover(self, "MicroMover", L['Microbar'])
-	end)
+end)
 	
 	--Backdrop creation
 	f:CreateBackdrop('Default');
@@ -133,6 +133,7 @@ f:SetScript("OnUpdate", function(self,event,...)
 	end
 	
 	MicroParent:SetScale(E.db.scale)
+	f.mover:SetScale(E.db.scale)
 	
 end)
 
