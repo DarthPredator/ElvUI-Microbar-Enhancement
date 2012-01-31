@@ -3,14 +3,12 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale("ElvUI", "enGB", true);
 if not L then return; end
 
-do
-L['Microbar'] = true;
-L['Module for adding micromenu to ElvUI.'] = true;
-L['On Mouse Over'] = true;
-L['Hide microbar unless you mouse over it.'] = true;
-L['Set Alpha'] = true;
-L['Sets alpha of the microbar'] = true;
-L['Show backdrop for micromenu'] = true;
-L['Set Scale'] = true;
-L['Sets Scale of the microbar'] = true;
-end
+L["Hide microbar unless you mouse over it."] = "Hide microbar unless you mouse over it."
+L["Microbar"] = "Microbar"
+L["Module for adding micromenu to ElvUI."] = "Module for adding micromenu to ElvUI."
+L["On Mouse Over"] = "On Mouse Over"
+L["Set Alpha"] = "Set Alpha"
+L["Sets alpha of the microbar"] = "Sets alpha of the microbar"
+L["Set Scale"] = "Set Scale"
+L["Sets Scale of the microbar"] = "Sets Scale of the microbar"
+L["Show backdrop for micromenu"] = "Show backdrop for micromenu"

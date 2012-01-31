@@ -2,11 +2,12 @@
 local L = AceLocale:NewLocale("ElvUI", "zhCN")
 if not L then return end
 
---Copy the entire english file here and set values = to something
---[[
-	Where it says:
-	L["Auto Scale"] = true
-	
-	That just means thats default, you can still set it to say something else like this
-	L["Auto Scale"] = "Blah blah, speaking another language, blah blah"
-]]
+L["Hide microbar unless you mouse over it."] = "隐藏微型菜单, 当鼠标滑过显示."
+L["Microbar"] = "微型菜单"
+L["Module for adding micromenu to ElvUI."] = "用于 ElvUI 的微型菜单模块."
+L["On Mouse Over"] = "鼠标滑过显示"
+L["Set Alpha"] = "设置透明度"
+L["Sets alpha of the microbar"] = "设置微型菜单透明度"
+L["Set Scale"] = "缩放比例"
+L["Sets Scale of the microbar"] = "设置微型菜单缩放比例"
+L["Show backdrop for micromenu"] = "显示微型菜单的背景"
