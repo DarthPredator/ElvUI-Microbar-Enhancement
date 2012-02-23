@@ -2,11 +2,12 @@
 local L = AceLocale:NewLocale("ElvUI", "deDE")
 if not L then return end
 
---Copy the entire english file here and set values = to something
---[[
-	Where it says:
-	L["Auto Scale"] = true
-	
-	That just means thats default, you can still set it to say something else like this
-	L["Auto Scale"] = "Blah blah, speaking another language, blah blah"
-]]
+L["Hide microbar unless you mouse over it."] = "Microleiste wird erst unter dem Mauszeiger eingeblendet." -- Needs review
+L["Microbar"] = "Microleiste" -- Needs review
+L["Module for adding micromenu to ElvUI."] = "Modul fügt eine kleine Menüleite zu ElvUI hinzu." -- Needs review
+L["On Mouse Over"] = "Mouse Over Funktion" -- Needs review
+L["Set Alpha"] = "Transparenz Einstellung" -- Needs review
+L["Sets alpha of the microbar"] = "Transparenz der Microleiste einstellen"
+L["Set Scale"] = "Größe einstellen" -- Needs review
+L["Sets Scale of the microbar"] = "Größe der Microleiste einstellen" -- Needs review
+L["Show backdrop for micromenu"] = "Hintergrund der Microleiste anzeigen" -- Needs review
