@@ -11,14 +11,14 @@
 --
 --------------------------------------------------------
 
-local E, L, P, G = unpack(ElvUI); --Engine
+local E, L, DF, P, G = unpack(ElvUI); --Engine
 local AB = E:GetModule('ActionBars', 'AceHook-3.0', 'AceEvent-3.0');
 
 --DEFAULT SETTINGS
-P.alpha = 1 --alpha to 100%
-P.microdrop = true --backdrop showing
-P.scale = 1 --scale to 100%
-P.mouseover = false --mouse over option off
+DF.alpha = 1 --alpha to 100%
+DF.microdrop = true --backdrop showing
+DF.scale = 1 --scale to 100%
+DF.mouseover = false --mouse over option off
 
 --OPTIONS
 E.Options.args.microbar = {
@@ -110,6 +110,7 @@ do
 	--Backdrop creation
 	f:CreateBackdrop('Default');
 	f.backdrop:SetAllPoints();
+	f.backdrop:Point("BOTTOMLEFT", f, "BOTTOMLEFT", 0,  -1);
 end
 			
 --On update functions. Mouseover, backdrop and transparency
@@ -134,8 +135,8 @@ f:SetScript("OnUpdate", function(self,event,...)
 	end
 	
 	MicroParent:SetScale(E.db.scale)
-	f.mover:SetScale(E.db.scale)
-	
+	f.mover:SetWidth(E.db.scale * (((CharacterMicroButton:GetWidth() + 4) * 9) + 12));
+	f.mover:SetHeight(E.db.scale * (CharacterMicroButton:GetHeight() - 21));
 end)
 
 --Create buttons
