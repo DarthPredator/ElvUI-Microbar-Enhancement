@@ -98,9 +98,10 @@ local f --Setting a main frame for Menu
 
 do
 	f = CreateFrame('Frame', "MicroParent", E.UIParent);
+	f:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2);
 	f:Hide()
 	f:SetScript('OnShow', function(self)
-		self:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2); 
+		 
 		self:SetWidth(((CharacterMicroButton:GetWidth() + 4) * 9) + 15)
 		self:SetHeight(CharacterMicroButton:GetHeight() - 21)
 										
@@ -132,6 +133,10 @@ f:SetScript("OnUpdate", function(self,event,...)
 		end
 	else
 		MicroParent:SetAlpha(E.db.alpha)
+	end
+	
+	if InCombatLockdown() and E.db.microcombat then
+	f:Hide()
 	end
 	
 	MicroParent:SetScale(E.db.scale)
@@ -197,3 +202,4 @@ f:SetScript("OnEvent", function(self,event,...)
 end)
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("UNIT_EXITED_VEHICLE")	
+f:RegisterEvent("PLAYER_REGEN_ENABLED")	

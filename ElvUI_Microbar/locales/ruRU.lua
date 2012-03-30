@@ -3,6 +3,7 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale("ElvUI", "ruRU")
 if not L then return; end
 
+L["Hide in combat"] = "Скрывать в бою"
 L["Hide microbar unless you mouse over it."] = "Показывать меню при наведении курсора."
 L["Microbar"] = "Микроменю"
 L["Module for adding micromenu to ElvUI."] = "Модуль для добавления микроменю в ElvUI."
