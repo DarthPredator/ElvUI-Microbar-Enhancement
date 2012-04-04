@@ -1,20 +1,23 @@
-﻿--------------------------------------------------------
+﻿-------------------------------------------------
+--
+-- ElvUI Microbar by Darth Predator
+-- Дартпредатор - Свежеватель Душ (Soulflyer) RU
+--
+-------------------------------------------------
 -- Thanks to / Благодарности: --
 -- Elv and ElvUI community (especially BlackNet)
 -- Slipslop for scale option
 --
---------------------------------------------------------
+-------------------------------------------------
 --
 -- Usage / Использование:
 -- Just install and configure for yourself
 -- Устанавливаем, настраиваем и получаем профит
 --
---------------------------------------------------------
+-------------------------------------------------
 
 local E, L, DF, P, G = unpack(ElvUI); --Engine
 local AB = E:GetModule('ActionBars', 'AceHook-3.0', 'AceEvent-3.0');
-
-ChatFrame1:AddMessage(L["Micro_Login"]);
 
 local microbuttons = {
 	"CharacterMicroButton",
@@ -35,12 +38,11 @@ local f = CreateFrame('Frame', "MicroParent", E.UIParent); --Setting a main fram
 local cf = CreateFrame('Frame', "MicroControl", E.UIParent); --Setting Control Fraqme to handle events
 cf:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2);
 
+--Setting default positioning for menu frame
 do
 	f:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2);
 	f:Hide()
 	f:SetScript('OnShow', function(self)
-		--MicroFrameSize()
-	
 		E:CreateMover(self, "MicroMover", L['Microbar'])
 	end)
 	
@@ -73,6 +75,7 @@ function MicroMouse()
 	end
 end
 
+--Show/Hide in combat
 function MicroCombat()
 	if InCombatLockdown() and E.db.microcombat then
 		f:Hide()
@@ -81,6 +84,7 @@ function MicroCombat()
 	end	
 end
 
+--Sets mover size based on the frame layout
 function MicroMoverSize()
 	f.mover:SetWidth(E.db.scale * MicroParent:GetWidth())
 	f.mover:SetHeight(E.db.scale * MicroParent:GetHeight() + 1);
@@ -98,8 +102,9 @@ cf:SetScript("OnUpdate", function(self,event,...)
 	MicroButtonsPositioning()
 end)
 
+--Positionin of buttons
 function MicroButtonsPositioning()
-	if E.db.general.microlayout == "Micro_Hor" then
+	if E.db.general.microlayout == "Micro_Hor" then --Horizontal
 		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  21)
 		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25,  0)
 		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 25,  0)
@@ -112,7 +117,7 @@ function MicroButtonsPositioning()
 		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 25,  0)
 		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 25,  0)
 		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25,  0)
-	elseif E.db.general.microlayout == "Micro_Ver" then
+	elseif E.db.general.microlayout == "Micro_Ver" then --Vertical
 		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  21)
 		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 0, -33)
 		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 0, -33)
@@ -125,7 +130,7 @@ function MicroButtonsPositioning()
 		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 0, -33)
 		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 0, -33)
 		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 0, -33)
-	elseif E.db.general.microlayout == "Micro_26" then
+	elseif E.db.general.microlayout == "Micro_26" then --2 in a row
 		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  21)
 		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25, 0)
 		TalentMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 0, -33)
@@ -138,7 +143,7 @@ function MicroButtonsPositioning()
 		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 25, 0)
 		MainMenuMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 0, -33)
 		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25, 0)
-	elseif E.db.general.microlayout == "Micro_34" then
+	elseif E.db.general.microlayout == "Micro_34" then --3 in a row
 		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  20)
 		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25,  0)
 		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 25,  0)
@@ -151,7 +156,7 @@ function MicroButtonsPositioning()
 		EJMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 0, -33)
 		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 25,  0)
 		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25,  0)
-	elseif E.db.general.microlayout == "Micro_43" then
+	elseif E.db.general.microlayout == "Micro_43" then --4 in a row
 		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  20)
 		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25,  0)
 		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 25,  0)
@@ -164,7 +169,7 @@ function MicroButtonsPositioning()
 		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 25,  0)
 		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 25,  0)
 		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25,  0)
-	elseif E.db.general.microlayout == "Micro_62" then
+	elseif E.db.general.microlayout == "Micro_62" then --6 in a row
 		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 0,  21)
 		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25,  0)
 		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 25,  0)
@@ -177,7 +182,7 @@ function MicroButtonsPositioning()
 		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 25,  0)
 		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 25,  0)
 		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25,  0)
-	else
+	else --Setting horizontal positions for first load just in case
 		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  21)
 		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25,  0)
 		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 25,  0)
@@ -193,6 +198,7 @@ function MicroButtonsPositioning()
 	end
 end
 
+--Setting frame size to change view of backdrop
 function MicroFrameSize()
 	if E.db.general.microlayout == "Micro_Hor" then
 		f:Size(305, 37)
@@ -243,7 +249,7 @@ MainMenuMicroButton:Show()
 AchievementMicroButton:Show()
 end
 
---First run function. Walkaround of my inability to forse default layout
+--First run function. Walkaround of my inability to force default layout
 function FirstRun()
 	if not E.db.general.microinstall then
 		E.db.general.microlayout = "Micro_Hor"
