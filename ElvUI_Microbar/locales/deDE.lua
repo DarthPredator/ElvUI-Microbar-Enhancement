@@ -2,13 +2,21 @@
 local L = AceLocale:NewLocale("ElvUI", "deDE")
 if not L then return end
 
-L["Hide microbar unless you mouse over it."] = "Microleiste wird erst unter dem Mauszeiger eingeblendet." -- Needs review
-L["Microbar"] = "Microleiste" -- Needs review
-L["Module for adding micromenu to ElvUI."] = "Modul fügt eine kleine Menüleite zu ElvUI hinzu." -- Needs review
-L["On Mouse Over"] = "Mouse Over Funktion" -- Needs review
-L["Set Alpha"] = "Transparenz Einstellung" -- Needs review
+-- L["2 in a row"] = ""
+-- L["3 in a row"] = ""
+-- L["4 in a row"] = ""
+-- L["6 in a row"] = ""
+-- L["Change the positioning of buttons on Microbar."] = ""
+-- L["Hide in Combat"] = ""
+-- L["Hide Microbar in combat."] = ""
+L["Hide microbar unless you mouse over it."] = "Microleiste wird erst unter dem Mauszeiger eingeblendet."
+L["Microbar"] = "Microleiste"
+-- L["Microbar Layout"] = ""
+L["Module for adding micromenu to ElvUI."] = "Modul fügt eine kleine Menüleite zu ElvUI hinzu."
+L["On Mouse Over"] = "Mouse Over Funktion"
+L["Set Alpha"] = "Transparenz Einstellung"
 L["Sets alpha of the microbar"] = "Transparenz der Microleiste einstellen"
-L["Set Scale"] = "Größe einstellen" -- Needs review
-L["Sets Scale of the microbar"] = "Größe der Microleiste einstellen" -- Needs review
-L["Show backdrop for micromenu"] = "Hintergrund der Microleiste anzeigen" -- Needs review
+L["Set Scale"] = "Größe einstellen"
+L["Sets Scale of the microbar"] = "Größe der Microleiste einstellen"
+L["Show backdrop for micromenu"] = "Hintergrund der Microleiste anzeigen"
 

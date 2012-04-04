@@ -2,8 +2,16 @@
 local L = AceLocale:NewLocale("ElvUI", "zhCN")
 if not L then return end
 
+-- L["2 in a row"] = ""
+-- L["3 in a row"] = ""
+-- L["4 in a row"] = ""
+-- L["6 in a row"] = ""
+-- L["Change the positioning of buttons on Microbar."] = ""
+-- L["Hide in Combat"] = ""
+-- L["Hide Microbar in combat."] = ""
 L["Hide microbar unless you mouse over it."] = "隐藏微型菜单, 当鼠标滑过显示."
 L["Microbar"] = "微型菜单"
+-- L["Microbar Layout"] = ""
 L["Module for adding micromenu to ElvUI."] = "用于 ElvUI 的微型菜单模块."
 L["On Mouse Over"] = "鼠标滑过显示"
 L["Set Alpha"] = "设置透明度"
