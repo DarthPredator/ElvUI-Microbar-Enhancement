@@ -14,70 +14,7 @@
 local E, L, DF, P, G = unpack(ElvUI); --Engine
 local AB = E:GetModule('ActionBars', 'AceHook-3.0', 'AceEvent-3.0');
 
---DEFAULT SETTINGS
-DF.alpha = 1 --alpha to 100%
-DF.microdrop = true --backdrop showing
-DF.scale = 1 --scale to 100%
-DF.mouseover = false --mouse over option off
-
---OPTIONS
-E.Options.args.microbar = {
-	type = "group",
-	name = L['Microbar'],
-	order = 5,
-	args = {
-		intro = {
-			order = 1,
-			type = "description",
-			name = L['Module for adding micromenu to ElvUI.'],
-		},			
-		microbar = {
-			order = 2,
-			type = "group",
-			name = L["General"],
-			guiInline = true,
-			args = {
-				mouseover = { --Enable/disable mouse over function
-					order = 1,
-					type = "toggle",
-					name = L['On Mouse Over'],
-					desc = L['Hide microbar unless you mouse over it.'],
-					get = function(info) return E.db.mouseover end,
-					set = function(info, value) E.db.mouseover = value end,
-				},
-				alpha = { --Set transparency
-					type = "range",
-					order = 3,
-					name = L['Set Alpha'],
-					desc = L['Sets alpha of the microbar'],
-					type = "range",
-					min = 0.2, max = 1, step = 0.01,
-					get = function(info) return E.db.alpha end,
-					set = function(info, value) E.db.alpha = value end,
-				},
-				microdrop = { --Enable/disable bar bacground and border
-					order = 2,
-					type = "toggle",
-					name = L['Backdrop'],
-					desc = L['Show backdrop for micromenu'],
-					get = function(info) return E.db.microdrop end,
-					set = function(info, value) E.db.microdrop = value end,
-				},
-				scale = { --Set scale
-					type = "range",
-					order = 4,
-					name = L['Set Scale'],
-					desc = L['Sets Scale of the microbar'],
-					type = "range",
-					min = 0.3, max = 2, step = 0.01,
-					isPercent = true,
-					get = function(info) return E.db.scale end,
-					set = function(info, value) E.db.scale = value end,
-				},
-			},
-		},
-	}
-}
+ChatFrame1:AddMessage(L["Micro_Login"]);
 
 local microbuttons = {
 	"CharacterMicroButton",
@@ -94,17 +31,16 @@ local microbuttons = {
 	"AchievementMicroButton"
 }
 
-local f --Setting a main frame for Menu
+local f = CreateFrame('Frame', "MicroParent", E.UIParent); --Setting a main frame for Menu
+local cf = CreateFrame('Frame', "MicroControl", E.UIParent); --Setting Control Fraqme to handle events
+cf:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2);
 
 do
-	f = CreateFrame('Frame', "MicroParent", E.UIParent);
 	f:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2);
 	f:Hide()
 	f:SetScript('OnShow', function(self)
-		 
-		self:SetWidth(((CharacterMicroButton:GetWidth() + 4) * 9) + 15)
-		self:SetHeight(CharacterMicroButton:GetHeight() - 21)
-										
+		--MicroFrameSize()
+	
 		E:CreateMover(self, "MicroMover", L['Microbar'])
 	end)
 	
@@ -113,18 +49,19 @@ do
 	f.backdrop:SetAllPoints();
 	f.backdrop:Point("BOTTOMLEFT", f, "BOTTOMLEFT", 0,  -1);
 end
-			
---On update functions. Mouseover, backdrop and transparency
-f:SetScript("OnUpdate", function(self,event,...) 
-	
-	--Backdrop show/hide
+
+--Backdrop show/hide
+function MicroBackDrop()
 	if E.db.microdrop then
 		f.backdrop:Show();
 	else
 		f.backdrop:Hide();
 	end
+end
 
-	--Mouseover function
+--Mouseover function
+function MicroMouse()
+	
 	if E.db.mouseover then
 		if (MouseIsOver(MicroParent)) then
 			MicroParent:SetAlpha(E.db.alpha)
@@ -134,72 +71,193 @@ f:SetScript("OnUpdate", function(self,event,...)
 	else
 		MicroParent:SetAlpha(E.db.alpha)
 	end
-	
+end
+
+function MicroCombat()
 	if InCombatLockdown() and E.db.microcombat then
-	f:Hide()
-	end
-	
-	MicroParent:SetScale(E.db.scale)
-	f.mover:SetWidth(E.db.scale * (((CharacterMicroButton:GetWidth() + 4) * 9) + 12));
-	f.mover:SetHeight(E.db.scale * (CharacterMicroButton:GetHeight() - 21));
+		f:Hide()
+	else
+		f:Show()
+	end	
+end
+
+function MicroMoverSize()
+	f.mover:SetWidth(E.db.scale * MicroParent:GetWidth())
+	f.mover:SetHeight(E.db.scale * MicroParent:GetHeight() + 1);
+end
+
+--On update functions
+cf:SetScript("OnUpdate", function(self,event,...)
+	FirstRun()
+	MicroFrameSize()
+	MicroBackDrop()
+	MicroMouse()
+	MicroCombat()
+	f:SetScale(E.db.scale)
+	MicroMoverSize()
+	MicroButtonsPositioning()
 end)
 
---Create buttons
-function AB:CreateMenu()
-
-	for i, button in pairs(microbuttons) do
-		local m = _G[button]
-		local pushed = m:GetPushedTexture()
-		local normal = m:GetNormalTexture()
-		local disabled = m:GetDisabledTexture()
-	
-		m:SetParent(MicroParent)
-		m.SetParent = E.dummy
-		_G[button.."Flash"]:SetTexture("")
-		m:SetHighlightTexture("")
-		m.SetHighlightTexture = E.dummy
-
-		local f = CreateFrame("Frame", nil, m)
-		f:SetFrameLevel(2)
-		f:SetFrameStrata("BACKGROUND")
-		f:SetPoint("BOTTOMLEFT", m, "BOTTOMLEFT", 2, 5)
-		f:SetPoint("TOPRIGHT", m, "TOPRIGHT", -2, -28)
-		f:SetTemplate("Default", true)
-		m.frame = f
-	
-		pushed:SetTexCoord(0.17, 0.87, 0.5, 0.908)
-		pushed:ClearAllPoints()
-		pushed:SetPoint("TOPLEFT", m.frame, "TOPLEFT", E.Scale(2), E.Scale(-2))
-		pushed:SetPoint("BOTTOMRIGHT", m.frame, "BOTTOMRIGHT", E.Scale(-2), E.Scale(2))
-	
-		normal:SetTexCoord(0.17, 0.87, 0.5, 0.908)
-		normal:ClearAllPoints()
-		normal:SetPoint("TOPLEFT", m.frame, "TOPLEFT", E.Scale(2), E.Scale(-2))
-		normal:SetPoint("BOTTOMRIGHT", m.frame, "BOTTOMRIGHT", E.Scale(-2), E.Scale(2))
-	
-		if disabled then
-			disabled:SetTexCoord(0.17, 0.87, 0.5, 0.908)
-			disabled:ClearAllPoints()
-			disabled:SetPoint("TOPLEFT", m.frame, "TOPLEFT", E.Scale(2), E.Scale(-2))
-			disabled:SetPoint("BOTTOMRIGHT", m.frame, "BOTTOMRIGHT", E.Scale(-2), E.Scale(2))
-		end
-		
+function MicroButtonsPositioning()
+	if E.db.general.microlayout == "Micro_Hor" then
+		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  21)
+		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25,  0)
+		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 25,  0)
+		AchievementMicroButton:SetPoint("TOPLEFT", TalentMicroButton, "TOPLEFT", 25,  0)
+		QuestLogMicroButton:SetPoint("TOPLEFT", AchievementMicroButton, "TOPLEFT", 25,  0)
+		GuildMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 25,  0)
+		PVPMicroButton:SetPoint("TOPLEFT", GuildMicroButton, "TOPLEFT", 25,  0)
+		LFDMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 25,  0)
+		RaidMicroButton:SetPoint("TOPLEFT", LFDMicroButton, "TOPLEFT", 25,  0)
+		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 25,  0)
+		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 25,  0)
+		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25,  0)
+	elseif E.db.general.microlayout == "Micro_Ver" then
+		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  21)
+		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 0, -33)
+		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 0, -33)
+		AchievementMicroButton:SetPoint("TOPLEFT", TalentMicroButton, "TOPLEFT", 0, -33)
+		QuestLogMicroButton:SetPoint("TOPLEFT", AchievementMicroButton, "TOPLEFT", 0, -33)
+		GuildMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 0, -33)
+		PVPMicroButton:SetPoint("TOPLEFT", GuildMicroButton, "TOPLEFT", 0, -33)
+		LFDMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 0, -33)
+		RaidMicroButton:SetPoint("TOPLEFT", LFDMicroButton, "TOPLEFT", 0, -33)
+		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 0, -33)
+		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 0, -33)
+		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 0, -33)
+	elseif E.db.general.microlayout == "Micro_26" then
+		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  21)
+		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25, 0)
+		TalentMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 0, -33)
+		AchievementMicroButton:SetPoint("TOPLEFT", TalentMicroButton, "TOPLEFT", 25, 0)
+		QuestLogMicroButton:SetPoint("TOPLEFT", TalentMicroButton, "TOPLEFT", 0, -33)
+		GuildMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 25, 0)
+		PVPMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 0, -33)
+		LFDMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 25, 0)
+		RaidMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 0, -33)
+		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 25, 0)
+		MainMenuMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 0, -33)
+		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25, 0)
+	elseif E.db.general.microlayout == "Micro_34" then
+		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  20)
+		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25,  0)
+		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 25,  0)
+		AchievementMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 0, -33)
+		QuestLogMicroButton:SetPoint("TOPLEFT", AchievementMicroButton, "TOPLEFT", 25,  0)
+		GuildMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 25,  0)
+		PVPMicroButton:SetPoint("TOPLEFT", AchievementMicroButton, "TOPLEFT", 0, -33)
+		LFDMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 25,  0)
+		RaidMicroButton:SetPoint("TOPLEFT", LFDMicroButton, "TOPLEFT", 25,  0)
+		EJMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 0, -33)
+		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 25,  0)
+		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25,  0)
+	elseif E.db.general.microlayout == "Micro_43" then
+		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  20)
+		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25,  0)
+		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 25,  0)
+		AchievementMicroButton:SetPoint("TOPLEFT", TalentMicroButton, "TOPLEFT", 25,  0)
+		QuestLogMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 0, -33)
+		GuildMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 25,  0)
+		PVPMicroButton:SetPoint("TOPLEFT", GuildMicroButton, "TOPLEFT", 25,  0)
+		LFDMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 25,  0)
+		RaidMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 0, -33)
+		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 25,  0)
+		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 25,  0)
+		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25,  0)
+	elseif E.db.general.microlayout == "Micro_62" then
+		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 0,  21)
+		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25,  0)
+		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 25,  0)
+		AchievementMicroButton:SetPoint("TOPLEFT", TalentMicroButton, "TOPLEFT", 25,  0)
+		QuestLogMicroButton:SetPoint("TOPLEFT", AchievementMicroButton, "TOPLEFT", 25,  0)
+		GuildMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 25,  0)
+		PVPMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 0, -33)
+		LFDMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 25,  0)
+		RaidMicroButton:SetPoint("TOPLEFT", LFDMicroButton, "TOPLEFT", 25,  0)
+		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 25,  0)
+		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 25,  0)
+		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25,  0)
+	else
+		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  21)
+		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25,  0)
+		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 25,  0)
+		AchievementMicroButton:SetPoint("TOPLEFT", TalentMicroButton, "TOPLEFT", 25,  0)
+		QuestLogMicroButton:SetPoint("TOPLEFT", AchievementMicroButton, "TOPLEFT", 25,  0)
+		GuildMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 25,  0)
+		PVPMicroButton:SetPoint("TOPLEFT", GuildMicroButton, "TOPLEFT", 25,  0)
+		LFDMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 25,  0)
+		RaidMicroButton:SetPoint("TOPLEFT", LFDMicroButton, "TOPLEFT", 25,  0)
+		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 25,  0)
+		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 25,  0)
+		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25,  0)
 	end
-	
+end
+
+function MicroFrameSize()
+	if E.db.general.microlayout == "Micro_Hor" then
+		f:Size(305, 37)
+	elseif E.db.general.microlayout == "Micro_Ver" then
+		f:Size(29, 400)
+	elseif E.db.general.microlayout == "Micro_26" then
+		f:Size(55, 202)
+	elseif E.db.general.microlayout == "Micro_34" then
+		f:Size(80, 137)
+	elseif E.db.general.microlayout == "Micro_43" then
+		f:Size(105, 104)
+	elseif E.db.general.microlayout == "Micro_62" then
+		f:Size(154, 70)
+	else
+		f:Size(305, 37)
+	end
+end
+
+--Button points clear
+function ButtonsSetup()
+	CharacterMicroButton:ClearAllPoints()
+	SpellbookMicroButton:ClearAllPoints()	
+	TalentMicroButton:ClearAllPoints()	
+	AchievementMicroButton:ClearAllPoints()
+	QuestLogMicroButton:ClearAllPoints()
+	GuildMicroButton:ClearAllPoints()
+	PVPMicroButton:ClearAllPoints()
+	LFDMicroButton:ClearAllPoints()
+	RaidMicroButton:ClearAllPoints()
+	EJMicroButton:ClearAllPoints()
+	MainMenuMicroButton:ClearAllPoints()
+	HelpMicroButton:ClearAllPoints()
+end
+
+--Forcing buttons to show up even when thet shouldn't e.g. in vehicles
+function ShowMicroButtons()
+CharacterMicroButton:Show()
+SpellbookMicroButton:Show()
+TalentMicroButton:Show()
+QuestLogMicroButton:Show()
+PVPMicroButton:Show()
+GuildMicroButton:Show()
+LFDMicroButton:Show()
+EJMicroButton:Show()
+RaidMicroButton:Show()
+HelpMicroButton:Show()
+MainMenuMicroButton:Show()
+AchievementMicroButton:Show()
+end
+
+--First run function. Walkaround of my inability to forse default layout
+function FirstRun()
+	if not E.db.general.microinstall then
+		E.db.general.microlayout = "Micro_Hor"
+		E.db.general.microinstall = true
+	end
 end
 
 --For recreate after portals and so on
-f:SetScript("OnEvent", function(self,event,...) 
+cf:SetScript("OnEvent", function(self,event,...) 
 	UpdateMicroButtonsParent(f)
 	f:Show();
-	
-	--Setting first button properties
-	CharacterMicroButton:ClearAllPoints()
-	CharacterMicroButton:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 0,  0)
-	CharacterMicroButton.SetPoint = E.dummy
-	CharacterMicroButton.ClearAllPoints = E.dummy
-	
+	ButtonsSetup();
+	ShowMicroButtons();
 end)
-f:RegisterEvent("PLAYER_ENTERING_WORLD")
-f:RegisterEvent("UNIT_EXITED_VEHICLE")	
-f:RegisterEvent("PLAYER_REGEN_ENABLED")	
+cf:RegisterEvent("PLAYER_ENTERING_WORLD")
+cf:RegisterEvent("UNIT_EXITED_VEHICLE")	
+cf:RegisterEvent("UNIT_ENTERED_VEHICLE")

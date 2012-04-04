@@ -20,6 +20,7 @@ DF.microdrop = true --backdrop showing
 DF.scale = 1 --scale to 100%
 DF.mouseover = false --mouse over option off
 DF.microcombat = false --Show in combat
+DF.microinstall = false --Check for first time runing on profile
 
 --OPTIONS
 E.Options.args.microbar = {
@@ -54,11 +55,11 @@ E.Options.args.microbar = {
 					get = function(info) return E.db.microdrop end,
 					set = function(info, value) E.db.microdrop = value end,
 				},
-				microcombat = { --Enable/disable bar bacground and border
+				microcombat = { --Enable/disable showing in combat
 					order = 3,
 					type = "toggle",
-					name = L['Combat'],
-					desc = L['Hide in combat'],
+					name = L['Hide in Combat'],
+					desc = L['Hide Microbar in combat.'],
 					get = function(info) return E.db.microcombat end,
 					set = function(info, value) E.db.microcombat = value end,
 				},
@@ -82,6 +83,22 @@ E.Options.args.microbar = {
 					isPercent = true,
 					get = function(info) return E.db.scale end,
 					set = function(info, value) E.db.scale = value end,
+				},
+				layout = {
+					order = 6,
+					type = 'select',
+					name = L["Microbar Layout"],
+					desc = L["Change the positioning of buttons on Microbar."],
+					get = function(info) return E.db.general.microlayout end,
+					set = function(info, value) E.db.general.microlayout = value end,
+					values = {
+						['Micro_Hor'] = L["Horizontal"],
+						['Micro_Ver'] = L["Vertical"],
+						['Micro_26'] = L["2 in a row"],
+						['Micro_34'] = L["3 in a row"],
+						['Micro_43'] = L["4 in a row"],
+						['Micro_62'] = L["6 in a row"],
+					},
 				},
 			},
 		},
