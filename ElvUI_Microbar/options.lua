@@ -10,87 +10,88 @@
 -- Устанавливаем, настраиваем и получаем профит
 --
 --------------------------------------------------------
+local E, L, P, G = unpack(ElvUI); --Engine
+local MB = E:GetModule('Microbar', 'AceEvent-3.0');
 
-local E, L, DF, P, G = unpack(ElvUI); --Engine
-local AB = E:GetModule('ActionBars', 'AceHook-3.0', 'AceEvent-3.0');
+--Defaults
+P['microbar'] = {
+	['mouse'] = false, --Mouseover
+    ['backdrop'] = true, --Backdrop
+	['combat'] = false, --Hide in combat
+	['alpha'] = 1, --Transparency
+	['scale'] = 1, --Scale
+	['layout'] = "Micro_Hor", --Button layuot format
+}
 
---DEFAULT SETTINGS
-DF.alpha = 1 --alpha to 100%
-DF.microdrop = true --backdrop showing
-DF.scale = 1 --scale to 100%
-DF.mouseover = false --mouse over option off
-DF.microcombat = false --Show in combat
-DF.microinstall = false --Check for first time runing on profile
-
---OPTIONS
+--Options
 E.Options.args.microbar = {
 	type = "group",
-	name = L['Microbar'],
-	order = 5,
-	args = {
+    name = L["Microbar"],
+    get = function(info) return E.db.microbar[ info[#info] ] end,
+    set = function(info, value) E.db.microbar[ info[#info] ] = value end, 
+	order = 200,
+   	args = {
 		intro = {
 			order = 1,
 			type = "description",
 			name = L['Module for adding micromenu to ElvUI.'],
-		},			
-		microbar = {
+		},
+		general = {
 			order = 2,
 			type = "group",
 			name = L["General"],
 			guiInline = true,
 			args = {
-				mouseover = { --Enable/disable mouse over function
+				mouse = {
 					order = 1,
 					type = "toggle",
 					name = L['On Mouse Over'],
 					desc = L['Hide microbar unless you mouse over it.'],
-					get = function(info) return E.db.mouseover end,
-					set = function(info, value) E.db.mouseover = value end,
+					--get = function(info) return E.db.microbar.mouse end,
+					set = function(info, value) E.db.microbar.mouse = value; end,
 				},
-				microdrop = { --Enable/disable bar bacground and border
+				backdrop = {
 					order = 2,
 					type = "toggle",
 					name = L['Backdrop'],
 					desc = L['Show backdrop for micromenu'],
-					get = function(info) return E.db.microdrop end,
-					set = function(info, value) E.db.microdrop = value end,
+					--get = function(info) return E.db.microbar.backdrop end,
+					set = function(info, value) E.db.microbar.backdrop = value; MB:Backdrop(); end,
 				},
-				microcombat = { --Enable/disable showing in combat
+				combat = {
 					order = 3,
 					type = "toggle",
 					name = L['Hide in Combat'],
 					desc = L['Hide Microbar in combat.'],
-					get = function(info) return E.db.microcombat end,
-					set = function(info, value) E.db.microcombat = value end,
+					--get = function(info) return E.db.microbar.combat end,
+					set = function(info, value) E.db.microbar.combat = value; end,
 				},
-				alpha = { --Set transparency
-					type = "range",
+				alpha = {
 					order = 4,
+					type = "range",
 					name = L['Set Alpha'],
 					desc = L['Sets alpha of the microbar'],
-					type = "range",
 					min = 0.2, max = 1, step = 0.01,
-					get = function(info) return E.db.alpha end,
-					set = function(info, value) E.db.alpha = value end,
+					--get = function(info) return E.db.microbar.alpha end,
+					set = function(info, value) E.db.microbar.alpha = value; end,
 				},
-				scale = { --Set scale
-					type = "range",
+				scale = {
 					order = 5,
+					type = "range",
 					name = L['Set Scale'],
 					desc = L['Sets Scale of the microbar'],
-					type = "range",
-					min = 0.3, max = 2, step = 0.01,
 					isPercent = true,
-					get = function(info) return E.db.scale end,
-					set = function(info, value) E.db.scale = value end,
+					min = 0.3, max = 2, step = 0.01,
+					--get = function(info) return E.db.microbar.scale end,
+					set = function(info, value) E.db.microbar.scale = value; MB:Scale(); end,
 				},
 				layout = {
 					order = 6,
-					type = 'select',
+					type = "select",
 					name = L["Microbar Layout"],
 					desc = L["Change the positioning of buttons on Microbar."],
-					get = function(info) return E.db.general.microlayout end,
-					set = function(info, value) E.db.general.microlayout = value end,
+					--get = function(info) return E.db.microbar.scale end,
+					set = function(info, value) E.db.microbar.layout = value; MB:MicroButtonsPositioning(); MB:MicroFrameSize(); end,
 					values = {
 						['Micro_Hor'] = L["Horizontal"],
 						['Micro_Ver'] = L["Vertical"],
@@ -100,7 +101,8 @@ E.Options.args.microbar = {
 						['Micro_62'] = L["6 in a row"],
 					},
 				},
-			},
-		},
+			
+			}
+		}
 	}
 }
