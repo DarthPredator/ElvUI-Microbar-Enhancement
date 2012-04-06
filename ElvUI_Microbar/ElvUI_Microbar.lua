@@ -256,12 +256,8 @@ end
 
 --Initialization
 function MB:Initialize()
-	--MB:UpdateSettings()
-	--E.db = E.data.profile
-	--MB:SetDefaults()
 	MB:SetNames()
 	MB:CreateMenu();
-	--MB:UpdateSettings();
 	MB:Backdrop();
 	MB:MicroFrameSize();
 	MB:Scale();
@@ -273,9 +269,6 @@ function MB:Initialize()
 	self:RegisterEvent("UNIT_ENTERED_VEHICLE", "MenuShow");
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "EnterCombat");
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", "LeaveCombat");
-	
-	ChatFrame1:AddMessage("MB:Initialize() -- прошел");
-	--ChatFrame1:AddMessage(E.db.profile);
 end
 
 E:RegisterModule(MB:GetName())
