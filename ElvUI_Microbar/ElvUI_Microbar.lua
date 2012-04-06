@@ -40,7 +40,15 @@ function MB:SetNames()
 	
 	--On update functions
 	cf:SetScript("OnUpdate", function(self,event,...)
-		MB:Mouseover()
+		MB:Mouseover();
+		--Temporary fix for profile change
+		MB:ButtonsSetup();
+		MB:MicroButtonsPositioning();
+		MB:ShowMicroButtons();
+		MB:Backdrop();
+		MB:MicroFrameSize();
+		MB:Scale();
+		MB:MicroMoverSize();
 	end)
 end
 
@@ -248,8 +256,12 @@ end
 
 --Initialization
 function MB:Initialize()
+	--MB:UpdateSettings()
+	--E.db = E.data.profile
+	--MB:SetDefaults()
 	MB:SetNames()
 	MB:CreateMenu();
+	--MB:UpdateSettings();
 	MB:Backdrop();
 	MB:MicroFrameSize();
 	MB:Scale();
@@ -261,6 +273,9 @@ function MB:Initialize()
 	self:RegisterEvent("UNIT_ENTERED_VEHICLE", "MenuShow");
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "EnterCombat");
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", "LeaveCombat");
+	
+	ChatFrame1:AddMessage("MB:Initialize() -- прошел");
+	--ChatFrame1:AddMessage(E.db.profile);
 end
 
 E:RegisterModule(MB:GetName())

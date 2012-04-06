@@ -1,14 +1,5 @@
 ﻿--------------------------------------------------------
--- Thanks to / Благодарности: --
--- Elv and ElvUI community (especially BlackNet)
--- Slipslop for scale option
---
---------------------------------------------------------
---
--- Usage / Использование:
--- Just install and configure for yourself
--- Устанавливаем, настраиваем и получаем профит
---
+-- Options and defaults
 --------------------------------------------------------
 local E, L, P, G = unpack(ElvUI); --Engine
 local MB = E:GetModule('Microbar', 'AceEvent-3.0');
@@ -28,7 +19,7 @@ E.Options.args.microbar = {
 	type = "group",
     name = L["Microbar"],
     get = function(info) return E.db.microbar[ info[#info] ] end,
-    set = function(info, value) E.db.microbar[ info[#info] ] = value end, 
+    set = function(info, value) E.db.microbar[ info[#info] ] = value; end, 
 	order = 50,
    	args = {
 		intro = {
