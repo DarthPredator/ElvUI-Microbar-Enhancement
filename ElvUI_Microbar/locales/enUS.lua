@@ -3,10 +3,10 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale("ElvUI", "enUS");
 if not L then return; end
 
-L["2 in a row"] = "2 in a row"
-L["3 in a row"] = "3 in a row"
-L["4 in a row"] = "4 in a row"
-L["6 in a row"] = "6 in a row"
+L["2 rows"] = "2 rows"
+L["3 rows"] = "3 rows"
+L["4 rows"] = "4 rows"
+L["6 rows"] = "6 rows"
 L["Change the positioning of buttons on Microbar."] = "Change the positioning of buttons on Microbar."
 L["Hide in Combat"] = "Hide in Combat"
 L["Hide Microbar in combat."] = "Hide Microbar in combat."

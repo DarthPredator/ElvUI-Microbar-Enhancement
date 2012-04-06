@@ -2,10 +2,10 @@
 local L = AceLocale:NewLocale("ElvUI", "deDE")
 if not L then return end
 
--- L["2 in a row"] = ""
--- L["3 in a row"] = ""
--- L["4 in a row"] = ""
--- L["6 in a row"] = ""
+-- L["2 rows"] = ""
+-- L["3 rows"] = ""
+-- L["4 rows"] = ""
+-- L["6 rows"] = ""
 -- L["Change the positioning of buttons on Microbar."] = ""
 -- L["Hide in Combat"] = ""
 -- L["Hide Microbar in combat."] = ""
