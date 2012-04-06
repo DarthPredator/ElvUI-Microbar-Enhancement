@@ -47,7 +47,6 @@ E.Options.args.microbar = {
 					type = "toggle",
 					name = L['On Mouse Over'],
 					desc = L['Hide microbar unless you mouse over it.'],
-					--get = function(info) return E.db.microbar.mouse end,
 					set = function(info, value) E.db.microbar.mouse = value; end,
 				},
 				backdrop = {
@@ -55,7 +54,6 @@ E.Options.args.microbar = {
 					type = "toggle",
 					name = L['Backdrop'],
 					desc = L['Show backdrop for micromenu'],
-					--get = function(info) return E.db.microbar.backdrop end,
 					set = function(info, value) E.db.microbar.backdrop = value; MB:Backdrop(); end,
 				},
 				combat = {
@@ -63,7 +61,6 @@ E.Options.args.microbar = {
 					type = "toggle",
 					name = L['Hide in Combat'],
 					desc = L['Hide Microbar in combat.'],
-					--get = function(info) return E.db.microbar.combat end,
 					set = function(info, value) E.db.microbar.combat = value; end,
 				},
 				alpha = {
@@ -72,7 +69,6 @@ E.Options.args.microbar = {
 					name = L['Set Alpha'],
 					desc = L['Sets alpha of the microbar'],
 					min = 0.2, max = 1, step = 0.01,
-					--get = function(info) return E.db.microbar.alpha end,
 					set = function(info, value) E.db.microbar.alpha = value; end,
 				},
 				scale = {
@@ -82,7 +78,6 @@ E.Options.args.microbar = {
 					desc = L['Sets Scale of the microbar'],
 					isPercent = true,
 					min = 0.3, max = 2, step = 0.01,
-					--get = function(info) return E.db.microbar.scale end,
 					set = function(info, value) E.db.microbar.scale = value; MB:Scale(); end,
 				},
 				layout = {
@@ -90,15 +85,14 @@ E.Options.args.microbar = {
 					type = "select",
 					name = L["Microbar Layout"],
 					desc = L["Change the positioning of buttons on Microbar."],
-					--get = function(info) return E.db.microbar.scale end,
 					set = function(info, value) E.db.microbar.layout = value; MB:MicroButtonsPositioning(); MB:MicroFrameSize(); end,
 					values = {
 						['Micro_Hor'] = L["Horizontal"],
 						['Micro_Ver'] = L["Vertical"],
-						['Micro_26'] = L["2 in a row"],
-						['Micro_34'] = L["3 in a row"],
-						['Micro_43'] = L["4 in a row"],
-						['Micro_62'] = L["6 in a row"],
+						['Micro_62'] = L["2 rows"],
+						['Micro_43'] = L["3 rows"],
+						['Micro_34'] = L["4 rows"],
+						['Micro_26'] = L["6 rows"],
 					},
 				},
 			

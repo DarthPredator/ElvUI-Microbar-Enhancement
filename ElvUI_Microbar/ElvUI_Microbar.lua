@@ -5,8 +5,9 @@
 --
 -------------------------------------------------
 -- Thanks to / Благодарности: --
--- Elv and ElvUI community (especially BlackNet)
+-- Elv and ElvUI community
 -- Slipslop for scale option
+-- Blazeflack for helping with option storage
 --
 -------------------------------------------------
 --
@@ -16,42 +17,43 @@
 --
 -------------------------------------------------
 
-local E, L, P, G = unpack(ElvUI); --Engine -- DF,
+local E, L, P, G = unpack(ElvUI); --Engine, Locales, Profile, Global
 local MB = E:NewModule('Microbar', 'AceHook-3.0', 'AceEvent-3.0');
 
-local microbuttons = {
-	"CharacterMicroButton",
-	"SpellbookMicroButton",
-	"TalentMicroButton",
-	"QuestLogMicroButton",
-	"PVPMicroButton",
-	"GuildMicroButton",
-	"LFDMicroButton",
-	"EJMicroButton",
-	"RaidMicroButton",
-	"HelpMicroButton",
-	"MainMenuMicroButton",
-	"AchievementMicroButton"
-}
-
-local f = CreateFrame('Frame', "MicroParent", E.UIParent); --Setting a main frame for Menu
-local cf = CreateFrame('Frame', "MicroControl", E.UIParent); --Setting Control Fraqme to handle events
-cf:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2);
+--Setting loacle shortnames and on update script for mouseover/alpha (can't get rid of using it at the moment)
+function MB:SetNames()
+	f = CreateFrame('Frame', "MicroParent", E.UIParent); --Setting a main frame for Menu
+	cf = CreateFrame('Frame', "MicroControl", E.UIParent); --Setting Control Fraqme to handle events
+	
+	CharB = CharacterMicroButton
+	SpellB = SpellbookMicroButton
+	TalentB = TalentMicroButton
+	AchievB = AchievementMicroButton
+	QuestB = QuestLogMicroButton
+	GuildB = GuildMicroButton
+	PVPB = PVPMicroButton
+	LFDB = LFDMicroButton
+	RaidB = RaidMicroButton
+	EJB = EJMicroButton
+	MenuB = MainMenuMicroButton
+	HelpB = HelpMicroButton
+	
+	--On update functions
+	cf:SetScript("OnUpdate", function(self,event,...)
+		MB:Mouseover()
+	end)
+end
 
 --Setting default positioning for menu frame
 function MB:CreateMenu()
 	f:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2);
 	f:Hide()
-	f:SetScript('OnShow', function(self)
-		--MB:MicroButtonsPositioning()
-		E:CreateMover(self, "MicroMover", L['Microbar'])
-		MB:MicroMoverSize();
-	end)
-	
 	--Backdrop creation
 	f:CreateBackdrop('Default');
 	f.backdrop:SetAllPoints();
 	f.backdrop:Point("BOTTOMLEFT", f, "BOTTOMLEFT", 0,  -1);
+	
+	cf:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2);
 end
 
 --Backdrop show/hide
@@ -61,8 +63,6 @@ function MB:Backdrop()
 	else
 		f.backdrop:Hide();
 	end
-	
-	ChatFrame1:AddMessage("|cff1784d1MB:Backdrop():|r отработал");
 end
 
 --Mouseover and Alpha function
@@ -78,116 +78,112 @@ function MB:Mouseover()
 	end
 end
 
+--Set Scale
+function MB:Scale()
+	f:SetScale(E.db.microbar.scale)
+end
+
 --Show/Hide in combat
-function MB:Combat()
-	if InCombatLockdown() and E.db.microbar.combat then
+function MB:EnterCombat()
+	if E.db.microbar.combat then
 		f:Hide()
 	else
 		f:Show()
 	end	
 end
 
+--Show after leaving combat
+function MB:LeaveCombat()
+	f:Show()
+end
+
 --Sets mover size based on the frame layout
 function MB:MicroMoverSize()
 	f.mover:SetWidth(E.db.microbar.scale * MicroParent:GetWidth())
 	f.mover:SetHeight(E.db.microbar.scale * MicroParent:GetHeight() + 1);
-	ChatFrame1:AddMessage("|cff1784d1MB:MicroMoverSize():|r отработал");
 end
-
-function MB:Scale()
-	f:SetScale(E.db.microbar.scale)
-	
-	ChatFrame1:AddMessage("|cff1784d1MB:Scale():|r отработал");
-end
-
---On update functions
-cf:SetScript("OnUpdate", function(self,event,...)
-	MB:Mouseover()
-	MB:Combat()
-end)
 
 --Positionin of buttons
 function MB:MicroButtonsPositioning()
 	if E.db.microbar.layout == "Micro_Hor" then --Horizontal
-		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  21)
-		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25,  0)
-		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 25,  0)
-		AchievementMicroButton:SetPoint("TOPLEFT", TalentMicroButton, "TOPLEFT", 25,  0)
-		QuestLogMicroButton:SetPoint("TOPLEFT", AchievementMicroButton, "TOPLEFT", 25,  0)
-		GuildMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 25,  0)
-		PVPMicroButton:SetPoint("TOPLEFT", GuildMicroButton, "TOPLEFT", 25,  0)
-		LFDMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 25,  0)
-		RaidMicroButton:SetPoint("TOPLEFT", LFDMicroButton, "TOPLEFT", 25,  0)
-		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 25,  0)
-		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 25,  0)
-		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25,  0)
+		CharB:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  21)
+		SpellB:SetPoint("TOPLEFT", CharB, "TOPLEFT", 25,  0)
+		TalentB:SetPoint("TOPLEFT", SpellB, "TOPLEFT", 25,  0)
+		AchievB:SetPoint("TOPLEFT", TalentB, "TOPLEFT", 25,  0)
+		QuestB:SetPoint("TOPLEFT", AchievB, "TOPLEFT", 25,  0)
+		GuildB:SetPoint("TOPLEFT", QuestB, "TOPLEFT", 25,  0)
+		PVPB:SetPoint("TOPLEFT", GuildB, "TOPLEFT", 25,  0)
+		LFDB:SetPoint("TOPLEFT", PVPB, "TOPLEFT", 25,  0)
+		RaidB:SetPoint("TOPLEFT", LFDB, "TOPLEFT", 25,  0)
+		EJB:SetPoint("TOPLEFT", RaidB, "TOPLEFT", 25,  0)
+		MenuB:SetPoint("TOPLEFT", EJB, "TOPLEFT", 25,  0)
+		HelpB:SetPoint("TOPLEFT", MenuB, "TOPLEFT", 25,  0)
 	elseif E.db.microbar.layout == "Micro_Ver" then --Vertical
-		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  21)
-		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 0, -33)
-		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 0, -33)
-		AchievementMicroButton:SetPoint("TOPLEFT", TalentMicroButton, "TOPLEFT", 0, -33)
-		QuestLogMicroButton:SetPoint("TOPLEFT", AchievementMicroButton, "TOPLEFT", 0, -33)
-		GuildMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 0, -33)
-		PVPMicroButton:SetPoint("TOPLEFT", GuildMicroButton, "TOPLEFT", 0, -33)
-		LFDMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 0, -33)
-		RaidMicroButton:SetPoint("TOPLEFT", LFDMicroButton, "TOPLEFT", 0, -33)
-		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 0, -33)
-		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 0, -33)
-		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 0, -33)
+		CharB:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  21)
+		SpellB:SetPoint("TOPLEFT", CharB, "TOPLEFT", 0, -33)
+		TalentB:SetPoint("TOPLEFT", SpellB, "TOPLEFT", 0, -33)
+		AchievB:SetPoint("TOPLEFT", TalentB, "TOPLEFT", 0, -33)
+		QuestB:SetPoint("TOPLEFT", AchievB, "TOPLEFT", 0, -33)
+		GuildB:SetPoint("TOPLEFT", QuestB, "TOPLEFT", 0, -33)
+		PVPB:SetPoint("TOPLEFT", GuildB, "TOPLEFT", 0, -33)
+		LFDB:SetPoint("TOPLEFT", PVPB, "TOPLEFT", 0, -33)
+		RaidB:SetPoint("TOPLEFT", LFDB, "TOPLEFT", 0, -33)
+		EJB:SetPoint("TOPLEFT", RaidB, "TOPLEFT", 0, -33)
+		MenuB:SetPoint("TOPLEFT", EJB, "TOPLEFT", 0, -33)
+		HelpB:SetPoint("TOPLEFT", MenuB, "TOPLEFT", 0, -33)
 	elseif E.db.microbar.layout == "Micro_26" then --2 in a row
-		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  21)
-		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25, 0)
-		TalentMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 0, -33)
-		AchievementMicroButton:SetPoint("TOPLEFT", TalentMicroButton, "TOPLEFT", 25, 0)
-		QuestLogMicroButton:SetPoint("TOPLEFT", TalentMicroButton, "TOPLEFT", 0, -33)
-		GuildMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 25, 0)
-		PVPMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 0, -33)
-		LFDMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 25, 0)
-		RaidMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 0, -33)
-		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 25, 0)
-		MainMenuMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 0, -33)
-		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25, 0)
+		CharB:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  21)
+		SpellB:SetPoint("TOPLEFT", CharB, "TOPLEFT", 25, 0)
+		TalentB:SetPoint("TOPLEFT", CharB, "TOPLEFT", 0, -33)
+		AchievB:SetPoint("TOPLEFT", TalentB, "TOPLEFT", 25, 0)
+		QuestB:SetPoint("TOPLEFT", TalentB, "TOPLEFT", 0, -33)
+		GuildB:SetPoint("TOPLEFT", QuestB, "TOPLEFT", 25, 0)
+		PVPB:SetPoint("TOPLEFT", QuestB, "TOPLEFT", 0, -33)
+		LFDB:SetPoint("TOPLEFT", PVPB, "TOPLEFT", 25, 0)
+		RaidB:SetPoint("TOPLEFT", PVPB, "TOPLEFT", 0, -33)
+		EJB:SetPoint("TOPLEFT", RaidB, "TOPLEFT", 25, 0)
+		MenuB:SetPoint("TOPLEFT", RaidB, "TOPLEFT", 0, -33)
+		HelpB:SetPoint("TOPLEFT", MenuB, "TOPLEFT", 25, 0)
 	elseif E.db.microbar.layout == "Micro_34" then --3 in a row
-		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  20)
-		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25,  0)
-		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 25,  0)
-		AchievementMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 0, -33)
-		QuestLogMicroButton:SetPoint("TOPLEFT", AchievementMicroButton, "TOPLEFT", 25,  0)
-		GuildMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 25,  0)
-		PVPMicroButton:SetPoint("TOPLEFT", AchievementMicroButton, "TOPLEFT", 0, -33)
-		LFDMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 25,  0)
-		RaidMicroButton:SetPoint("TOPLEFT", LFDMicroButton, "TOPLEFT", 25,  0)
-		EJMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 0, -33)
-		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 25,  0)
-		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25,  0)
+		CharB:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  20)
+		SpellB:SetPoint("TOPLEFT", CharB, "TOPLEFT", 25,  0)
+		TalentB:SetPoint("TOPLEFT", SpellB, "TOPLEFT", 25,  0)
+		AchievB:SetPoint("TOPLEFT", CharB, "TOPLEFT", 0, -33)
+		QuestB:SetPoint("TOPLEFT", AchievB, "TOPLEFT", 25,  0)
+		GuildB:SetPoint("TOPLEFT", QuestB, "TOPLEFT", 25,  0)
+		PVPB:SetPoint("TOPLEFT", AchievB, "TOPLEFT", 0, -33)
+		LFDB:SetPoint("TOPLEFT", PVPB, "TOPLEFT", 25,  0)
+		RaidB:SetPoint("TOPLEFT", LFDB, "TOPLEFT", 25,  0)
+		EJB:SetPoint("TOPLEFT", PVPB, "TOPLEFT", 0, -33)
+		MenuB:SetPoint("TOPLEFT", EJB, "TOPLEFT", 25,  0)
+		HelpB:SetPoint("TOPLEFT", MenuB, "TOPLEFT", 25,  0)
 	elseif E.db.microbar.layout == "Micro_43" then --4 in a row
-		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  20)
-		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25,  0)
-		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 25,  0)
-		AchievementMicroButton:SetPoint("TOPLEFT", TalentMicroButton, "TOPLEFT", 25,  0)
-		QuestLogMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 0, -33)
-		GuildMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 25,  0)
-		PVPMicroButton:SetPoint("TOPLEFT", GuildMicroButton, "TOPLEFT", 25,  0)
-		LFDMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 25,  0)
-		RaidMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 0, -33)
-		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 25,  0)
-		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 25,  0)
-		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25,  0)
+		CharB:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  20)
+		SpellB:SetPoint("TOPLEFT", CharB, "TOPLEFT", 25,  0)
+		TalentB:SetPoint("TOPLEFT", SpellB, "TOPLEFT", 25,  0)
+		AchievB:SetPoint("TOPLEFT", TalentB, "TOPLEFT", 25,  0)
+		QuestB:SetPoint("TOPLEFT", CharB, "TOPLEFT", 0, -33)
+		GuildB:SetPoint("TOPLEFT", QuestB, "TOPLEFT", 25,  0)
+		PVPB:SetPoint("TOPLEFT", GuildB, "TOPLEFT", 25,  0)
+		LFDB:SetPoint("TOPLEFT", PVPB, "TOPLEFT", 25,  0)
+		RaidB:SetPoint("TOPLEFT", QuestB, "TOPLEFT", 0, -33)
+		EJB:SetPoint("TOPLEFT", RaidB, "TOPLEFT", 25,  0)
+		MenuB:SetPoint("TOPLEFT", EJB, "TOPLEFT", 25,  0)
+		HelpB:SetPoint("TOPLEFT", MenuB, "TOPLEFT", 25,  0)
 	elseif E.db.microbar.layout == "Micro_62" then --6 in a row
-		CharacterMicroButton:SetPoint("TOPLEFT", f, "TOPLEFT", 0,  21)
-		SpellbookMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 25,  0)
-		TalentMicroButton:SetPoint("TOPLEFT", SpellbookMicroButton, "TOPLEFT", 25,  0)
-		AchievementMicroButton:SetPoint("TOPLEFT", TalentMicroButton, "TOPLEFT", 25,  0)
-		QuestLogMicroButton:SetPoint("TOPLEFT", AchievementMicroButton, "TOPLEFT", 25,  0)
-		GuildMicroButton:SetPoint("TOPLEFT", QuestLogMicroButton, "TOPLEFT", 25,  0)
-		PVPMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "TOPLEFT", 0, -33)
-		LFDMicroButton:SetPoint("TOPLEFT", PVPMicroButton, "TOPLEFT", 25,  0)
-		RaidMicroButton:SetPoint("TOPLEFT", LFDMicroButton, "TOPLEFT", 25,  0)
-		EJMicroButton:SetPoint("TOPLEFT", RaidMicroButton, "TOPLEFT", 25,  0)
-		MainMenuMicroButton:SetPoint("TOPLEFT", EJMicroButton, "TOPLEFT", 25,  0)
-		HelpMicroButton:SetPoint("TOPLEFT", MainMenuMicroButton, "TOPLEFT", 25,  0)
+		CharB:SetPoint("TOPLEFT", f, "TOPLEFT", 0,  21)
+		SpellB:SetPoint("TOPLEFT", CharB, "TOPLEFT", 25,  0)
+		TalentB:SetPoint("TOPLEFT", SpellB, "TOPLEFT", 25,  0)
+		AchievB:SetPoint("TOPLEFT", TalentB, "TOPLEFT", 25,  0)
+		QuestB:SetPoint("TOPLEFT", AchievB, "TOPLEFT", 25,  0)
+		GuildB:SetPoint("TOPLEFT", QuestB, "TOPLEFT", 25,  0)
+		PVPB:SetPoint("TOPLEFT", CharB, "TOPLEFT", 0, -33)
+		LFDB:SetPoint("TOPLEFT", PVPB, "TOPLEFT", 25,  0)
+		RaidB:SetPoint("TOPLEFT", LFDB, "TOPLEFT", 25,  0)
+		EJB:SetPoint("TOPLEFT", RaidB, "TOPLEFT", 25,  0)
+		MenuB:SetPoint("TOPLEFT", EJB, "TOPLEFT", 25,  0)
+		HelpB:SetPoint("TOPLEFT", MenuB, "TOPLEFT", 25,  0)
 	end
-	ChatFrame1:AddMessage("|cff1784d1MB:MicroButtonsPositioning():|r отработал");
 end
 
 --Setting frame size to change view of backdrop
@@ -207,43 +203,38 @@ function MB:MicroFrameSize()
 	else
 		f:Size(305, 37)
 	end
-	ChatFrame1:AddMessage("|cff1784d1MB:MicroFrameSize():|r отработал");
 end
 
 --Buttons points clear
 function MB:ButtonsSetup()
-	CharacterMicroButton:ClearAllPoints()
-	SpellbookMicroButton:ClearAllPoints()	
-	TalentMicroButton:ClearAllPoints()	
-	AchievementMicroButton:ClearAllPoints()
-	QuestLogMicroButton:ClearAllPoints()
-	GuildMicroButton:ClearAllPoints()
-	PVPMicroButton:ClearAllPoints()
-	LFDMicroButton:ClearAllPoints()
-	RaidMicroButton:ClearAllPoints()
-	EJMicroButton:ClearAllPoints()
-	MainMenuMicroButton:ClearAllPoints()
-	HelpMicroButton:ClearAllPoints()
-	
-	ChatFrame1:AddMessage("|cff1784d1MB:ButtonsSetup():|r отработал");
+	CharB:ClearAllPoints()
+	SpellB:ClearAllPoints()	
+	TalentB:ClearAllPoints()	
+	AchievB:ClearAllPoints()
+	QuestB:ClearAllPoints()
+	GuildB:ClearAllPoints()
+	PVPB:ClearAllPoints()
+	LFDB:ClearAllPoints()
+	RaidB:ClearAllPoints()
+	EJB:ClearAllPoints()
+	MenuB:ClearAllPoints()
+	HelpB:ClearAllPoints()
 end
 
 --Forcing buttons to show up even when thet shouldn't e.g. in vehicles
 function MB:ShowMicroButtons()
-	CharacterMicroButton:Show()
-	SpellbookMicroButton:Show()
-	TalentMicroButton:Show()
-	QuestLogMicroButton:Show()
-	PVPMicroButton:Show()
-	GuildMicroButton:Show()
-	LFDMicroButton:Show()
-	EJMicroButton:Show()
-	RaidMicroButton:Show()
-	HelpMicroButton:Show()
-	MainMenuMicroButton:Show()
-	AchievementMicroButton:Show()
-
-	ChatFrame1:AddMessage("|cff1784d1MB:ShowMicroButtons():|r отработал");
+	CharB:Show()
+	SpellB:Show()
+	TalentB:Show()
+	QuestB:Show()
+	PVPB:Show()
+	GuildB:Show()
+	LFDB:Show()
+	EJB:Show()
+	RaidB:Show()
+	HelpB:Show()
+	MenuB:Show()
+	AchievB:Show()
 end
 
 --For recreate after portals and so on
@@ -257,14 +248,19 @@ end
 
 --Initialization
 function MB:Initialize()
+	MB:SetNames()
 	MB:CreateMenu();
 	MB:Backdrop();
 	MB:MicroFrameSize();
 	MB:Scale();
-
+	E:CreateMover(f, "MicroMover", L['Microbar'])
+	MB:MicroMoverSize();
+	
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "MenuShow");
 	self:RegisterEvent("UNIT_EXITED_VEHICLE", "MenuShow");	
 	self:RegisterEvent("UNIT_ENTERED_VEHICLE", "MenuShow");
+	self:RegisterEvent("PLAYER_REGEN_DISABLED", "EnterCombat");
+	self:RegisterEvent("PLAYER_REGEN_ENABLED", "LeaveCombat");
 end
 
 E:RegisterModule(MB:GetName())
