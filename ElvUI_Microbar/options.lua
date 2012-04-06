@@ -29,7 +29,7 @@ E.Options.args.microbar = {
     name = L["Microbar"],
     get = function(info) return E.db.microbar[ info[#info] ] end,
     set = function(info, value) E.db.microbar[ info[#info] ] = value end, 
-	order = 200,
+	order = 50,
    	args = {
 		intro = {
 			order = 1,
@@ -78,7 +78,7 @@ E.Options.args.microbar = {
 					desc = L['Sets Scale of the microbar'],
 					isPercent = true,
 					min = 0.3, max = 2, step = 0.01,
-					set = function(info, value) E.db.microbar.scale = value; MB:Scale(); end,
+					set = function(info, value) E.db.microbar.scale = value; MB:Scale(); MB:MicroMoverSize(); end,
 				},
 				layout = {
 					order = 6,
