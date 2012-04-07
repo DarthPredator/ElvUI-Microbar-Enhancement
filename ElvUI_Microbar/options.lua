@@ -86,7 +86,7 @@ E.Options.args.microbar = {
 						['Micro_26'] = L["6 rows"],
 					},
 				},
-			
+
 			}
 		}
 	}
