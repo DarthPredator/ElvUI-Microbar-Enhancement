@@ -22,7 +22,7 @@ local MB = E:NewModule('Microbar', 'AceHook-3.0', 'AceEvent-3.0');
 
 --Setting loacle shortnames and on update script for mouseover/alpha (can't get rid of using it at the moment)
 function MB:SetNames()
-	f = CreateFrame('Frame', "MicroParent", E.UIParent); --Setting a main frame for Menu
+	microbar = CreateFrame('Frame', "MicroParent", E.UIParent); --Setting a main frame for Menu
 	cf = CreateFrame('Frame', "MicroControl", E.UIParent); --Setting Control Fraqme to handle events
 	
 	CharB = CharacterMicroButton
@@ -46,12 +46,12 @@ end
 
 --Setting default positioning for menu frame
 function MB:CreateMenu()
-	f:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2);
-	f:Hide()
+	microbar:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2);
+	microbar:Hide()
 	--Backdrop creation
-	f:CreateBackdrop('Default');
-	f.backdrop:SetAllPoints();
-	f.backdrop:Point("BOTTOMLEFT", f, "BOTTOMLEFT", 0,  -1);
+	microbar:CreateBackdrop('Default');
+	microbar.backdrop:SetAllPoints();
+	microbar.backdrop:Point("BOTTOMLEFT", microbar, "BOTTOMLEFT", 0,  -1);
 	
 	cf:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2);
 end
@@ -59,9 +59,9 @@ end
 --Backdrop show/hide
 function MB:Backdrop()
 	if E.db.microbar.backdrop then
-		f.backdrop:Show();
+		microbar.backdrop:Show();
 	else
-		f.backdrop:Hide();
+		microbar.backdrop:Hide();
 	end
 end
 
@@ -80,33 +80,33 @@ end
 
 --Set Scale
 function MB:Scale()
-	f:SetScale(E.db.microbar.scale)
+	microbar:SetScale(E.db.microbar.scale)
 end
 
 --Show/Hide in combat
 function MB:EnterCombat()
 	if E.db.microbar.combat then
-		f:Hide()
+		microbar:Hide()
 	else
-		f:Show()
+		microbar:Show()
 	end	
 end
 
 --Show after leaving combat
 function MB:LeaveCombat()
-	f:Show()
+	microbar:Show()
 end
 
 --Sets mover size based on the frame layout
 function MB:MicroMoverSize()
-	f.mover:SetWidth(E.db.microbar.scale * MicroParent:GetWidth())
-	f.mover:SetHeight(E.db.microbar.scale * MicroParent:GetHeight() + 1);
+	microbar.mover:SetWidth(E.db.microbar.scale * MicroParent:GetWidth())
+	microbar.mover:SetHeight(E.db.microbar.scale * MicroParent:GetHeight() + 1);
 end
 
 --Positionin of buttons
 function MB:MicroButtonsPositioning()
 	if E.db.microbar.layout == "Micro_Hor" then --Horizontal
-		CharB:SetPoint("TOPLEFT", f, "TOPLEFT", 1,  21)
+		CharB:SetPoint("TOPLEFT", microbar, "TOPLEFT", 1,  21)
 		SpellB:SetPoint("TOPLEFT", CharB, "TOPLEFT", 25,  0)
 		TalentB:SetPoint("TOPLEFT", SpellB, "TOPLEFT", 25,  0)
 		AchievB:SetPoint("TOPLEFT", TalentB, "TOPLEFT", 25,  0)
@@ -189,19 +189,19 @@ end
 --Setting frame size to change view of backdrop
 function MB:MicroFrameSize()
 	if E.db.microbar.layout == "Micro_Hor" then
-		f:Size(305, 37)
+		microbar:Size(305, 37)
 	elseif E.db.microbar.layout == "Micro_Ver" then
-		f:Size(29, 400)
+		microbar:Size(29, 400)
 	elseif E.db.microbar.layout == "Micro_26" then
-		f:Size(55, 202)
+		microbar:Size(55, 202)
 	elseif E.db.microbar.layout == "Micro_34" then
-		f:Size(80, 137)
+		microbar:Size(80, 137)
 	elseif E.db.microbar.layout == "Micro_43" then
-		f:Size(105, 104)
+		microbar:Size(105, 104)
 	elseif E.db.microbar.layout == "Micro_62" then
-		f:Size(154, 70)
+		microbar:Size(154, 70)
 	else
-		f:Size(305, 37)
+		microbar:Size(305, 37)
 	end
 end
 
@@ -239,8 +239,8 @@ end
 
 --For recreate after portals and so on
 function MB:MenuShow()
-	UpdateMicroButtonsParent(f)
-	f:Show();
+	UpdateMicroButtonsParent(microbar)
+	microbar:Show();
 	MB:ButtonsSetup();
 	MB:MicroButtonsPositioning();
 	MB:ShowMicroButtons();
@@ -328,7 +328,7 @@ function MB:Initialize()
 	MB:Backdrop();
 	MB:MicroFrameSize();
 	MB:Scale();
-	E:CreateMover(f, "MicroMover", L['Microbar'])
+	E:CreateMover(microbar, "MicroMover", L['Microbar'])
 	MB:MicroMoverSize();
 	
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "MenuShow");
