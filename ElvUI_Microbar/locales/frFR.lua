@@ -2,11 +2,20 @@
 local L = AceLocale:NewLocale("ElvUI", "frFR");
 if not L then return; end
 
---Copy the entire english file here and set values = to something
---[[
-	Where it says:
-	L["Auto Scale"] = true
-	
-	That just means thats default, you can still set it to say something else like this
-	L["Auto Scale"] = "Blah blah, speaking another language, blah blah"
-]]
+L["2 rows"] = "6 boutons par ligne, 2 lignes au total"
+L["3 rows"] = "4 boutons par ligne, 3 lignes au total"
+L["4 rows"] = "3 boutons par ligne, 4 lignes au total"
+L["6 rows"] = "2 boutons par ligne, 6 lignes au total"
+L["Change the positioning of buttons on Microbar."] = "Modifie le positionnement des boutons de la microbar"
+L["Hide in Combat"] = "Masquer en combat"
+L["Hide Microbar in combat."] = "Masquer la microbar en combat"
+L["Hide microbar unless you mouse over it."] = "Cacher la microbar à moins que la souris soit au dessus"
+L["Microbar"] = "Microbar"
+L["Microbar Layout"] = "Disposition de la microbar"
+L["Module for adding micromenu to ElvUI."] = "Module pour ajouter un micromenu à ElvUI"
+L["On Mouse Over"] = "Au passage de la souris"
+L["Set Alpha"] = "Transparence"
+L["Sets alpha of the microbar"] = "Régler la transparence de la microbar"
+L["Set Scale"] = "Taille"
+L["Sets Scale of the microbar"] = "Régler la taille de la microbar"
+L["Show backdrop for micromenu"] = "Afficher le fond de la microbar"
