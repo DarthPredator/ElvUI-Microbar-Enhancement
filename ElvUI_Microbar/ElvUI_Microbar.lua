@@ -20,10 +20,26 @@
 local E, L, P, G = unpack(ElvUI); --Engine, Locales, Profile, Global
 local MB = E:NewModule('Microbar', 'AceHook-3.0', 'AceEvent-3.0');
 
+--Setting all variables al locals to avoid possible conflicts with other addons
+local microbar
+local microbar.control
+local CharB
+local SpellB
+local TalentB
+local AchievB
+local QuestB
+local GuildB
+local PVPB
+local LFDB
+local RaidB
+local EJB
+local MenuB
+local HelpB
+
 --Setting loacle shortnames and on update script for mouseover/alpha (can't get rid of using it at the moment)
 function MB:SetNames()
 	microbar = CreateFrame('Frame', "MicroParent", E.UIParent); --Setting a main frame for Menu
-	cf = CreateFrame('Frame', "MicroControl", E.UIParent); --Setting Control Fraqme to handle events
+	microbar.control = CreateFrame('Frame', "MicroControl", E.UIParent); --Setting Control Fraqme to handle events
 	
 	CharB = CharacterMicroButton
 	SpellB = SpellbookMicroButton
@@ -39,7 +55,7 @@ function MB:SetNames()
 	HelpB = HelpMicroButton
 	
 	--On update functions
-	cf:SetScript("OnUpdate", function(self,event,...)
+	microbar.control:SetScript("OnUpdate", function(self,event,...)
 		MB:Mouseover()
 	end)
 end
@@ -53,7 +69,7 @@ function MB:CreateMenu()
 	microbar.backdrop:SetAllPoints();
 	microbar.backdrop:Point("BOTTOMLEFT", microbar, "BOTTOMLEFT", 0,  -1);
 	
-	cf:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2);
+	microbar.control:Point("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2);
 end
 
 --Backdrop show/hide
