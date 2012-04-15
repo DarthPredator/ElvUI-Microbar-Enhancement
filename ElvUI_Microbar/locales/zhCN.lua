@@ -1,6 +1,6 @@
 ﻿local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
 local L = AceLocale:NewLocale("ElvUI", "zhCN")
-if not L then return end
+if not L then return; end
 
 -- L["2 rows"] = ""
 -- L["3 rows"] = ""
