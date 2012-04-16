@@ -262,70 +262,11 @@ function MB:MenuShow()
 	MB:ShowMicroButtons();
 end
 
---Copy of Elv's UpdateAll function that includes microbar. Forcing re-check of setting and execute them when profile is changed.
+--Hooking to Elv's UpdateAll function. Thanks to Blazeflack for making it smaller and other stuff
+E.UpdateAllMicro = E.UpdateAll
 function E:UpdateAll()
-    self.data = LibStub("AceDB-3.0"):New("ElvData", self.DF, true);
-    self.data.RegisterCallback(self, "OnProfileChanged", "UpdateAll")
-    self.data.RegisterCallback(self, "OnProfileCopied", "UpdateAll")
-    self.data.RegisterCallback(self, "OnProfileReset", "OnProfileReset")
-    self.db = self.data.profile;
-    self.global = self.data.global;
-
-    self:UpdateMedia()
-    self:UpdateFrameTemplates()
-    self:SetMoversPositions()
-
-    local CH = self:GetModule('Chat')
-    CH.db = self.db.chat
-    CH:PositionChat(true); 
-
-    local AB = self:GetModule('ActionBars')
-    AB.db = self.db.actionbar
-    AB:UpdateButtonSettings()
-    AB:SetMoverPositions()
-
-    local bags = E:GetModule('Bags');
-    bags:Layout();
-    bags:Layout(true);
-    bags:PositionBagFrames()
-    bags:SizeAndPositionBagBar()
-
-    self:GetModule('Skins'):SetEmbedRight(E.db.skins.embedRight)
-    self:GetModule('Layout'):ToggleChatPanels()
-
-    local CT = self:GetModule('ClassTimers')
-    CT.db = self.db.classtimer
-    CT:PositionTimers()
-    CT:ToggleTimers()
-
-    local DT = self:GetModule('DataTexts')
-    DT.db = self.db.datatexts
-    DT:LoadDataTexts()
-
-    local NP = self:GetModule('NamePlates')
-    NP.db = self.db.nameplate
-    NP:UpdateAllPlates()
-
-    local UF = self:GetModule('UnitFrames')
-    UF.db = self.db.unitframe
-    UF:Update_AllFrames()
-    ElvUF:ResetDB()
-    ElvUF:PositionUF()
-
-    self:GetModule('Auras').db = self.db.auras
-    self:GetModule('Tooltip').db = self.db.tooltip
-
-    if self.db.install_complete == nil or (self.db.install_complete and type(self.db.install_complete) == 'boolean') or (self.db.install_complete and type(tonumber(self.db.install_complete)) == 'number' and tonumber(self.db.install_complete) <= 3.05) then
-        self:Install()
-    end
-
-    self:GetModule('Minimap'):UpdateSettings()
-
-    --self:LoadKeybinds()
-
-    self:GetModule('Microbar'):UpdateMicroSettings()
-
-    collectgarbage('collect');
+    E.UpdateAllMicro(self)
+   	MB:UpdateMicroSettings()
 end
 
 --Update settings after profile change
