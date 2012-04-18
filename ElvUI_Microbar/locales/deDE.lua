@@ -19,4 +19,3 @@ L["Sets alpha of the microbar"] = "Transparenz der Microleiste einstellen"
 L["Set Scale"] = "Größe einstellen"
 L["Sets Scale of the microbar"] = "Größe der Microleiste einstellen"
 L["Show backdrop for micromenu"] = "Hintergrund der Microleiste anzeigen"
-
