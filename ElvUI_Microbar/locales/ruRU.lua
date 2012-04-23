@@ -20,3 +20,4 @@ L["Sets alpha of the microbar"] = "Устанавливает прозрачно
 L["Set Scale"] = "Масштаб"
 L["Sets Scale of the microbar"] = "Устанавливает масштаб микроменю"
 L["Show backdrop for micromenu"] = "Показывать фон микроменю"
+L["Your version of ElvUI is older than recommended to use with Microbar addon. Please, download the latest version from tukui.org."] = "Ваша версия ElvUI старее, чем рекомендуемая для использования с Микроменю. Пожалуйста, скачайте последнюю версию с tukui.org."

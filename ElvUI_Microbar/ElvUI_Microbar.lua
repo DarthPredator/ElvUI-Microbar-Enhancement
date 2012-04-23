@@ -385,8 +385,21 @@ function MB:UpdateMicroSettings()
     MB:MicroFrameSize();
 end
 
+--Too old version popup
+StaticPopupDialogs["VERSION_MISMATCH"] = {
+	text = L["Your version of ElvUI is older than recommended to use with Microbar addon. Please, download the latest version from tukui.org."],
+	button1 = CLOSE,
+	timeout = 0,
+	whileDead = 1,	
+	preferredIndex = 3,
+}
+
 --Initialization
 function MB:Initialize()
+	--Showing warning message about too old versions of ElvUI
+	if tonumber(E.version) < 3.6 then
+		StaticPopup_Show("VERSION_MISMATCH")
+	end
 	MB:SetNames()
 	AB:CreateMicroBar()
 	MB:Backdrop();
