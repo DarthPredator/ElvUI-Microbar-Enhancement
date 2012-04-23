@@ -394,12 +394,13 @@ StaticPopupDialogs["VERSION_MISMATCH"] = {
 	preferredIndex = 3,
 }
 
---Initialization
-function MB:Initialize()
-	--Showing warning message about too old versions of ElvUI
+--Showing warning message about too old versions of ElvUI
 	if tonumber(E.version) < 3.6 then
 		StaticPopup_Show("VERSION_MISMATCH")
 	end
+
+--Initialization
+function MB:Initialize()
 	MB:SetNames()
 	AB:CreateMicroBar()
 	MB:Backdrop();
