@@ -12,6 +12,8 @@ P['microbar'] = {
 	['alpha'] = 1, --Transparency
 	['scale'] = 1, --Scale
 	['layout'] = "Micro_Hor", --Button layuot format
+	['xoffset'] = 0,
+	['yoffset'] = 0,
 }
 
 --Options
@@ -27,10 +29,10 @@ E.Options.args.microbar = {
 			type = "description",
 			name = L['Module for adding micromenu to ElvUI.'],
 		},
-		general = {
+		visibility = {
 			order = 2,
 			type = "group",
-			name = L["General"],
+			name = L["Visibility"],
 			guiInline = true,
 			args = {
 				mouse = {
@@ -71,8 +73,16 @@ E.Options.args.microbar = {
 					min = 0.3, max = 2, step = 0.01,
 					set = function(info, value) E.db.microbar.scale = value; MB:Scale(); MB:MicroMoverSize(); end,
 				},
+			}
+		},
+		positioning = {
+			order = 3,
+			type = "group",
+			name = L["Positioning"],
+			guiInline = true,
+			args = {
 				layout = {
-					order = 6,
+					order = 1,
 					type = "select",
 					name = L["Microbar Layout"],
 					desc = L["Change the positioning of buttons on Microbar."],
@@ -86,8 +96,23 @@ E.Options.args.microbar = {
 						['Micro_26'] = L["6 rows"],
 					},
 				},
-
+				xoffset = {
+					order = 2,
+					type = "range",
+					name = L["X Offset"],
+					desc = L["Sets X offset for microbar buttons"],
+					min = 0, max = 10, step = 1,
+					set = function(info, value) E.db.microbar.xoffset = value; MB:MicroButtonsPositioning(); MB:MicroFrameSize(); MB:MicroMoverSize(); end,
+				},
+				yoffset = {
+					order = 3,
+					type = "range",
+					name = L["Y Offset"],
+					desc = L["Sets Y offset for microbar buttons"],
+					min = 0, max = 10, step = 1,
+					set = function(info, value) E.db.microbar.yoffset = value; MB:MicroButtonsPositioning(); MB:MicroFrameSize(); MB:MicroMoverSize(); end,
+				},
 			}
-		}
+		}	
 	}
 }
