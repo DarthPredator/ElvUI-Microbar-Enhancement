@@ -1,7 +1,7 @@
 ﻿--------------------------------------------------------
 -- Options and defaults
 --------------------------------------------------------
-local E, L, P, G = unpack(ElvUI); --Engine
+local E, L, V, P, G =  unpack(ElvUI);
 local MB = E:GetModule('Microbar', 'AceEvent-3.0');
 
 --Defaults
