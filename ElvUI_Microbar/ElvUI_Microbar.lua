@@ -76,6 +76,9 @@ function MB:SetNames()
 	--On update functions
 	microbarcontrol:SetScript("OnUpdate", function(self,event,...)
 		MB:Mouseover()
+		if IsAddOnLoaded("Carbonite") then
+			QuestLogFrame:Hide()
+		end
 	end)
 end
 
@@ -307,7 +310,6 @@ function MB:MicroButtonsPositioning()
 		MenuB:SetPoint("TOPLEFT", EJB, "TOPLEFT", 25 + E.db.microbar.xoffset,  0)
 		HelpB:SetPoint("TOPLEFT", MenuB, "TOPLEFT", 25 + E.db.microbar.xoffset,  0)
 	end
-	
 end
 
 --Setting frame size to change view of backdrop
@@ -395,10 +397,11 @@ StaticPopupDialogs["VERSION_MISMATCH"] = {
 }
 
 --Showing warning message about too old versions of ElvUI
-	if tonumber(E.version) < 3.7 then
+if tonumber(E.version) < 3.7 then
 		StaticPopup_Show("VERSION_MISMATCH")
-	end
+end
 
+	
 --Initialization
 function MB:Initialize()
 	MB:SetNames()
