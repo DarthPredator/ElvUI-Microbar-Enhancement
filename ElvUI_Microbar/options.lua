@@ -73,6 +73,13 @@ E.Options.args.microbar = {
 					min = 0.3, max = 2, step = 0.01,
 					set = function(info, value) E.db.microbar.scale = value; MB:Scale(); MB:MicroMoverSize(); end,
 				},
+				symbolic = {
+					order = 6,
+					type = 'toggle',
+					name = L["As Letters"],
+					desc = L["Replace icons with just letters.\n|cffFF0000Warning:|r this will disable original Blizzard's tooltips for microbar."],
+					set = function(info, value) E.db.microbar.symbolic = value; MB:MenuShow(); end,
+				},
 			}
 		},
 		positioning = {
