@@ -59,7 +59,8 @@ E.Options.args.actionbar.args.microbar.args.symbolic = {
 --Set Scale
 function AB:MicroScale()
 	ElvUI_MicroBar:SetScale(E.db.actionbar.microbar.scale)
-	ElvUI_MicroBar.mover:SetScale(E.db.actionbar.microbar.scale)
+	ElvUI_MicroBar.mover:SetWidth(E.db.actionbar.microbar.scale * ElvUI_MicroBar:GetWidth())
+	ElvUI_MicroBar.mover:SetHeight(E.db.actionbar.microbar.scale * ElvUI_MicroBar:GetHeight() + 1);
 	CharB:SetScale(E.db.actionbar.microbar.scale)
 	SpellB:SetScale(E.db.actionbar.microbar.scale)
 	TalentB:SetScale(E.db.actionbar.microbar.scale)
