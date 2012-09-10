@@ -23,7 +23,7 @@ local AB = E:GetModule('ActionBars');
 P.actionbar.microbar.scale = 1
 P.actionbar.microbar.symbolic = false
 
-local microbarS = CreateFrame('Frame', "MicroParentS", E.UIParent);
+local microbarS = CreateFrame("Frame", "MicroParentS", E.UIParent)
 local CharB
 local SpellB
 local TalentB
@@ -82,6 +82,40 @@ function E:UpdateAll()
 	AB:MenuShow()
 end
 
+local function Letter_OnEnter()
+	if AB.db.microbar.mouseover then
+		E:UIFrameFadeIn(CharB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
+		E:UIFrameFadeIn(SpellB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
+		E:UIFrameFadeIn(TalentB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
+		E:UIFrameFadeIn(AchievB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
+		E:UIFrameFadeIn(QuestB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
+		E:UIFrameFadeIn(GuildB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
+		E:UIFrameFadeIn(PVPB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
+		E:UIFrameFadeIn(LFDB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
+		E:UIFrameFadeIn(CompB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
+		E:UIFrameFadeIn(EJB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
+		E:UIFrameFadeIn(MenuB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
+		E:UIFrameFadeIn(HelpB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
+	end
+end
+
+local function Letter_OnLeave()
+	if AB.db.microbar.mouseover then
+		E:UIFrameFadeOut(CharB, 0.2, CharB:GetAlpha(), 0)
+		E:UIFrameFadeOut(SpellB, 0.2, CharB:GetAlpha(), 0)
+		E:UIFrameFadeOut(TalentB, 0.2, CharB:GetAlpha(), 0)
+		E:UIFrameFadeOut(AchievB, 0.2, CharB:GetAlpha(), 0)
+		E:UIFrameFadeOut(QuestB, 0.2, CharB:GetAlpha(), 0)
+		E:UIFrameFadeOut(GuildB, 0.2, CharB:GetAlpha(), 0)
+		E:UIFrameFadeOut(PVPB, 0.2, CharB:GetAlpha(), 0)
+		E:UIFrameFadeOut(LFDB, 0.2, CharB:GetAlpha(), 0)
+		E:UIFrameFadeOut(CompB, 0.2, CharB:GetAlpha(), 0)
+		E:UIFrameFadeOut(EJB, 0.2, CharB:GetAlpha(), 0)
+		E:UIFrameFadeOut(MenuB, 0.2, CharB:GetAlpha(), 0)
+		E:UIFrameFadeOut(HelpB, 0.2, CharB:GetAlpha(), 0)
+	end
+end
+
 function AB:SymbolsCreateButtons() --Creating and setting properties to second bar
 	--Character
 	CharB:Size(20, 26)
@@ -104,10 +138,12 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:SetOwner(CharB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(CHARACTER_BUTTON)
 		GameTooltip:Show()
+		Letter_OnEnter()
 	end)
 	
 	CharB:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
+		Letter_OnLeave()
 	end)
 	
 	--Spellbook
@@ -131,10 +167,12 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:SetOwner(SpellB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(SPELLBOOK_ABILITIES_BUTTON)
 		GameTooltip:Show()
+		Letter_OnEnter()
 	end)
 	
 	SpellB:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
+		Letter_OnLeave()
 	end)
 	
 	--Talents
@@ -166,10 +204,12 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:SetOwner(TalentB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(TALENTS_BUTTON)
 		GameTooltip:Show()
+		Letter_OnEnter()
 	end)
 	
 	TalentB:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
+		Letter_OnLeave()
 	end)
 	
 	--Achievements
@@ -189,10 +229,12 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:SetOwner(AchievB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(ACHIEVEMENT_BUTTON)
 		GameTooltip:Show()
+		Letter_OnEnter()
 	end)
 	
 	AchievB:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
+		Letter_OnLeave()
 	end)
 	
 	--Quests
@@ -216,10 +258,12 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:SetOwner(QuestB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(QUESTLOG_BUTTON)
 		GameTooltip:Show()
+		Letter_OnEnter()
 	end)
 	
 	QuestB:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
+		Letter_OnLeave()
 	end)
 	
 	--Guild
@@ -249,10 +293,12 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:SetOwner(GuildB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(GUILD)
 		GameTooltip:Show()
+		Letter_OnEnter()
 	end)
 	
 	GuildB:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
+		Letter_OnLeave()
 	end)
 	
 	--PvP
@@ -278,10 +324,12 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:SetOwner(PVPB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(PVP_OPTIONS)
 		GameTooltip:Show()
+		Letter_OnEnter()
 	end)
 	
 	PVPB:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
+		Letter_OnLeave()
 	end)
 	
 	--LFD
@@ -301,10 +349,12 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:SetOwner(LFDB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(DUNGEONS_BUTTON)
 		GameTooltip:Show()
+		Letter_OnEnter()
 	end)
 	
 	LFDB:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
+		Letter_OnLeave()
 	end)
 	
 	--Mounts and pets
@@ -324,10 +374,12 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:SetOwner(CompB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(MOUNTS_AND_PETS)
 		GameTooltip:Show()
+		Letter_OnEnter()
 	end)
 	
 	CompB:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
+		Letter_OnLeave()
 	end)
 	
 	--Journal
@@ -357,10 +409,12 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:SetOwner(EJB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(ENCOUNTER_JOURNAL)
 		GameTooltip:Show()
+		Letter_OnEnter()
 	end)
 	
 	EJB:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
+		Letter_OnLeave()
 	end)
 	
 	--Menu
@@ -384,10 +438,12 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:SetOwner(MenuB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(MAINMENU_BUTTON)
 		GameTooltip:Show()
+		Letter_OnEnter()
 	end)
 	
 	MenuB:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
+		Letter_OnLeave()
 	end)
 	
 	--Help
@@ -407,10 +463,12 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:SetOwner(HelpB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(HELP_BUTTON)
 		GameTooltip:Show()
+		Letter_OnEnter()
 	end)
 	
 	HelpB:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
+		Letter_OnLeave()
 	end)
 end
 
@@ -430,6 +488,7 @@ function AB:MicroButtonsPositioning()
 	HelpB:SetPoint("CENTER", HelpMicroButton, "CENTER", 0, mYoffset)
 end
 
+
 --Setting loacle shortnames and on update script for mouseover/alpha (can't get rid of using it at the moment)
 function AB:SetNames()
 	CharB = CharacterMicroButton
@@ -445,6 +504,8 @@ function AB:SetNames()
 	MenuB = MainMenuMicroButton
 	HelpB = HelpMicroButton
 	
+	
+	
 	CharB = CreateFrame("Button", "CharacterB", microbarS)
 	SpellB = CreateFrame("Button", "SpellbookB", microbarS)
 	TalentB = CreateFrame("Button", "TalentsB", microbarS)
@@ -457,7 +518,7 @@ function AB:SetNames()
 	EJB = CreateFrame("Button", "JournalB", microbarS)
 	MenuB = CreateFrame("Button", "MenuSysB", microbarS)
 	HelpB = CreateFrame("Button", "TicketB", microbarS)
-	
+
 	AB:UpdateMicroPositionDimensions()
 end
 
@@ -482,6 +543,35 @@ function AB:UpdateMicroPositionDimensions()
 	if not CharB then return end
 	AB:LetterAlpha()
 	AB:MenuShow()
+	microbarS:SetWidth(ElvUI_MicroBar:GetWidth())
+	microbarS:SetHeight(ElvUI_MicroBar:GetHeight())
+	if AB.db.microbar.mouseover then
+		CharB:SetAlpha(0)
+		SpellB:SetAlpha(0)
+		TalentB:SetAlpha(0)
+		AchievB:SetAlpha(0)
+		QuestB:SetAlpha(0)
+		GuildB:SetAlpha(0)
+		PVPB:SetAlpha(0)
+		LFDB:SetAlpha(0)
+		CompB:SetAlpha(0)
+		EJB:SetAlpha(0)
+		MenuB:SetAlpha(0)
+		HelpB:SetAlpha(0)
+	else
+		CharB:SetAlpha(E.db.actionbar.microbar.alpha)
+		SpellB:SetAlpha(E.db.actionbar.microbar.alpha)
+		TalentB:SetAlpha(E.db.actionbar.microbar.alpha)
+		AchievB:SetAlpha(E.db.actionbar.microbar.alpha)
+		QuestB:SetAlpha(E.db.actionbar.microbar.alpha)
+		GuildB:SetAlpha(E.db.actionbar.microbar.alpha)
+		PVPB:SetAlpha(E.db.actionbar.microbar.alpha)
+		LFDB:SetAlpha(E.db.actionbar.microbar.alpha)
+		CompB:SetAlpha(E.db.actionbar.microbar.alpha)
+		EJB:SetAlpha(E.db.actionbar.microbar.alpha)
+		MenuB:SetAlpha(E.db.actionbar.microbar.alpha)
+		HelpB:SetAlpha(E.db.actionbar.microbar.alpha)
+	end
 end
 
 function AB:MenuShow()
