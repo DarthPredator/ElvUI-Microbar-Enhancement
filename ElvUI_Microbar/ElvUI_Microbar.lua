@@ -25,7 +25,7 @@ P.actionbar.microbar.symbolic = false
 
 local microbarS = CreateFrame("Frame", "MicroParentS", E.UIParent)
 local CharB, SpellB, TalentB, AchievB, QuestB, GuildB, PVPB, LFDB, CompB, EJB, MenuB, HelpB
-local bw, bh = 20, 26
+local bw, bh = E.PixelMode and 22 or 20, E.PixelMode and 28 or 26
 
 --Options
 local function configTable()
@@ -85,35 +85,13 @@ end
 
 local function Letter_OnEnter()
 	if AB.db.microbar.mouseover then
-		E:UIFrameFadeIn(CharB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
-		E:UIFrameFadeIn(SpellB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
-		E:UIFrameFadeIn(TalentB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
-		E:UIFrameFadeIn(AchievB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
-		E:UIFrameFadeIn(QuestB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
-		E:UIFrameFadeIn(GuildB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
-		E:UIFrameFadeIn(PVPB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
-		E:UIFrameFadeIn(LFDB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
-		E:UIFrameFadeIn(CompB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
-		E:UIFrameFadeIn(EJB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
-		E:UIFrameFadeIn(MenuB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
-		E:UIFrameFadeIn(HelpB, 0.2, CharB:GetAlpha(), AB.db.microbar.alpha)
+		E:UIFrameFadeIn(microbarS, 0.2, microbarS:GetAlpha(), AB.db.microbar.alpha)
 	end
 end
 
 local function Letter_OnLeave()
 	if AB.db.microbar.mouseover then
-		E:UIFrameFadeOut(CharB, 0.2, CharB:GetAlpha(), 0)
-		E:UIFrameFadeOut(SpellB, 0.2, CharB:GetAlpha(), 0)
-		E:UIFrameFadeOut(TalentB, 0.2, CharB:GetAlpha(), 0)
-		E:UIFrameFadeOut(AchievB, 0.2, CharB:GetAlpha(), 0)
-		E:UIFrameFadeOut(QuestB, 0.2, CharB:GetAlpha(), 0)
-		E:UIFrameFadeOut(GuildB, 0.2, CharB:GetAlpha(), 0)
-		E:UIFrameFadeOut(PVPB, 0.2, CharB:GetAlpha(), 0)
-		E:UIFrameFadeOut(LFDB, 0.2, CharB:GetAlpha(), 0)
-		E:UIFrameFadeOut(CompB, 0.2, CharB:GetAlpha(), 0)
-		E:UIFrameFadeOut(EJB, 0.2, CharB:GetAlpha(), 0)
-		E:UIFrameFadeOut(MenuB, 0.2, CharB:GetAlpha(), 0)
-		E:UIFrameFadeOut(HelpB, 0.2, CharB:GetAlpha(), 0)
+		E:UIFrameFadeOut(microbarS, 0.2, microbarS:GetAlpha(), 0)
 	end
 end
 
@@ -135,7 +113,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		end
 	end)
 	
-	CharB:SetScript("OnEnter", function(self)
+	CharB:HookScript('OnEnter', function(self)
 		GameTooltip:SetOwner(CharB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(CHARACTER_BUTTON)
 		GameTooltip:Show()
@@ -164,7 +142,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		end
 	end)
 	
-	SpellB:SetScript("OnEnter", function(self)
+	SpellB:HookScript('OnEnter', function(self)
 		GameTooltip:SetOwner(SpellB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(SPELLBOOK_ABILITIES_BUTTON)
 		GameTooltip:Show()
@@ -201,7 +179,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		end
 	end)
 	
-	TalentB:SetScript("OnEnter", function(self)
+	TalentB:HookScript('OnEnter', function(self)
 		GameTooltip:SetOwner(TalentB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(TALENTS_BUTTON)
 		GameTooltip:Show()
@@ -226,7 +204,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		ToggleAchievementFrame()
 	end)
 	
-	AchievB:SetScript("OnEnter", function(self)
+	AchievB:HookScript('OnEnter', function(self)
 		GameTooltip:SetOwner(AchievB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(ACHIEVEMENT_BUTTON)
 		GameTooltip:Show()
@@ -255,7 +233,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		end
 	end)
 	
-	QuestB:SetScript("OnEnter", function(self)
+	QuestB:HookScript('OnEnter', function(self)
 		GameTooltip:SetOwner(QuestB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(QUESTLOG_BUTTON)
 		GameTooltip:Show()
@@ -290,7 +268,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		end
 	end)
 	
-	GuildB:SetScript("OnEnter", function(self)
+	GuildB:HookScript('OnEnter', function(self)
 		GameTooltip:SetOwner(GuildB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(GUILD)
 		GameTooltip:Show()
@@ -321,7 +299,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		end
 	end)
 	
-	PVPB:SetScript("OnEnter", function(self)
+	PVPB:HookScript('OnEnter', function(self)
 		GameTooltip:SetOwner(PVPB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(PVP_OPTIONS)
 		GameTooltip:Show()
@@ -346,7 +324,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		ToggleLFDParentFrame()
 	end)
 	
-	LFDB:SetScript("OnEnter", function(self)
+	LFDB:HookScript('OnEnter', function(self)
 		GameTooltip:SetOwner(LFDB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(DUNGEONS_BUTTON)
 		GameTooltip:Show()
@@ -371,7 +349,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		TogglePetJournal()
 	end)
 	
-	CompB:SetScript("OnEnter", function(self)
+	CompB:HookScript('OnEnter', function(self)
 		GameTooltip:SetOwner(CompB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(MOUNTS_AND_PETS)
 		GameTooltip:Show()
@@ -406,7 +384,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		end
 	end)
 	
-	EJB:SetScript("OnEnter", function(self)
+	EJB:HookScript('OnEnter', function(self)
 		GameTooltip:SetOwner(EJB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(ENCOUNTER_JOURNAL)
 		GameTooltip:Show()
@@ -435,7 +413,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 			end
 	end)
 	
-	MenuB:SetScript("OnEnter", function(self)
+	MenuB:HookScript('OnEnter', function(self)
 		GameTooltip:SetOwner(MenuB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(MAINMENU_BUTTON)
 		GameTooltip:Show()
@@ -460,7 +438,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		ToggleHelpFrame()
 	end)
 	
-	HelpB:SetScript("OnEnter", function(self)
+	HelpB:HookScript('OnEnter', function(self)
 		GameTooltip:SetOwner(HelpB, "ANCHOR_RIGHT", 0, 29)
 		GameTooltip:SetText(HELP_BUTTON)
 		GameTooltip:Show()
@@ -505,8 +483,6 @@ function AB:SetNames()
 	MenuB = MainMenuMicroButton
 	HelpB = HelpMicroButton
 	
-	
-	
 	CharB = CreateFrame("Button", "CharacterB", microbarS)
 	SpellB = CreateFrame("Button", "SpellbookB", microbarS)
 	TalentB = CreateFrame("Button", "TalentsB", microbarS)
@@ -519,6 +495,10 @@ function AB:SetNames()
 	EJB = CreateFrame("Button", "JournalB", microbarS)
 	MenuB = CreateFrame("Button", "MenuSysB", microbarS)
 	HelpB = CreateFrame("Button", "TicketB", microbarS)
+	
+	microbarS:SetPoint("CENTER", ElvUI_MicroBar, 0, 0)
+	microbarS:SetScript('OnEnter', Letter_OnEnter)
+	microbarS:SetScript('OnLeave', Letter_OnLeave)
 
 	AB:UpdateMicroPositionDimensions()
 end
@@ -547,31 +527,9 @@ function AB:UpdateMicroPositionDimensions()
 	microbarS:SetWidth(ElvUI_MicroBar:GetWidth())
 	microbarS:SetHeight(ElvUI_MicroBar:GetHeight())
 	if AB.db.microbar.mouseover then
-		CharB:SetAlpha(0)
-		SpellB:SetAlpha(0)
-		TalentB:SetAlpha(0)
-		AchievB:SetAlpha(0)
-		QuestB:SetAlpha(0)
-		GuildB:SetAlpha(0)
-		PVPB:SetAlpha(0)
-		LFDB:SetAlpha(0)
-		CompB:SetAlpha(0)
-		EJB:SetAlpha(0)
-		MenuB:SetAlpha(0)
-		HelpB:SetAlpha(0)
-	else
-		CharB:SetAlpha(E.db.actionbar.microbar.alpha)
-		SpellB:SetAlpha(E.db.actionbar.microbar.alpha)
-		TalentB:SetAlpha(E.db.actionbar.microbar.alpha)
-		AchievB:SetAlpha(E.db.actionbar.microbar.alpha)
-		QuestB:SetAlpha(E.db.actionbar.microbar.alpha)
-		GuildB:SetAlpha(E.db.actionbar.microbar.alpha)
-		PVPB:SetAlpha(E.db.actionbar.microbar.alpha)
-		LFDB:SetAlpha(E.db.actionbar.microbar.alpha)
-		CompB:SetAlpha(E.db.actionbar.microbar.alpha)
-		EJB:SetAlpha(E.db.actionbar.microbar.alpha)
-		MenuB:SetAlpha(E.db.actionbar.microbar.alpha)
-		HelpB:SetAlpha(E.db.actionbar.microbar.alpha)
+		E:UIFrameFadeOut(microbarS, 0.2, microbarS:GetAlpha(), 0)
+	elseif not AB.db.microbar.mouseover and  AB.db.microbar.symbolic then
+		E:UIFrameFadeIn(microbarS, 0.2, microbarS:GetAlpha(), AB.db.microbar.alpha)
 	end
 end
 
@@ -580,6 +538,9 @@ function AB:MenuShow()
 		if E.db.actionbar.microbar.enabled then
 			ElvUI_MicroBar:Hide()
 			microbarS:Show()
+			if not AB.db.microbar.mouseover then
+				E:UIFrameFadeIn(microbarS, 0.2, microbarS:GetAlpha(), AB.db.microbar.alpha)
+			end
 		else
 			microbarS:Hide()
 		end
