@@ -38,6 +38,7 @@ local MenuB
 local HelpB
 
 --Options
+local function configTable()
 E.Options.args.actionbar.args.microbar.args.scale = {
 	order = 5,
 	type = "range",
@@ -55,6 +56,16 @@ E.Options.args.actionbar.args.microbar.args.symbolic = {
 	disabled = function() return not E.db.actionbar.microbar.enabled end,
 	set = function(info, value) E.db.actionbar.microbar.symbolic = value; AB:MenuShow(); end,
 }
+end
+
+local ConfFrame = CreateFrame('Frame')
+ConfFrame:RegisterEvent('ADDON_LOADED')
+ConfFrame:SetScript('OnEvent',function(self, event, addon)
+    if event == 'ADDON_LOADED' and addon == 'ElvUI_Config' then
+        configTable()
+        ConfFrame:UnregisterEvent('ADDON_LOADED')
+    end
+end)
 
 --Set Scale
 function AB:MicroScale()
