@@ -470,19 +470,6 @@ end
 
 --Setting loacle shortnames and on update script for mouseover/alpha (can't get rid of using it at the moment)
 function AB:SetNames()
-	CharB = CharacterMicroButton
-	SpellB = SpellbookMicroButton
-	TalentB = TalentMicroButton
-	AchievB = AchievementMicroButton
-	QuestB = QuestLogMicroButton
-	GuildB = GuildMicroButton
-	PVPB = PVPMicroButton
-	LFDB = LFDMicroButton
-	RaidB = RaidMicroButton
-	EJB = EJMicroButton
-	MenuB = MainMenuMicroButton
-	HelpB = HelpMicroButton
-	
 	CharB = CreateFrame("Button", "CharacterB", microbarS)
 	SpellB = CreateFrame("Button", "SpellbookB", microbarS)
 	TalentB = CreateFrame("Button", "TalentsB", microbarS)
@@ -504,18 +491,7 @@ function AB:SetNames()
 end
 
 function AB:LetterAlpha()
-	CharB:SetAlpha(E.db.actionbar.microbar.alpha)
-	SpellB:SetAlpha(E.db.actionbar.microbar.alpha)
-	TalentB:SetAlpha(E.db.actionbar.microbar.alpha)
-	AchievB:SetAlpha(E.db.actionbar.microbar.alpha)
-	QuestB:SetAlpha(E.db.actionbar.microbar.alpha)
-	GuildB:SetAlpha(E.db.actionbar.microbar.alpha)
-	PVPB:SetAlpha(E.db.actionbar.microbar.alpha)
-	LFDB:SetAlpha(E.db.actionbar.microbar.alpha)
-	CompB:SetAlpha(E.db.actionbar.microbar.alpha)
-	EJB:SetAlpha(E.db.actionbar.microbar.alpha)
-	MenuB:SetAlpha(E.db.actionbar.microbar.alpha)
-	HelpB:SetAlpha(E.db.actionbar.microbar.alpha)
+	microbarS:SetAlpha(AB.db.microbar.alpha)
 end
 
 AB.UpdateMicroPositionDimensionsMB = AB.UpdateMicroPositionDimensions
@@ -531,6 +507,7 @@ function AB:UpdateMicroPositionDimensions()
 	elseif not AB.db.microbar.mouseover and  AB.db.microbar.symbolic then
 		E:UIFrameFadeIn(microbarS, 0.2, microbarS:GetAlpha(), AB.db.microbar.alpha)
 	end
+	AB:MicroButtonsPositioning()
 end
 
 function AB:MenuShow()
