@@ -24,18 +24,8 @@ P.actionbar.microbar.scale = 1
 P.actionbar.microbar.symbolic = false
 
 local microbarS = CreateFrame("Frame", "MicroParentS", E.UIParent)
-local CharB
-local SpellB
-local TalentB
-local AchievB
-local QuestB
-local GuildB
-local PVPB
-local LFDB
-local CompB
-local EJB
-local MenuB
-local HelpB
+local CharB, SpellB, TalentB, AchievB, QuestB, GuildB, PVPB, LFDB, CompB, EJB, MenuB, HelpB
+local bw, bh = 20, 26
 
 --Options
 local function configTable()
@@ -129,7 +119,7 @@ end
 
 function AB:SymbolsCreateButtons() --Creating and setting properties to second bar
 	--Character
-	CharB:Size(20, 26)
+	CharB:Size(bw, bh)
 	CharB:CreateBackdrop()
 	
 	local CharB_text = CharB:CreateFontString(nil, 'OVERLAY')
@@ -158,7 +148,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 	end)
 	
 	--Spellbook
-	SpellB:Size(20, 26)
+	SpellB:Size(bw, bh)
 	SpellB:CreateBackdrop()
 	
 	local SpellB_text = SpellB:CreateFontString(nil, 'OVERLAY')
@@ -187,7 +177,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 	end)
 	
 	--Talents
-	TalentB:Size(20, 26)
+	TalentB:Size(bw, bh)
 	TalentB:CreateBackdrop()
 	
 	local TalentB_text = TalentB:CreateFontString(nil, 'OVERLAY')
@@ -224,7 +214,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 	end)
 	
 	--Achievements
-	AchievB:Size(20, 26)
+	AchievB:Size(bw, bh)
 	AchievB:CreateBackdrop()
 	
 	local AchievB_text = AchievB:CreateFontString(nil, 'OVERLAY')
@@ -249,7 +239,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 	end)
 	
 	--Quests
-	QuestB:Size(20, 26)
+	QuestB:Size(bw, bh)
 	QuestB:CreateBackdrop()
 	
 	local QuestB_text = QuestB:CreateFontString(nil, 'OVERLAY')
@@ -278,7 +268,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 	end)
 	
 	--Guild
-	GuildB:Size(20, 26)
+	GuildB:Size(bw, bh)
 	GuildB:CreateBackdrop()
 	
 	local GuildB_text = GuildB:CreateFontString(nil, 'OVERLAY')
@@ -313,7 +303,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 	end)
 	
 	--PvP
-	PVPB:Size(20, 26)
+	PVPB:Size(bw, bh)
 	PVPB:CreateBackdrop()
 	
 	local PVPB_text = PVPB:CreateFontString(nil, 'OVERLAY')
@@ -344,7 +334,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 	end)
 	
 	--LFD
-	LFDB:Size(20, 26)
+	LFDB:Size(bw, bh)
 	LFDB:CreateBackdrop()
 	
 	local LFDB_text = LFDB:CreateFontString(nil, 'OVERLAY')
@@ -369,7 +359,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 	end)
 	
 	--Mounts and pets
-	CompB:Size(20, 26)
+	CompB:Size(bw, bh)
 	CompB:CreateBackdrop()
 	
 	local CompB_text = CompB:CreateFontString(nil, 'OVERLAY')
@@ -394,7 +384,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 	end)
 	
 	--Journal
-	EJB:Size(20, 26)
+	EJB:Size(bw, bh)
 	EJB:CreateBackdrop()
 	
 	local EJB_text = EJB:CreateFontString(nil, 'OVERLAY')
@@ -429,7 +419,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 	end)
 	
 	--Menu
-	MenuB:Size(20, 26)
+	MenuB:Size(bw, bh)
 	MenuB:CreateBackdrop()
 	
 	local MenuB_text = MenuB:CreateFontString(nil, 'OVERLAY')
@@ -458,7 +448,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 	end)
 	
 	--Help
-	HelpB:Size(20, 26)
+	HelpB:Size(bw, bh)
 	HelpB:CreateBackdrop()
 	
 	local HelpB_text = HelpB:CreateFontString(nil, 'OVERLAY')
@@ -589,48 +579,15 @@ function AB:MenuShow()
 	if E.db.actionbar.microbar.symbolic then
 		if E.db.actionbar.microbar.enabled then
 			ElvUI_MicroBar:Hide()
-			CharB:Show()
-			SpellB:Show()
-			TalentB:Show()
-			AchievB:Show()
-			QuestB:Show()
-			GuildB:Show()
-			PVPB:Show()
-			LFDB:Show()
-			CompB:Show()
-			EJB:Show()
-			MenuB:Show()
-			HelpB:Show()
+			microbarS:Show()
 		else
-			CharB:Hide()
-			SpellB:Hide()
-			TalentB:Hide()
-			AchievB:Hide()
-			QuestB:Hide()
-			GuildB:Hide()
-			PVPB:Hide()
-			LFDB:Hide()
-			CompB:Hide()
-			EJB:Hide()
-			MenuB:Hide()
-			HelpB:Hide()
+			microbarS:Hide()
 		end
 	else
 		if E.db.actionbar.microbar.enabled then
 			ElvUI_MicroBar:Show()
 		end
-		CharB:Hide()
-		SpellB:Hide()
-		TalentB:Hide()
-		AchievB:Hide()
-		QuestB:Hide()
-		GuildB:Hide()
-		PVPB:Hide()
-		LFDB:Hide()
-		CompB:Hide()
-		EJB:Hide()
-		MenuB:Hide()
-		HelpB:Hide()
+		microbarS:Hide()
 	end
 end
 
