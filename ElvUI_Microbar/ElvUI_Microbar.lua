@@ -23,9 +23,11 @@ local AB = E:GetModule('ActionBars');
 P.actionbar.microbar.scale = 1
 P.actionbar.microbar.symbolic = false
 
-local microbarS = CreateFrame("Frame", "MicroParentS", E.UIParent)
+local microbarS
 local CharB, SpellB, TalentB, AchievB, QuestB, GuildB, PVPB, LFDB, CompB, EJB, MenuB, HelpB
 local bw, bh = E.PixelMode and 22 or 20, E.PixelMode and 28 or 26
+
+local Sbuttons = {}
 
 --Options
 local function configTable()
@@ -86,8 +88,8 @@ end
 
 function AB:SymbolsCreateButtons() --Creating and setting properties to second bar
 	--Character
-	CharB:Size(bw, bh)
-	CharB:CreateBackdrop()
+	--CharB:Size(bw, bh)
+	--CharB:CreateBackdrop()
 	
 	local CharB_text = CharB:CreateFontString(nil, 'OVERLAY')
 	CharB_text:SetFont(E["media"].normFont, 10)
@@ -440,25 +442,27 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 	end)
 end
 
-local mYoffset = -13
-function AB:MicroButtonsPositioning()
-	CharB:SetPoint("CENTER", CharacterMicroButton, "CENTER", 0, mYoffset)
-	SpellB:SetPoint("CENTER", SpellbookMicroButton, "CENTER", 0, mYoffset)
-	TalentB:SetPoint("CENTER", TalentMicroButton, "CENTER", 0, mYoffset)
-	AchievB:SetPoint("CENTER", AchievementMicroButton, "CENTER", 0, mYoffset)
-	QuestB:SetPoint("CENTER", QuestLogMicroButton, "CENTER", 0, mYoffset)
-	GuildB:SetPoint("CENTER", GuildMicroButton, "CENTER", 0, mYoffset)
-	PVPB:SetPoint("CENTER", PVPMicroButton, "CENTER", 0, mYoffset)
-	LFDB:SetPoint("CENTER", LFDMicroButton, "CENTER", 0, mYoffset)
-	CompB:SetPoint("CENTER", CompanionsMicroButton, "CENTER", 0, mYoffset)
-	EJB:SetPoint("CENTER", EJMicroButton, "CENTER", 0, mYoffset)
-	MenuB:SetPoint("CENTER", MainMenuMicroButton, "CENTER", 0, mYoffset)
-	HelpB:SetPoint("CENTER", HelpMicroButton, "CENTER", 0, mYoffset)
-end
+function AB:HandleSymbolbuttons(button)
+	assert(button, 'Invalid micro button name.')
 
+	button:SetParent(microbarS)
+	button:CreateBackdrop()
+	button:HookScript('OnEnter', Letter_OnEnter)
+	button:HookScript('OnLeave', Letter_OnLeave)
+	
+	local f = CreateFrame("Frame", nil, button)
+	f:SetFrameLevel(1)
+	f:SetFrameStrata("BACKGROUND")
+	f:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", 2, 0)
+	f:SetPoint("TOPRIGHT", button, "TOPRIGHT", -2, -28)
+	f:SetTemplate("Default", true)
+	button.backdrop = f
+end
 
 --Setting loacle shortnames and on update script for mouseover/alpha (can't get rid of using it at the moment)
 function AB:SetNames()
+	microbarS = CreateFrame("Frame", "MicroParentS", E.UIParent)
+
 	CharB = CreateFrame("Button", "CharacterB", microbarS)
 	SpellB = CreateFrame("Button", "SpellbookB", microbarS)
 	TalentB = CreateFrame("Button", "TalentsB", microbarS)
@@ -472,10 +476,29 @@ function AB:SetNames()
 	MenuB = CreateFrame("Button", "MenuSysB", microbarS)
 	HelpB = CreateFrame("Button", "TicketB", microbarS)
 	
+	Sbuttons = {
+		CharB,
+		SpellB,
+		TalentB,
+		AchievB,
+		QuestB,
+		GuildB,
+		PVPB,
+		LFDB,
+		CompB,
+		EJB,
+		MenuB,
+		HelpB
+	}
+	
 	microbarS:SetPoint("CENTER", ElvUI_MicroBar, 0, 0)
 	microbarS:SetScript('OnEnter', Letter_OnEnter)
 	microbarS:SetScript('OnLeave', Letter_OnLeave)
-
+	print("before for cycle")
+	for i=1, 12 do
+		self:HandleSymbolbuttons(Sbuttons[i])
+	end
+	print("after for cycle")
 	AB:UpdateMicroPositionDimensions()
 end
 
@@ -485,14 +508,32 @@ function AB:UpdateMicroPositionDimensions()
 	if not CharB then return end
 	microbarS:SetAlpha(AB.db.microbar.alpha)
 	AB:MenuShow()
+	local numRows = 1
+	for i=1, #Sbuttons do
+		local button = Sbuttons[i]
+		local prevButton = Sbuttons[i-1] or microbarS
+		local lastColumnButton = Sbuttons[i-AB.db.microbar.buttonsPerRow];
+		
+		button:Width(bw)
+		button:Height(bh)
+		button:ClearAllPoints();
+
+		if prevButton == microbarS then
+			button:SetPoint("TOPLEFT", prevButton, "TOPLEFT", E.PixelMode and 1 or 2, E.PixelMode and -1 or -2)
+		elseif (i - 1) % AB.db.microbar.buttonsPerRow == 0 then
+			button:Point('TOP', lastColumnButton, 'BOTTOM', 0, E.PixelMode and -3 or -5);	
+			numRows = numRows + 1
+		else
+			button:Point('LEFT', prevButton, 'RIGHT', E.PixelMode and 3 or 5, 0);
+		end
+	end
 	microbarS:SetWidth(ElvUI_MicroBar:GetWidth())
 	microbarS:SetHeight(ElvUI_MicroBar:GetHeight())
 	if AB.db.microbar.mouseover then
-		E:UIFrameFadeOut(microbarS, 0.2, microbarS:GetAlpha(), 0)
+		microbarS:SetAlpha(0)
 	elseif not AB.db.microbar.mouseover and  AB.db.microbar.symbolic then
-		E:UIFrameFadeIn(microbarS, 0.2, microbarS:GetAlpha(), AB.db.microbar.alpha)
+		microbarS:SetAlpha(AB.db.microbar.alpha)
 	end
-	AB:MicroButtonsPositioning()
 end
 
 function AB:MenuShow()
@@ -519,7 +560,7 @@ function AB:Initialize()
 	AB.InitializeMB(self)
 	AB:SetNames()
 	AB:SymbolsCreateButtons()
-	AB:MicroButtonsPositioning()
+	--AB:MicroButtonsPositioning()
 	AB:MicroScale()
 	AB:MenuShow()
 end
