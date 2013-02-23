@@ -23,10 +23,22 @@ local AB = E:GetModule('ActionBars');
 P.actionbar.microbar.scale = 1
 P.actionbar.microbar.symbolic = false
 
-local microbarS
-local CharB, SpellB, TalentB, AchievB, QuestB, GuildB, PVPB, LFDB, CompB, EJB, MenuB, HelpB
+local microbarS, CharB, SpellB, TalentB, AchievB, QuestB, GuildB, PVPB, LFDB, CompB, EJB, MenuB, HelpB
 local bw, bh = E.PixelMode and 22 or 20, E.PixelMode and 28 or 26
-
+local Sletters = {
+	CharacterB = "C",
+	SpellbookB = "S",
+	TalentsB = "T",
+	AchievementB = "A",
+	QuestB = "Q",
+	GuildB = "G",
+	PVPB = "P",
+	LFDB = "L",
+	CompanionB = "MP",
+	JournalB = "J",
+	MenuSysB = "M",
+	TicketB = "?"
+}
 local Sbuttons = {}
 
 --Options
@@ -87,15 +99,6 @@ local function Letter_OnLeave()
 end
 
 function AB:SymbolsCreateButtons() --Creating and setting properties to second bar
-	--Character
-	--CharB:Size(bw, bh)
-	--CharB:CreateBackdrop()
-	
-	local CharB_text = CharB:CreateFontString(nil, 'OVERLAY')
-	CharB_text:SetFont(E["media"].normFont, 10)
-	CharB_text:SetText("C")
-	CharB_text:SetPoint("CENTER", CharB, "CENTER")
-	
 	CharB:SetScript("OnClick", function(self)
 		if CharacterFrame:IsShown() then
 			HideUIPanel(CharacterFrame)
@@ -115,16 +118,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-	
-	--Spellbook
-	SpellB:Size(bw, bh)
-	SpellB:CreateBackdrop()
-	
-	local SpellB_text = SpellB:CreateFontString(nil, 'OVERLAY')
-	SpellB_text:SetFont(E["media"].normFont, 10)
-	SpellB_text:SetText("S")
-	SpellB_text:SetPoint("CENTER", SpellB, "CENTER")
-	
+
 	SpellB:SetScript("OnClick", function(self)
 		if SpellBookFrame:IsShown() then
 			HideUIPanel(SpellBookFrame)
@@ -144,16 +138,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-	
-	--Talents
-	TalentB:Size(bw, bh)
-	TalentB:CreateBackdrop()
-	
-	local TalentB_text = TalentB:CreateFontString(nil, 'OVERLAY')
-	TalentB_text:SetFont(E["media"].normFont, 10)
-	TalentB_text:SetText("T")
-	TalentB_text:SetPoint("CENTER", TalentB, "CENTER")
-	
+
 	TalentB:SetScript("OnClick", function(self)
 		if UnitLevel("player") >= 10 then
 			if PlayerTalentFrame then
@@ -181,16 +166,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-	
-	--Achievements
-	AchievB:Size(bw, bh)
-	AchievB:CreateBackdrop()
-	
-	local AchievB_text = AchievB:CreateFontString(nil, 'OVERLAY')
-	AchievB_text:SetFont(E["media"].normFont, 10)
-	AchievB_text:SetText("A")
-	AchievB_text:SetPoint("CENTER", AchievB, "CENTER")
-	
+
 	AchievB:SetScript("OnClick", function(self)
 		ToggleAchievementFrame()
 	end)
@@ -206,16 +182,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-	
-	--Quests
-	QuestB:Size(bw, bh)
-	QuestB:CreateBackdrop()
-	
-	local QuestB_text = QuestB:CreateFontString(nil, 'OVERLAY')
-	QuestB_text:SetFont(E["media"].normFont, 10)
-	QuestB_text:SetText("Q")
-	QuestB_text:SetPoint("CENTER", QuestB, "CENTER")
-	
+
 	QuestB:SetScript("OnClick", function(self)
 		if QuestLogFrame:IsShown() then
 			HideUIPanel(QuestLogFrame)
@@ -235,16 +202,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-	
-	--Guild
-	GuildB:Size(bw, bh)
-	GuildB:CreateBackdrop()
-	
-	local GuildB_text = GuildB:CreateFontString(nil, 'OVERLAY')
-	GuildB_text:SetFont(E["media"].normFont, 10)
-	GuildB_text:SetText("G")
-	GuildB_text:SetPoint("CENTER", GuildB, "CENTER")
-	
+
 	GuildB:SetScript("OnClick", function(self)
 		if GuildFrame then
 			if GuildFrame:IsShown() or (LookingForGuildFrame and LookingForGuildFrame:IsShown()) then
@@ -270,16 +228,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-	
-	--PvP
-	PVPB:Size(bw, bh)
-	PVPB:CreateBackdrop()
-	
-	local PVPB_text = PVPB:CreateFontString(nil, 'OVERLAY')
-	PVPB_text:SetFont(E["media"].normFont, 10)
-	PVPB_text:SetText("P")
-	PVPB_text:SetPoint("CENTER", PVPB, "CENTER")
-	
+
 	PVPB:SetScript("OnClick", function(self)
 		if UnitLevel("player") >= 10 then
 			if PVPFrame:IsShown() then
@@ -301,16 +250,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-	
-	--LFD
-	LFDB:Size(bw, bh)
-	LFDB:CreateBackdrop()
-	
-	local LFDB_text = LFDB:CreateFontString(nil, 'OVERLAY')
-	LFDB_text:SetFont(E["media"].normFont, 10)
-	LFDB_text:SetText("D")
-	LFDB_text:SetPoint("CENTER", LFDB, "CENTER")
-	
+
 	LFDB:SetScript("OnClick", function(self)
 		ToggleLFDParentFrame()
 	end)
@@ -326,16 +266,7 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-	
-	--Mounts and pets
-	CompB:Size(bw, bh)
-	CompB:CreateBackdrop()
-	
-	local CompB_text = CompB:CreateFontString(nil, 'OVERLAY')
-	CompB_text:SetFont(E["media"].normFont, 10)
-	CompB_text:SetText("MP")
-	CompB_text:SetPoint("CENTER", CompB, "CENTER")
-	
+
 	CompB:SetScript("OnClick", function(self)
 		TogglePetJournal()
 	end)
@@ -351,15 +282,6 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-	
-	--Journal
-	EJB:Size(bw, bh)
-	EJB:CreateBackdrop()
-	
-	local EJB_text = EJB:CreateFontString(nil, 'OVERLAY')
-	EJB_text:SetFont(E["media"].normFont, 10)
-	EJB_text:SetText("J")
-	EJB_text:SetPoint("CENTER", EJB, "CENTER")
 	
 	EJB:SetScript("OnClick", function(self)
 		if EncounterJournal then
@@ -387,15 +309,6 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		Letter_OnLeave()
 	end)
 	
-	--Menu
-	MenuB:Size(bw, bh)
-	MenuB:CreateBackdrop()
-	
-	local MenuB_text = MenuB:CreateFontString(nil, 'OVERLAY')
-	MenuB_text:SetFont(E["media"].normFont, 10)
-	MenuB_text:SetText("M")
-	MenuB_text:SetPoint("CENTER", MenuB, "CENTER")
-	
 	MenuB:SetScript("OnClick", function(self)
 		if GameMenuFrame:IsShown() then
 				HideUIPanel(GameMenuFrame)
@@ -416,15 +329,6 @@ function AB:SymbolsCreateButtons() --Creating and setting properties to second b
 		Letter_OnLeave()
 	end)
 	
-	--Help
-	HelpB:Size(bw, bh)
-	HelpB:CreateBackdrop()
-	
-	local HelpB_text = HelpB:CreateFontString(nil, 'OVERLAY')
-	HelpB_text:SetFont(E["media"].normFont, 10)
-	HelpB_text:SetText("?")
-	HelpB_text:SetPoint("CENTER", HelpB, "CENTER")
-	
 	HelpB:SetScript("OnClick", function(self)
 		ToggleHelpFrame()
 	end)
@@ -444,11 +348,20 @@ end
 
 function AB:HandleSymbolbuttons(button)
 	assert(button, 'Invalid micro button name.')
-
 	button:SetParent(microbarS)
 	button:CreateBackdrop()
 	button:HookScript('OnEnter', Letter_OnEnter)
 	button:HookScript('OnLeave', Letter_OnLeave)
+	
+	local button_text = button:CreateFontString(nil, 'OVERLAY')
+	button_text:SetFont(E["media"].normFont, 10)
+	for b, s in pairs (Sletters) do
+		if b == button:GetName() then
+			button_text:SetText(s)
+			break
+		end
+	end
+	button_text:SetPoint("CENTER", button)
 	
 	local f = CreateFrame("Frame", nil, button)
 	f:SetFrameLevel(1)
@@ -471,7 +384,7 @@ function AB:SetNames()
 	GuildB = CreateFrame("Button", "GuildB", microbarS)
 	PVPB = CreateFrame("Button", "PVPB", microbarS)
 	LFDB = CreateFrame("Button", "LFDB", microbarS)
-	CompB = CreateFrame("Button", "RaidFinderB", microbarS)
+	CompB = CreateFrame("Button", "CompanionB", microbarS)
 	EJB = CreateFrame("Button", "JournalB", microbarS)
 	MenuB = CreateFrame("Button", "MenuSysB", microbarS)
 	HelpB = CreateFrame("Button", "TicketB", microbarS)
@@ -494,11 +407,9 @@ function AB:SetNames()
 	microbarS:SetPoint("CENTER", ElvUI_MicroBar, 0, 0)
 	microbarS:SetScript('OnEnter', Letter_OnEnter)
 	microbarS:SetScript('OnLeave', Letter_OnLeave)
-	print("before for cycle")
-	for i=1, 12 do
+	for i=1, #Sbuttons do
 		self:HandleSymbolbuttons(Sbuttons[i])
 	end
-	print("after for cycle")
 	AB:UpdateMicroPositionDimensions()
 end
 
