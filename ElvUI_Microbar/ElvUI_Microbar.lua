@@ -98,7 +98,7 @@ local function Letter_OnLeave()
 	end
 end
 
-function AB:SymbolsCreateButtons() --Creating and setting properties to second bar
+function AB:SbuttonButtonsScripts() --Creating and setting properties to second bar
 	CharB:SetScript("OnClick", function(self)
 		if CharacterFrame:IsShown() then
 			HideUIPanel(CharacterFrame)
@@ -373,7 +373,7 @@ function AB:HandleSymbolbuttons(button)
 end
 
 --Setting loacle shortnames and on update script for mouseover/alpha (can't get rid of using it at the moment)
-function AB:SetNames()
+function AB:SetupSymbolBar()
 	microbarS = CreateFrame("Frame", "MicroParentS", E.UIParent)
 
 	CharB = CreateFrame("Button", "CharacterB", microbarS)
@@ -469,8 +469,8 @@ end
 AB.InitializeMB = AB.Initialize
 function AB:Initialize()
 	AB.InitializeMB(self)
-	AB:SetNames()
-	AB:SymbolsCreateButtons()
+	AB:SetupSymbolBar()
+	AB:SbuttonButtonsScripts()
 	--AB:MicroButtonsPositioning()
 	AB:MicroScale()
 	AB:MenuShow()
