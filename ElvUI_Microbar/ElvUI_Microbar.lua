@@ -98,7 +98,9 @@ local function Letter_OnLeave()
 	end
 end
 
-function AB:SbuttonButtonsScripts() --Creating and setting properties to second bar
+function AB:SbuttonButtonsScripts() --Setting scripts to symbol buttons
+	--Character
+	do
 	CharB:SetScript("OnClick", function(self)
 		if CharacterFrame:IsShown() then
 			HideUIPanel(CharacterFrame)
@@ -118,7 +120,10 @@ function AB:SbuttonButtonsScripts() --Creating and setting properties to second 
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-
+	end
+	
+	--Spellbook
+	do
 	SpellB:SetScript("OnClick", function(self)
 		if SpellBookFrame:IsShown() then
 			HideUIPanel(SpellBookFrame)
@@ -138,7 +143,10 @@ function AB:SbuttonButtonsScripts() --Creating and setting properties to second 
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-
+	end
+	
+	--Talents
+	do
 	TalentB:SetScript("OnClick", function(self)
 		if UnitLevel("player") >= 10 then
 			if PlayerTalentFrame then
@@ -166,7 +174,10 @@ function AB:SbuttonButtonsScripts() --Creating and setting properties to second 
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-
+	end
+	
+	--Achievements
+	do
 	AchievB:SetScript("OnClick", function(self)
 		ToggleAchievementFrame()
 	end)
@@ -182,7 +193,10 @@ function AB:SbuttonButtonsScripts() --Creating and setting properties to second 
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-
+	end
+	
+	--Questlog
+	do
 	QuestB:SetScript("OnClick", function(self)
 		if QuestLogFrame:IsShown() then
 			HideUIPanel(QuestLogFrame)
@@ -202,9 +216,12 @@ function AB:SbuttonButtonsScripts() --Creating and setting properties to second 
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-
+	end
+	
+	--Guild
+	do
 	GuildB:SetScript("OnClick", function(self)
-		if GuildFrame then
+		if GuildFrame or LookingForGuildFrame then
 			if GuildFrame:IsShown() or (LookingForGuildFrame and LookingForGuildFrame:IsShown()) then
 					if IsInGuild() then HideUIPanel(GuildFrame) else HideUIPanel(LookingForGuildFrame) end
 				else
@@ -212,8 +229,12 @@ function AB:SbuttonButtonsScripts() --Creating and setting properties to second 
 			end
 		else
 			LoadAddOn("Blizzard_GuildUI")
-			
-			ShowUIPanel(EncounterJournal)
+			LoadAddOn("Blizzard_LookingForGuildUI")
+			if IsInGuild() then
+				ShowUIPanel(GuildFrame)
+			else
+				ShowUIPanel(LookingForGuildFrame)
+			end
 		end
 	end)
 	
@@ -228,14 +249,22 @@ function AB:SbuttonButtonsScripts() --Creating and setting properties to second 
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
+	end
 
+	--PvP
+	do
 	PVPB:SetScript("OnClick", function(self)
-		if UnitLevel("player") >= 10 then
-			if PVPFrame:IsShown() then
-				HideUIPanel(PVPFrame)
-			else
-				ShowUIPanel(PVPFrame)
+		if PVPUIFrame then
+			if UnitLevel("player") >= 10 then
+				if PVPUIFrame:IsShown() then
+					HideUIPanel(PVPUIFrame)
+				else
+					ShowUIPanel(PVPUIFrame)
+				end
 			end
+		else
+			LoadAddOn("Blizzard_PVPUI")
+			ShowUIPanel(PVPUIFrame)
 		end
 	end)
 	
@@ -250,7 +279,10 @@ function AB:SbuttonButtonsScripts() --Creating and setting properties to second 
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-
+	end
+	
+	--LFD
+	do
 	LFDB:SetScript("OnClick", function(self)
 		ToggleLFDParentFrame()
 	end)
@@ -266,7 +298,10 @@ function AB:SbuttonButtonsScripts() --Creating and setting properties to second 
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
-
+	end
+	
+	--Mounts and pets
+	do
 	CompB:SetScript("OnClick", function(self)
 		TogglePetJournal()
 	end)
@@ -282,7 +317,10 @@ function AB:SbuttonButtonsScripts() --Creating and setting properties to second 
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
+	end
 	
+	--Journal
+	do
 	EJB:SetScript("OnClick", function(self)
 		if EncounterJournal then
 			if EncounterJournal:IsShown() then
@@ -308,7 +346,10 @@ function AB:SbuttonButtonsScripts() --Creating and setting properties to second 
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
+	end
 	
+	--Menu
+	do
 	MenuB:SetScript("OnClick", function(self)
 		if GameMenuFrame:IsShown() then
 				HideUIPanel(GameMenuFrame)
@@ -328,7 +369,10 @@ function AB:SbuttonButtonsScripts() --Creating and setting properties to second 
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
+	end
 	
+	--Help
+	do
 	HelpB:SetScript("OnClick", function(self)
 		ToggleHelpFrame()
 	end)
@@ -344,6 +388,7 @@ function AB:SbuttonButtonsScripts() --Creating and setting properties to second 
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
+	end
 end
 
 function AB:HandleSymbolbuttons(button)
@@ -372,7 +417,6 @@ function AB:HandleSymbolbuttons(button)
 	button.backdrop = f
 end
 
---Setting loacle shortnames and on update script for mouseover/alpha (can't get rid of using it at the moment)
 function AB:SetupSymbolBar()
 	microbarS = CreateFrame("Frame", "MicroParentS", E.UIParent)
 
