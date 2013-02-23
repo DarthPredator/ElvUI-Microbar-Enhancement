@@ -25,6 +25,7 @@ P.actionbar.microbar.symbolic = false
 
 local microbarS, CharB, SpellB, TalentB, AchievB, QuestB, GuildB, PVPB, LFDB, CompB, EJB, MenuB, HelpB
 local bw, bh = E.PixelMode and 22 or 20, E.PixelMode and 28 or 26
+
 local Sletters = {
 	CharacterB = "C",
 	SpellbookB = "S",
@@ -50,15 +51,15 @@ E.Options.args.actionbar.args.microbar.args.scale = {
 	desc = L["Sets Scale of the Micro Bar"],
 	isPercent = true,
 	min = 0.3, max = 2, step = 0.01,
-	set = function(info, value) E.db.actionbar.microbar.scale = value; AB:MicroScale(); end,
+	set = function(info, value) AB.db.microbar.scale = value; AB:MicroScale(); end,
 }
 E.Options.args.actionbar.args.microbar.args.symbolic = {
 	order = 6,
 	type = 'toggle',
 	name = L["As Letters"],
 	desc = L["Replace icons with just letters.\n|cffFF0000Warning:|r this will disable original Blizzard's tooltips for microbar."],
-	disabled = function() return not E.db.actionbar.microbar.enabled end,
-	set = function(info, value) E.db.actionbar.microbar.symbolic = value; AB:MenuShow(); end,
+	disabled = function() return not AB.db.microbar.enabled end,
+	set = function(info, value) AB.db.microbar.symbolic = value; AB:MenuShow(); end,
 }
 end
 
@@ -73,9 +74,9 @@ end)
 
 --Set Scale
 function AB:MicroScale()
-	ElvUI_MicroBar:SetScale(E.db.actionbar.microbar.scale)
-	ElvUI_MicroBar.mover:SetWidth(E.db.actionbar.microbar.scale * ElvUI_MicroBar:GetWidth())
-	ElvUI_MicroBar.mover:SetHeight(E.db.actionbar.microbar.scale * ElvUI_MicroBar:GetHeight() + 1);
+	ElvUI_MicroBar:SetScale(AB.db.microbar.scale)
+	ElvUI_MicroBar.mover:SetWidth(AB.db.microbar.scale * ElvUI_MicroBar:GetWidth())
+	ElvUI_MicroBar.mover:SetHeight(AB.db.microbar.scale * ElvUI_MicroBar:GetHeight() + 1);
 	microbarS:SetScale(AB.db.microbar.scale)
 end
 
@@ -492,8 +493,8 @@ function AB:UpdateMicroPositionDimensions()
 end
 
 function AB:MenuShow()
-	if E.db.actionbar.microbar.symbolic then
-		if E.db.actionbar.microbar.enabled then
+	if AB.db.microbar.symbolic then
+		if AB.db.microbar.enabled then
 			ElvUI_MicroBar:Hide()
 			microbarS:Show()
 			if not AB.db.microbar.mouseover then
@@ -503,7 +504,7 @@ function AB:MenuShow()
 			microbarS:Hide()
 		end
 	else
-		if E.db.actionbar.microbar.enabled then
+		if AB.db.microbar.enabled then
 			ElvUI_MicroBar:Show()
 		end
 		microbarS:Hide()
@@ -515,7 +516,6 @@ function AB:Initialize()
 	AB.InitializeMB(self)
 	AB:SetupSymbolBar()
 	AB:SbuttonButtonsScripts()
-	--AB:MicroButtonsPositioning()
 	AB:MicroScale()
 	AB:MenuShow()
 end
