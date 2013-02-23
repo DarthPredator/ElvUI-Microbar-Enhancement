@@ -62,18 +62,7 @@ function AB:MicroScale()
 	ElvUI_MicroBar:SetScale(E.db.actionbar.microbar.scale)
 	ElvUI_MicroBar.mover:SetWidth(E.db.actionbar.microbar.scale * ElvUI_MicroBar:GetWidth())
 	ElvUI_MicroBar.mover:SetHeight(E.db.actionbar.microbar.scale * ElvUI_MicroBar:GetHeight() + 1);
-	CharB:SetScale(E.db.actionbar.microbar.scale)
-	SpellB:SetScale(E.db.actionbar.microbar.scale)
-	TalentB:SetScale(E.db.actionbar.microbar.scale)
-	AchievB:SetScale(E.db.actionbar.microbar.scale)
-	QuestB:SetScale(E.db.actionbar.microbar.scale)
-	GuildB:SetScale(E.db.actionbar.microbar.scale)
-	PVPB:SetScale(E.db.actionbar.microbar.scale)
-	LFDB:SetScale(E.db.actionbar.microbar.scale)
-	CompB:SetScale(E.db.actionbar.microbar.scale)
-	EJB:SetScale(E.db.actionbar.microbar.scale)
-	MenuB:SetScale(E.db.actionbar.microbar.scale)
-	HelpB:SetScale(E.db.actionbar.microbar.scale)
+	microbarS:SetScale(AB.db.microbar.scale)
 end
 
 E.UpdateAllMB = E.UpdateAll
@@ -488,10 +477,6 @@ function AB:SetNames()
 	microbarS:SetScript('OnLeave', Letter_OnLeave)
 
 	AB:UpdateMicroPositionDimensions()
-end
-
-function AB:LetterAlpha()
-	microbarS:SetAlpha(AB.db.microbar.alpha)
 end
 
 AB.UpdateMicroPositionDimensionsMB = AB.UpdateMicroPositionDimensions
