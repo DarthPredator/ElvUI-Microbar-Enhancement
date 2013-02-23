@@ -51,7 +51,7 @@ end
 local ConfFrame = CreateFrame('Frame')
 ConfFrame:RegisterEvent('ADDON_LOADED')
 ConfFrame:SetScript('OnEvent',function(self, event, addon)
-    if event == 'ADDON_LOADED' and addon == 'ElvUI_Config' then
+    if addon == 'ElvUI_Config' then
         configTable()
         ConfFrame:UnregisterEvent('ADDON_LOADED')
     end
@@ -498,7 +498,7 @@ AB.UpdateMicroPositionDimensionsMB = AB.UpdateMicroPositionDimensions
 function AB:UpdateMicroPositionDimensions()
 	AB.UpdateMicroPositionDimensionsMB(self)
 	if not CharB then return end
-	AB:LetterAlpha()
+	microbarS:SetAlpha(AB.db.microbar.alpha)
 	AB:MenuShow()
 	microbarS:SetWidth(ElvUI_MicroBar:GetWidth())
 	microbarS:SetHeight(ElvUI_MicroBar:GetHeight())
