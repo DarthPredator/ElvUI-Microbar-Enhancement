@@ -455,6 +455,7 @@ function AB:SetupSymbolBar()
 	for i=1, #Sbuttons do
 		self:HandleSymbolbuttons(Sbuttons[i])
 	end
+	E.FrameLocks['MicroParentS'] = true
 	AB:UpdateMicroPositionDimensions()
 end
 
