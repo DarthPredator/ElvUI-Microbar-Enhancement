@@ -19,6 +19,8 @@
 
 local E, L, V, P, G, _ =  unpack(ElvUI);
 local AB = E:GetModule('ActionBars');
+local EP = LibStub("LibElvUIPlugin-1.0")
+local addon = ...
 
 P.actionbar.microbar.scale = 1
 P.actionbar.microbar.symbolic = false
@@ -43,7 +45,7 @@ local Sletters = {
 local Sbuttons = {}
 
 --Options
-local function configTable()
+function AB:GetOptions()
 E.Options.args.actionbar.args.microbar.args.scale = {
 	order = 5,
 	type = "range",
@@ -63,14 +65,14 @@ E.Options.args.actionbar.args.microbar.args.symbolic = {
 }
 end
 
-local ConfFrame = CreateFrame('Frame')
+--[[local ConfFrame = CreateFrame('Frame')
 ConfFrame:RegisterEvent('ADDON_LOADED')
 ConfFrame:SetScript('OnEvent',function(self, event, addon)
     if addon == 'ElvUI_Config' then
         configTable()
         ConfFrame:UnregisterEvent('ADDON_LOADED')
     end
-end)
+end)]]
 
 --Set Scale
 function AB:MicroScale()
@@ -515,6 +517,7 @@ end
 AB.InitializeMB = AB.Initialize
 function AB:Initialize()
 	AB.InitializeMB(self)
+	EP:RegisterPlugin(addon,AB.GetOptions)
 	AB:SetupSymbolBar()
 	AB:SbuttonButtonsScripts()
 	AB:MicroScale()
