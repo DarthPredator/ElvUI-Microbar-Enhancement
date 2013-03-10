@@ -65,15 +65,6 @@ E.Options.args.actionbar.args.microbar.args.symbolic = {
 }
 end
 
---[[local ConfFrame = CreateFrame('Frame')
-ConfFrame:RegisterEvent('ADDON_LOADED')
-ConfFrame:SetScript('OnEvent',function(self, event, addon)
-    if addon == 'ElvUI_Config' then
-        configTable()
-        ConfFrame:UnregisterEvent('ADDON_LOADED')
-    end
-end)]]
-
 --Set Scale
 function AB:MicroScale()
 	ElvUI_MicroBar:SetScale(AB.db.microbar.scale)
@@ -458,6 +449,8 @@ function AB:SetupSymbolBar()
 		self:HandleSymbolbuttons(Sbuttons[i])
 	end
 	E.FrameLocks['MicroParentS'] = true
+	microbarS:SetScript('OnShow', AB.MicroScale)
+	ElvUI_MicroBar:SetScript('OnShow', AB.MicroScale)
 	AB:UpdateMicroPositionDimensions()
 end
 
