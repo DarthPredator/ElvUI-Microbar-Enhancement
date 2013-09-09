@@ -1,7 +1,7 @@
 ﻿## Interface: 50400
 ## Title: |cff1784d1ElvUI |rMicrobar
 ## Author: Darth Predator
-## Version: 1.55
+## Version: 1.56
 ## Notes: A module for enhancing |cff1784d1ElvUI|r's microbar.
 ## Notes-ruRU: Модуль для улучшения микроменю |cff1784d1ElvUI|r.
 ## eMail: darthpred@gmail.com
