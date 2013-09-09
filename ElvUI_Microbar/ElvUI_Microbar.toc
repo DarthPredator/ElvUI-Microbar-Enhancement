@@ -1,4 +1,4 @@
-﻿## Interface: 50200
+﻿## Interface: 50400
 ## Title: |cff1784d1ElvUI |rMicrobar
 ## Author: Darth Predator
 ## Version: 1.55
