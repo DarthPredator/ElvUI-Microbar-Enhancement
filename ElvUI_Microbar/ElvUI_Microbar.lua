@@ -24,6 +24,7 @@ local addon = ...
 
 P.actionbar.microbar.scale = 1
 P.actionbar.microbar.symbolic = false
+P.actionbar.microbar.shop = true
 
 local microbarS, CharB, SpellB, TalentB, AchievB, QuestB, GuildB, PVPB, LFDB, CompB, EJB, MenuB, HelpB
 local bw, bh = E.PixelMode and 22 or 20, E.PixelMode and 28 or 26
@@ -40,7 +41,7 @@ local Sletters = {
 	CompanionB = "MP",
 	JournalB = "J",
 	MenuSysB = "M",
-	TicketB = "?"
+	TicketB = ""
 }
 local Sbuttons = {}
 
@@ -55,14 +56,28 @@ E.Options.args.actionbar.args.microbar.args.scale = {
 	min = 0.3, max = 2, step = 0.01,
 	set = function(info, value) AB.db.microbar.scale = value; AB:MicroScale(); end,
 }
-E.Options.args.actionbar.args.microbar.args.symbolic = {
+E.Options.args.actionbar.args.microbar.args.spacer = {
 	order = 6,
+	type = "description",
+	name = "",
+}
+E.Options.args.actionbar.args.microbar.args.symbolic = {
+	order = 7,
 	type = 'toggle',
 	name = L["As Letters"],
 	desc = L["Replace icons with just letters.\n|cffFF0000Warning:|r this will disable original Blizzard's tooltips for microbar."],
 	disabled = function() return not AB.db.microbar.enabled end,
 	set = function(info, value) AB.db.microbar.symbolic = value; AB:MenuShow(); end,
 }
+E.Options.args.actionbar.args.microbar.args.shop = {
+	order = 8,
+	type = 'toggle',
+	name = StoreMicroButton.tooltipText,
+	desc = L["Use 12th button for accessing in game shop, if disabled will bring up the support panel.\n|cffFF0000Warning:|r this option requieres to reload the ui to take effect."],
+	disabled = function() return not AB.db.microbar.enabled end,
+	set = function(info, value) AB.db.microbar.shop = value; end,
+}
+
 end
 
 --Set Scale
@@ -365,15 +380,25 @@ function AB:SbuttonButtonsScripts() --Setting scripts to symbol buttons
 	end)
 	end
 	
-	--Help
+	--Help/Shop
 	do
-	HelpB:SetScript("OnClick", function(self)
-		ToggleHelpFrame()
-	end)
+	if E.db.actionbar.microbar.shop then
+		HelpB:SetScript("OnClick", function(self)
+			ToggleStoreUI()
+		end)
+	else
+		HelpB:SetScript("OnClick", function(self)
+			ToggleHelpFrame()
+		end)
+	end
 	
 	HelpB:HookScript('OnEnter', function(self)
 		GameTooltip:SetOwner(HelpB, "ANCHOR_RIGHT", 0, 29)
-		GameTooltip:SetText(HELP_BUTTON)
+		if E.db.actionbar.microbar.shop then
+			GameTooltip:SetText(StoreMicroButton.tooltipText)
+		else
+			GameTooltip:SetText(HELP_BUTTON)
+		end
 		GameTooltip:Show()
 		Letter_OnEnter()
 	end)
@@ -486,6 +511,7 @@ function AB:UpdateMicroPositionDimensions()
 	elseif not AB.db.microbar.mouseover and  AB.db.microbar.symbolic then
 		microbarS:SetAlpha(AB.db.microbar.alpha)
 	end
+	AB:MicroScale()
 end
 
 function AB:MenuShow()
@@ -509,6 +535,11 @@ end
 
 AB.InitializeMB = AB.Initialize
 function AB:Initialize()
+	if E.db.actionbar.microbar.shop then
+		Sletters.TicketB = "Sh"
+	else
+		Sletters.TicketB = "?"
+	end
 	AB.InitializeMB(self)
 	EP:RegisterPlugin(addon,AB.GetOptions)
 	AB:SetupSymbolBar()
