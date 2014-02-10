@@ -25,6 +25,8 @@ local addon = ...
 P.actionbar.microbar.scale = 1
 P.actionbar.microbar.symbolic = false
 P.actionbar.microbar.shop = true
+P.actionbar.microbar.xoffset = 0
+P.actionbar.microbar.yoffset = 0
 
 local microbarS, CharB, SpellB, TalentB, AchievB, QuestB, GuildB, PVPB, LFDB, CompB, EJB, MenuB, HelpB
 local bw, bh = E.PixelMode and 22 or 20, E.PixelMode and 28 or 26
@@ -54,6 +56,7 @@ E.Options.args.actionbar.args.microbar.args.scale = {
 	desc = L["Sets Scale of the Micro Bar"],
 	isPercent = true,
 	min = 0.3, max = 2, step = 0.01,
+	get = function(info) return AB.db.microbar.scale end,
 	set = function(info, value) AB.db.microbar.scale = value; AB:MicroScale(); end,
 }
 E.Options.args.actionbar.args.microbar.args.spacer = {
@@ -67,6 +70,7 @@ E.Options.args.actionbar.args.microbar.args.symbolic = {
 	name = L["As Letters"],
 	desc = L["Replace icons with just letters.\n|cffFF0000Warning:|r this will disable original Blizzard's tooltips for microbar."],
 	disabled = function() return not AB.db.microbar.enabled end,
+	get = function(info) return AB.db.microbar.symbolic end,
 	set = function(info, value) AB.db.microbar.symbolic = value; AB:MenuShow(); end,
 }
 E.Options.args.actionbar.args.microbar.args.shop = {
@@ -75,16 +79,38 @@ E.Options.args.actionbar.args.microbar.args.shop = {
 	name = StoreMicroButton.tooltipText,
 	desc = L["Use 12th button for accessing in game shop, if disabled will bring up the support panel.\n|cffFF0000Warning:|r this option requieres to reload the ui to take effect."],
 	disabled = function() return not AB.db.microbar.enabled end,
+	get = function(info) return AB.db.microbar.shop end,
 	set = function(info, value) AB.db.microbar.shop = value; end,
 }
-
+E.Options.args.actionbar.args.microbar.args.spacer2 = {
+	order = 9,
+	type = "description",
+	name = "",
+}
+E.Options.args.actionbar.args.microbar.args.xoffset = {
+	order = 10,
+	type = "range",
+	name = L["X-Offset"],
+	min = 0, max = 20, step = 1,
+	get = function(info) return AB.db.microbar.xoffset end,
+	set = function(info, value) AB.db.microbar.xoffset = value; AB:UpdateMicroPositionDimensions() end,
+}
+E.Options.args.actionbar.args.microbar.args.yoffset = {
+	order = 11,
+	type = "range",
+	name = L["Y-Offset"],
+	min = 0, max = 20, step = 1,
+	get = function(info) return AB.db.microbar.yoffset end,
+	set = function(info, value) AB.db.microbar.yoffset = value; AB:UpdateMicroPositionDimensions() end,
+}
 end
 
 --Set Scale
 function AB:MicroScale()
+	local height = floor(12/AB.db.microbar.buttonsPerRow)
 	ElvUI_MicroBar:SetScale(AB.db.microbar.scale)
-	ElvUI_MicroBar.mover:SetWidth(AB.db.microbar.scale * ElvUI_MicroBar:GetWidth())
-	ElvUI_MicroBar.mover:SetHeight(AB.db.microbar.scale * ElvUI_MicroBar:GetHeight() + 1);
+	ElvUI_MicroBar.mover:SetWidth(AB.db.microbar.scale * (ElvUI_MicroBar:GetWidth() + AB.db.microbar.xoffset*(AB.db.microbar.buttonsPerRow-1) - (12*2/height)-2))
+	ElvUI_MicroBar.mover:SetHeight(AB.db.microbar.scale * (ElvUI_MicroBar:GetHeight() + AB.db.microbar.yoffset*(height-1)) + 1);
 	microbarS:SetScale(AB.db.microbar.scale)
 end
 
@@ -479,6 +505,14 @@ function AB:SetupSymbolBar()
 	AB:UpdateMicroPositionDimensions()
 end
 
+local __buttons = {}
+if(C_StorePublic.IsEnabled()) then
+	__buttons[10] = "StoreMicroButton"
+	for i=10, #MICRO_BUTTONS do
+		__buttons[i + 1] = MICRO_BUTTONS[i]
+	end
+end
+
 AB.UpdateMicroPositionDimensionsMB = AB.UpdateMicroPositionDimensions
 function AB:UpdateMicroPositionDimensions()
 	AB.UpdateMicroPositionDimensionsMB(self)
@@ -486,6 +520,7 @@ function AB:UpdateMicroPositionDimensions()
 	microbarS:SetAlpha(AB.db.microbar.alpha)
 	AB:MenuShow()
 	local numRows = 1
+	local numRowsS = 1
 	for i=1, #Sbuttons do
 		local button = Sbuttons[i]
 		local prevButton = Sbuttons[i-1] or microbarS
@@ -498,12 +533,35 @@ function AB:UpdateMicroPositionDimensions()
 		if prevButton == microbarS then
 			button:SetPoint("TOPLEFT", prevButton, "TOPLEFT", E.PixelMode and 1 or 2, E.PixelMode and -1 or -2)
 		elseif (i - 1) % AB.db.microbar.buttonsPerRow == 0 then
-			button:Point('TOP', lastColumnButton, 'BOTTOM', 0, E.PixelMode and -3 or -5);	
-			numRows = numRows + 1
+			button:Point('TOP', lastColumnButton, 'BOTTOM', 0, (E.PixelMode and -3 or -5)- AB.db.microbar.yoffset);	
+			numRowsS = numRowsS + 1
 		else
-			button:Point('LEFT', prevButton, 'RIGHT', E.PixelMode and 3 or 5, 0);
+			button:Point('LEFT', prevButton, 'RIGHT', (E.PixelMode and 3 or 5) + AB.db.microbar.xoffset, 0);
 		end
 	end
+	
+	if AB.db.microbar.xoffset ~= 0 or AB.db.microbar.yoffset ~= 0 then
+		local prevButton = ElvUI_MicroBar
+		for i=1, (#MICRO_BUTTONS - 1) do
+			local button = _G[__buttons[i]] or _G[MICRO_BUTTONS[i]]
+			local lastColumnButton = i-self.db.microbar.buttonsPerRow;
+			lastColumnButton = _G[__buttons[lastColumnButton]] or _G[MICRO_BUTTONS[lastColumnButton]]
+
+			button:ClearAllPoints();
+	
+			if prevButton == ElvUI_MicroBar then
+				button:SetPoint("TOPLEFT", prevButton, "TOPLEFT", -2, 28)
+			elseif (i - 1) % self.db.microbar.buttonsPerRow == 0 then
+				button:Point('TOP', lastColumnButton, 'BOTTOM', 0, 27 - AB.db.microbar.yoffset);	
+				numRows = numRows + 1
+			else
+				button:Point('LEFT', prevButton, 'RIGHT', -3 + AB.db.microbar.xoffset, 0);
+			end
+	
+			prevButton = button
+		end
+	end
+	
 	microbarS:SetWidth(ElvUI_MicroBar:GetWidth())
 	microbarS:SetHeight(ElvUI_MicroBar:GetHeight())
 	if AB.db.microbar.mouseover then
