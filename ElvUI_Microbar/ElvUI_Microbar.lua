@@ -91,7 +91,7 @@ E.Options.args.actionbar.args.microbar.args.xoffset = {
 	order = 10,
 	type = "range",
 	name = L["X-Offset"],
-	min = 0, max = 20, step = 1,
+	min = -2, max = 20, step = 1,
 	get = function(info) return AB.db.microbar.xoffset end,
 	set = function(info, value) AB.db.microbar.xoffset = value; AB:UpdateMicroPositionDimensions() end,
 }
@@ -99,7 +99,7 @@ E.Options.args.actionbar.args.microbar.args.yoffset = {
 	order = 11,
 	type = "range",
 	name = L["Y-Offset"],
-	min = 0, max = 20, step = 1,
+	min = -2, max = 20, step = 1,
 	get = function(info) return AB.db.microbar.yoffset end,
 	set = function(info, value) AB.db.microbar.yoffset = value; AB:UpdateMicroPositionDimensions() end,
 }
