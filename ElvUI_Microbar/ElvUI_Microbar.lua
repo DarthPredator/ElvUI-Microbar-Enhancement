@@ -109,7 +109,7 @@ end
 function AB:MicroScale()
 	local height = floor(12/AB.db.microbar.buttonsPerRow)
 	ElvUI_MicroBar:SetScale(AB.db.microbar.scale)
-	ElvUI_MicroBar.mover:SetWidth(AB.db.microbar.scale * (ElvUI_MicroBar:GetWidth() + AB.db.microbar.xoffset*(AB.db.microbar.buttonsPerRow-1) - (12*2/height)-2))
+	ElvUI_MicroBar.mover:SetWidth(AB.db.microbar.scale * (ElvUI_MicroBar:GetWidth() + AB.db.microbar.xoffset*(AB.db.microbar.buttonsPerRow-1)))-- - (12*2/height)-2))
 	ElvUI_MicroBar.mover:SetHeight(AB.db.microbar.scale * (ElvUI_MicroBar:GetHeight() + AB.db.microbar.yoffset*(height-1)) + 1);
 	microbarS:SetScale(AB.db.microbar.scale)
 end
