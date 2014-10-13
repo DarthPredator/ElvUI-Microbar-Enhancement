@@ -20,6 +20,7 @@
 local E, L, V, P, G, _ =  unpack(ElvUI);
 local AB = E:GetModule('ActionBars');
 local EP = LibStub("LibElvUIPlugin-1.0")
+local S = E:GetModule('Skins')
 local addon = ...
 
 P.actionbar.microbar.scale = 1
@@ -135,273 +136,273 @@ end
 function AB:SbuttonButtonsScripts() --Setting scripts to symbol buttons
 	--Character
 	do
-	CharB:SetScript("OnClick", function(self)
-		if CharacterFrame:IsShown() then
-			HideUIPanel(CharacterFrame)
-		else
-			ShowUIPanel(CharacterFrame)
-		end
-	end)
-	
-	CharB:HookScript('OnEnter', function(self)
-		GameTooltip:SetOwner(CharB, "ANCHOR_RIGHT", 0, 29)
-		GameTooltip:SetText(CHARACTER_BUTTON)
-		GameTooltip:Show()
-		Letter_OnEnter()
-	end)
-	
-	CharB:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-		Letter_OnLeave()
-	end)
+		CharB:SetScript("OnClick", function(self)
+			if CharacterFrame:IsShown() then
+				HideUIPanel(CharacterFrame)
+			else
+				ShowUIPanel(CharacterFrame)
+			end
+		end)
+		
+		CharB:HookScript('OnEnter', function(self)
+			GameTooltip:SetOwner(CharB, "ANCHOR_RIGHT", 0, 29)
+			GameTooltip:SetText(CHARACTER_BUTTON)
+			GameTooltip:Show()
+			Letter_OnEnter()
+		end)
+		
+		CharB:HookScript("OnLeave", function(self)
+			GameTooltip:Hide()
+			Letter_OnLeave()
+		end)
 	end
 	
 	--Spellbook
 	do
-	SpellB:SetScript("OnClick", function(self)
-		if SpellBookFrame:IsShown() then
-			HideUIPanel(SpellBookFrame)
-		else
-			ShowUIPanel(SpellBookFrame)
-		end
-	end)
-	
-	SpellB:HookScript('OnEnter', function(self)
-		GameTooltip:SetOwner(SpellB, "ANCHOR_RIGHT", 0, 29)
-		GameTooltip:SetText(SPELLBOOK_ABILITIES_BUTTON)
-		GameTooltip:Show()
-		Letter_OnEnter()
-	end)
-	
-	SpellB:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-		Letter_OnLeave()
-	end)
+		SpellB:SetScript("OnClick", function(self)
+			if SpellBookFrame:IsShown() then
+				HideUIPanel(SpellBookFrame)
+			else
+				ShowUIPanel(SpellBookFrame)
+			end
+		end)
+		
+		SpellB:HookScript('OnEnter', function(self)
+			GameTooltip:SetOwner(SpellB, "ANCHOR_RIGHT", 0, 29)
+			GameTooltip:SetText(SPELLBOOK_ABILITIES_BUTTON)
+			GameTooltip:Show()
+			Letter_OnEnter()
+		end)
+		
+		SpellB:HookScript("OnLeave", function(self)
+			GameTooltip:Hide()
+			Letter_OnLeave()
+		end)
 	end
 	
 	--Talents
 	do
-	TalentB:SetScript("OnClick", function(self)
-		if UnitLevel("player") >= 10 then
-			if PlayerTalentFrame then
-				if PlayerTalentFrame:IsShown() then
-					HideUIPanel(PlayerTalentFrame)
+		TalentB:SetScript("OnClick", function(self)
+			if UnitLevel("player") >= 10 then
+				if PlayerTalentFrame then
+					if PlayerTalentFrame:IsShown() then
+						HideUIPanel(PlayerTalentFrame)
+					else
+						ShowUIPanel(PlayerTalentFrame)
+					end
 				else
+					LoadAddOn("Blizzard_TalentUI")
+				
 					ShowUIPanel(PlayerTalentFrame)
 				end
-			else
-				LoadAddOn("Blizzard_TalentUI")
-			
-				ShowUIPanel(PlayerTalentFrame)
 			end
-		end
-	end)
-	
-	TalentB:HookScript('OnEnter', function(self)
-		GameTooltip:SetOwner(TalentB, "ANCHOR_RIGHT", 0, 29)
-		GameTooltip:SetText(TALENTS_BUTTON)
-		GameTooltip:Show()
-		Letter_OnEnter()
-	end)
-	
-	TalentB:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-		Letter_OnLeave()
-	end)
+		end)
+		
+		TalentB:HookScript('OnEnter', function(self)
+			GameTooltip:SetOwner(TalentB, "ANCHOR_RIGHT", 0, 29)
+			GameTooltip:SetText(TALENTS_BUTTON)
+			GameTooltip:Show()
+			Letter_OnEnter()
+		end)
+		
+		TalentB:HookScript("OnLeave", function(self)
+			GameTooltip:Hide()
+			Letter_OnLeave()
+		end)
 	end
 	
 	--Achievements
 	do
-	AchievB:SetScript("OnClick", function(self)
-		ToggleAchievementFrame()
-	end)
-	
-	AchievB:HookScript('OnEnter', function(self)
-		GameTooltip:SetOwner(AchievB, "ANCHOR_RIGHT", 0, 29)
-		GameTooltip:SetText(ACHIEVEMENT_BUTTON)
-		GameTooltip:Show()
-		Letter_OnEnter()
-	end)
-	
-	AchievB:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-		Letter_OnLeave()
-	end)
+		AchievB:SetScript("OnClick", function(self)
+			ToggleAchievementFrame()
+		end)
+		
+		AchievB:HookScript('OnEnter', function(self)
+			GameTooltip:SetOwner(AchievB, "ANCHOR_RIGHT", 0, 29)
+			GameTooltip:SetText(ACHIEVEMENT_BUTTON)
+			GameTooltip:Show()
+			Letter_OnEnter()
+		end)
+		
+		AchievB:HookScript("OnLeave", function(self)
+			GameTooltip:Hide()
+			Letter_OnLeave()
+		end)
 	end
 	
 	--Questlog
 	do
-	QuestB:SetScript("OnClick", function(self)
-		if WorldMapFrame:IsShown() then
-			HideUIPanel(WorldMapFrame)
-		else
-			ShowUIPanel(WorldMapFrame)
-		end
-	end)
-	
-	QuestB:HookScript('OnEnter', function(self)
-		GameTooltip:SetOwner(QuestB, "ANCHOR_RIGHT", 0, 29)
-		GameTooltip:SetText(QUESTLOG_BUTTON)
-		GameTooltip:Show()
-		Letter_OnEnter()
-	end)
-	
-	QuestB:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-		Letter_OnLeave()
-	end)
+		QuestB:SetScript("OnClick", function(self)
+			if WorldMapFrame:IsShown() then
+				HideUIPanel(WorldMapFrame)
+			else
+				ShowUIPanel(WorldMapFrame)
+			end
+		end)
+		
+		QuestB:HookScript('OnEnter', function(self)
+			GameTooltip:SetOwner(QuestB, "ANCHOR_RIGHT", 0, 29)
+			GameTooltip:SetText(QUESTLOG_BUTTON)
+			GameTooltip:Show()
+			Letter_OnEnter()
+		end)
+		
+		QuestB:HookScript("OnLeave", function(self)
+			GameTooltip:Hide()
+			Letter_OnLeave()
+		end)
 	end
 	
 	--Guild
 	do
-	GuildB:SetScript("OnClick", function(self)
-		if GuildFrame or LookingForGuildFrame then
-			if GuildFrame:IsShown() or (LookingForGuildFrame and LookingForGuildFrame:IsShown()) then
-					if IsInGuild() then HideUIPanel(GuildFrame) else HideUIPanel(LookingForGuildFrame) end
-				else
-					if IsInGuild() then ShowUIPanel(GuildFrame) else ShowUIPanel(LookingForGuildFrame) end
-			end
-		else
-			LoadAddOn("Blizzard_GuildUI")
-			LoadAddOn("Blizzard_LookingForGuildUI")
-			if IsInGuild() then
-				ShowUIPanel(GuildFrame)
+		GuildB:SetScript("OnClick", function(self)
+			if GuildFrame or LookingForGuildFrame then
+				if GuildFrame:IsShown() or (LookingForGuildFrame and LookingForGuildFrame:IsShown()) then
+						if IsInGuild() then HideUIPanel(GuildFrame) else HideUIPanel(LookingForGuildFrame) end
+					else
+						if IsInGuild() then ShowUIPanel(GuildFrame) else ShowUIPanel(LookingForGuildFrame) end
+				end
 			else
-				ShowUIPanel(LookingForGuildFrame)
+				LoadAddOn("Blizzard_GuildUI")
+				LoadAddOn("Blizzard_LookingForGuildUI")
+				if IsInGuild() then
+					ShowUIPanel(GuildFrame)
+				else
+					ShowUIPanel(LookingForGuildFrame)
+				end
 			end
-		end
-	end)
-	
-	GuildB:HookScript('OnEnter', function(self)
-		GameTooltip:SetOwner(GuildB, "ANCHOR_RIGHT", 0, 29)
-		GameTooltip:SetText(GUILD)
-		GameTooltip:Show()
-		Letter_OnEnter()
-	end)
-	
-	GuildB:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-		Letter_OnLeave()
-	end)
+		end)
+		
+		GuildB:HookScript('OnEnter', function(self)
+			GameTooltip:SetOwner(GuildB, "ANCHOR_RIGHT", 0, 29)
+			GameTooltip:SetText(GUILD)
+			GameTooltip:Show()
+			Letter_OnEnter()
+		end)
+		
+		GuildB:HookScript("OnLeave", function(self)
+			GameTooltip:Hide()
+			Letter_OnLeave()
+		end)
 	end
 	
 	--LFD
 	do
-	LFDB:SetScript("OnClick", function(self)
-		ToggleLFDParentFrame()
-	end)
-	
-	LFDB:HookScript('OnEnter', function(self)
-		GameTooltip:SetOwner(LFDB, "ANCHOR_RIGHT", 0, 29)
-		GameTooltip:SetText(DUNGEONS_BUTTON)
-		GameTooltip:Show()
-		Letter_OnEnter()
-	end)
-	
-	LFDB:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-		Letter_OnLeave()
-	end)
+		LFDB:SetScript("OnClick", function(self)
+			ToggleLFDParentFrame()
+		end)
+		
+		LFDB:HookScript('OnEnter', function(self)
+			GameTooltip:SetOwner(LFDB, "ANCHOR_RIGHT", 0, 29)
+			GameTooltip:SetText(DUNGEONS_BUTTON)
+			GameTooltip:Show()
+			Letter_OnEnter()
+		end)
+		
+		LFDB:HookScript("OnLeave", function(self)
+			GameTooltip:Hide()
+			Letter_OnLeave()
+		end)
 	end
 	
 	--Mounts and pets
 	do
-	CompB:SetScript("OnClick", function(self)
-		TogglePetJournal()
-	end)
-	
-	CompB:HookScript('OnEnter', function(self)
-		GameTooltip:SetOwner(CompB, "ANCHOR_RIGHT", 0, 29)
-		GameTooltip:SetText(MOUNTS_AND_PETS)
-		GameTooltip:Show()
-		Letter_OnEnter()
-	end)
-	
-	CompB:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-		Letter_OnLeave()
-	end)
+		CompB:SetScript("OnClick", function(self)
+			TogglePetJournal()
+		end)
+		
+		CompB:HookScript('OnEnter', function(self)
+			GameTooltip:SetOwner(CompB, "ANCHOR_RIGHT", 0, 29)
+			GameTooltip:SetText(MOUNTS_AND_PETS)
+			GameTooltip:Show()
+			Letter_OnEnter()
+		end)
+		
+		CompB:HookScript("OnLeave", function(self)
+			GameTooltip:Hide()
+			Letter_OnLeave()
+		end)
 	end
 	
 	--Journal
 	do
-	EJB:SetScript("OnClick", function(self)
-		if EncounterJournal then
-			if EncounterJournal:IsShown() then
-				HideUIPanel(EncounterJournal)
+		EJB:SetScript("OnClick", function(self)
+			if EncounterJournal then
+				if EncounterJournal:IsShown() then
+					HideUIPanel(EncounterJournal)
+				else
+					ShowUIPanel(EncounterJournal)
+				end
 			else
+				LoadAddOn("Blizzard_EncounterJournal")
+				
 				ShowUIPanel(EncounterJournal)
 			end
-		else
-			LoadAddOn("Blizzard_EncounterJournal")
-			
-			ShowUIPanel(EncounterJournal)
-		end
-	end)
-	
-	EJB:HookScript('OnEnter', function(self)
-		GameTooltip:SetOwner(EJB, "ANCHOR_RIGHT", 0, 29)
-		GameTooltip:SetText(ENCOUNTER_JOURNAL)
-		GameTooltip:Show()
-		Letter_OnEnter()
-	end)
-	
-	EJB:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-		Letter_OnLeave()
-	end)
+		end)
+		
+		EJB:HookScript('OnEnter', function(self)
+			GameTooltip:SetOwner(EJB, "ANCHOR_RIGHT", 0, 29)
+			GameTooltip:SetText(ENCOUNTER_JOURNAL)
+			GameTooltip:Show()
+			Letter_OnEnter()
+		end)
+		
+		EJB:HookScript("OnLeave", function(self)
+			GameTooltip:Hide()
+			Letter_OnLeave()
+		end)
 	end
 	
 	--Menu
 	do
-	MenuB:SetScript("OnClick", function(self)
-		if GameMenuFrame:IsShown() then
-				HideUIPanel(GameMenuFrame)
-			else
-				ShowUIPanel(GameMenuFrame)
-			end
-	end)
-	
-	MenuB:HookScript('OnEnter', function(self)
-		GameTooltip:SetOwner(MenuB, "ANCHOR_RIGHT", 0, 29)
-		GameTooltip:SetText(MAINMENU_BUTTON)
-		GameTooltip:Show()
-		Letter_OnEnter()
-	end)
-	
-	MenuB:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-		Letter_OnLeave()
-	end)
+		MenuB:SetScript("OnClick", function(self)
+			if GameMenuFrame:IsShown() then
+					HideUIPanel(GameMenuFrame)
+				else
+					ShowUIPanel(GameMenuFrame)
+				end
+		end)
+		
+		MenuB:HookScript('OnEnter', function(self)
+			GameTooltip:SetOwner(MenuB, "ANCHOR_RIGHT", 0, 29)
+			GameTooltip:SetText(MAINMENU_BUTTON)
+			GameTooltip:Show()
+			Letter_OnEnter()
+		end)
+		
+		MenuB:HookScript("OnLeave", function(self)
+			GameTooltip:Hide()
+			Letter_OnLeave()
+		end)
 	end
 	
 	--Help/Shop
 	do
-	if E.db.actionbar.microbar.shop then
-		HelpB:SetScript("OnClick", function(self)
-			ToggleStoreUI()
-		end)
-	else
-		HelpB:SetScript("OnClick", function(self)
-			ToggleHelpFrame()
-		end)
-	end
-	
-	HelpB:HookScript('OnEnter', function(self)
-		GameTooltip:SetOwner(HelpB, "ANCHOR_RIGHT", 0, 29)
 		if E.db.actionbar.microbar.shop then
-			GameTooltip:SetText(StoreMicroButton.tooltipText)
+			HelpB:SetScript("OnClick", function(self)
+				ToggleStoreUI()
+			end)
 		else
-			GameTooltip:SetText(HELP_BUTTON)
+			HelpB:SetScript("OnClick", function(self)
+				ToggleHelpFrame()
+			end)
 		end
-		GameTooltip:Show()
-		Letter_OnEnter()
-	end)
-	
-	HelpB:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-		Letter_OnLeave()
-	end)
+		
+		HelpB:HookScript('OnEnter', function(self)
+			GameTooltip:SetOwner(HelpB, "ANCHOR_RIGHT", 0, 29)
+			if E.db.actionbar.microbar.shop then
+				GameTooltip:SetText(StoreMicroButton.tooltipText)
+			else
+				GameTooltip:SetText(HELP_BUTTON)
+			end
+			GameTooltip:Show()
+			Letter_OnEnter()
+		end)
+		
+		HelpB:HookScript("OnLeave", function(self)
+			GameTooltip:Hide()
+			Letter_OnLeave()
+		end)
 	end
 end
 
@@ -412,23 +413,17 @@ function AB:HandleSymbolbuttons(button)
 	button:HookScript('OnEnter', Letter_OnEnter)
 	button:HookScript('OnLeave', Letter_OnLeave)
 	
-	local button_text = button:CreateFontString(nil, 'OVERLAY')
-	button_text:SetFont(E["media"].normFont, 10)
+	button.text = button:CreateFontString(nil, 'OVERLAY')
+	button.text:SetFont(E["media"].normFont, 10)
 	for b, s in pairs (Sletters) do
 		if b == button:GetName() then
-			button_text:SetText(s)
+			button.text:SetText(s)
 			break
 		end
 	end
-	button_text:SetPoint("CENTER", button)
-	
-	local f = CreateFrame("Frame", nil, button)
-	f:SetFrameLevel(1)
-	f:SetFrameStrata("BACKGROUND")
-	f:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", 2, 0)
-	f:SetPoint("TOPRIGHT", button, "TOPRIGHT", -2, -28)
-	f:SetTemplate("Default", true)
-	button.backdrop = f
+	button.text:SetPoint("CENTER", button)
+
+	S:HandleButton(button)
 end
 
 function AB:SetupSymbolBar()
