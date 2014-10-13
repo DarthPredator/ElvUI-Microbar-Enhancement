@@ -28,7 +28,7 @@ P.actionbar.microbar.shop = true
 P.actionbar.microbar.xoffset = 0
 P.actionbar.microbar.yoffset = 0
 
-local microbarS, CharB, SpellB, TalentB, AchievB, QuestB, GuildB, PVPB, LFDB, CompB, EJB, MenuB, HelpB
+local microbarS, CharB, SpellB, TalentB, AchievB, QuestB, GuildB, LFDB, CompB, EJB, MenuB, HelpB
 local bw, bh = E.PixelMode and 22 or 20, E.PixelMode and 28 or 26
 
 local Sletters = {
@@ -38,7 +38,6 @@ local Sletters = {
 	AchievementB = "A",
 	QuestB = "Q",
 	GuildB = "G",
-	PVPB = "P",
 	LFDB = "L",
 	CompanionB = "MP",
 	JournalB = "J",
@@ -77,7 +76,7 @@ E.Options.args.actionbar.args.microbar.args.shop = {
 	order = 8,
 	type = 'toggle',
 	name = StoreMicroButton.tooltipText,
-	desc = L["Use 12th button for accessing in game shop, if disabled will bring up the support panel.\n|cffFF0000Warning:|r this option requieres to reload the ui to take effect."],
+	desc = L["Use 10th button for accessing in game shop, if disabled will bring up the support panel.\n|cffFF0000Warning:|r this option requieres to reload the ui to take effect."],
 	disabled = function() return not AB.db.microbar.enabled end,
 	get = function(info) return AB.db.microbar.shop end,
 	set = function(info, value) AB.db.microbar.shop = value; end,
@@ -233,10 +232,10 @@ function AB:SbuttonButtonsScripts() --Setting scripts to symbol buttons
 	--Questlog
 	do
 	QuestB:SetScript("OnClick", function(self)
-		if QuestLogFrame:IsShown() then
-			HideUIPanel(QuestLogFrame)
+		if WorldMapFrame:IsShown() then
+			HideUIPanel(WorldMapFrame)
 		else
-			ShowUIPanel(QuestLogFrame)
+			ShowUIPanel(WorldMapFrame)
 		end
 	end)
 	
@@ -281,36 +280,6 @@ function AB:SbuttonButtonsScripts() --Setting scripts to symbol buttons
 	end)
 	
 	GuildB:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-		Letter_OnLeave()
-	end)
-	end
-
-	--PvP
-	do
-	PVPB:SetScript("OnClick", function(self)
-		if PVPUIFrame then
-			if UnitLevel("player") >= 10 then
-				if PVPUIFrame:IsShown() then
-					HideUIPanel(PVPUIFrame)
-				else
-					ShowUIPanel(PVPUIFrame)
-				end
-			end
-		else
-			LoadAddOn("Blizzard_PVPUI")
-			ShowUIPanel(PVPUIFrame)
-		end
-	end)
-	
-	PVPB:HookScript('OnEnter', function(self)
-		GameTooltip:SetOwner(PVPB, "ANCHOR_RIGHT", 0, 29)
-		GameTooltip:SetText(PVP_OPTIONS)
-		GameTooltip:Show()
-		Letter_OnEnter()
-	end)
-	
-	PVPB:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
 		Letter_OnLeave()
 	end)
@@ -471,7 +440,6 @@ function AB:SetupSymbolBar()
 	AchievB = CreateFrame("Button", "AchievementB", microbarS)
 	QuestB = CreateFrame("Button", "QuestB", microbarS)
 	GuildB = CreateFrame("Button", "GuildB", microbarS)
-	PVPB = CreateFrame("Button", "PVPB", microbarS)
 	LFDB = CreateFrame("Button", "LFDB", microbarS)
 	CompB = CreateFrame("Button", "CompanionB", microbarS)
 	EJB = CreateFrame("Button", "JournalB", microbarS)
@@ -485,12 +453,11 @@ function AB:SetupSymbolBar()
 		AchievB,
 		QuestB,
 		GuildB,
-		PVPB,
 		LFDB,
-		CompB,
 		EJB,
-		MenuB,
-		HelpB
+		CompB,
+		HelpB,
+		MenuB
 	}
 	
 	microbarS:SetPoint("CENTER", ElvUI_MicroBar, 0, 0)
