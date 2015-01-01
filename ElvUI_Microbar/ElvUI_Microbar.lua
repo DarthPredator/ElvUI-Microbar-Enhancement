@@ -1,7 +1,7 @@
 ﻿-------------------------------------------------
 --
--- ElvUI Microbar by Darth Predator and Allaidia
--- Дартпредатор - Свежеватель Душ (Soulflyer) RU
+-- ElvUI Microbar Enhancement by Darth Predator
+-- Дартпредатор - Вечная Песня (Eversong) RU
 --
 -------------------------------------------------
 --
@@ -29,22 +29,8 @@ P.actionbar.microbar.shop = true
 P.actionbar.microbar.xoffset = 0
 P.actionbar.microbar.yoffset = 0
 
-local microbarS, CharB, SpellB, TalentB, AchievB, QuestB, GuildB, LFDB, CompB, EJB, MenuB, HelpB
 local bw, bh = E.PixelMode and 22 or 20, E.PixelMode and 28 or 26
 
-local Sletters = {
-	CharacterB = "C",
-	SpellbookB = "S",
-	TalentsB = "T",
-	AchievementB = "A",
-	QuestB = "Q",
-	GuildB = "G",
-	LFDB = "L",
-	CompanionB = "MP",
-	JournalB = "J",
-	MenuSysB = "M",
-	TicketB = ""
-}
 local Sbuttons = {}
 
 --Options
@@ -75,12 +61,12 @@ E.Options.args.actionbar.args.microbar.args.symbolic = {
 }
 E.Options.args.actionbar.args.microbar.args.shop = {
 	order = 8,
-	type = 'toggle',
+	type = "toggle",
 	name = StoreMicroButton.tooltipText,
-	desc = L["Use 10th button for accessing in game shop, if disabled will bring up the support panel.\n|cffFF0000Warning:|r this option requieres to reload the ui to take effect."],
+	desc = L["Show in game shop button, if disabled will show help button instead."],
 	disabled = function() return not AB.db.microbar.enabled end,
 	get = function(info) return AB.db.microbar.shop end,
-	set = function(info, value) AB.db.microbar.shop = value; end,
+	set = function(info, value) AB.db.microbar.shop = value; UpdateMicroButtons() end,
 }
 E.Options.args.actionbar.args.microbar.args.spacer2 = {
 	order = 9,
@@ -91,7 +77,7 @@ E.Options.args.actionbar.args.microbar.args.xoffset = {
 	order = 10,
 	type = "range",
 	name = L["X-Offset"],
-	min = -2, max = 20, step = 1,
+	min = -20, max = 20, step = 1,
 	get = function(info) return AB.db.microbar.xoffset end,
 	set = function(info, value) AB.db.microbar.xoffset = value; AB:UpdateMicroPositionDimensions() end,
 }
@@ -99,7 +85,7 @@ E.Options.args.actionbar.args.microbar.args.yoffset = {
 	order = 11,
 	type = "range",
 	name = L["Y-Offset"],
-	min = -2, max = 20, step = 1,
+	min = -20, max = 20, step = 1,
 	get = function(info) return AB.db.microbar.yoffset end,
 	set = function(info, value) AB.db.microbar.yoffset = value; AB:UpdateMicroPositionDimensions() end,
 }
@@ -109,7 +95,7 @@ end
 function AB:MicroScale()
 	local height = floor(12/AB.db.microbar.buttonsPerRow)
 	ElvUI_MicroBar:SetScale(AB.db.microbar.scale)
-	ElvUI_MicroBar.mover:SetWidth(AB.db.microbar.scale * (ElvUI_MicroBar:GetWidth() + AB.db.microbar.xoffset*(AB.db.microbar.buttonsPerRow-1)))-- - (12*2/height)-2))
+	ElvUI_MicroBar.mover:SetWidth(AB.db.microbar.scale * (ElvUI_MicroBar:GetWidth() + AB.db.microbar.xoffset*(AB.db.microbar.buttonsPerRow-1)))
 	ElvUI_MicroBar.mover:SetHeight(AB.db.microbar.scale * (ElvUI_MicroBar:GetHeight() + AB.db.microbar.yoffset*(height-1)) + 1);
 	microbarS:SetScale(AB.db.microbar.scale)
 end
@@ -133,337 +119,123 @@ local function Letter_OnLeave()
 	end
 end
 
-function AB:SbuttonButtonsScripts() --Setting scripts to symbol buttons
-	--Character
-	do
-		CharB:SetScript("OnClick", function(self)
-			if CharacterFrame:IsShown() then
-				HideUIPanel(CharacterFrame)
-			else
-				ShowUIPanel(CharacterFrame)
-			end
-		end)
-		
-		CharB:HookScript('OnEnter', function(self)
-			GameTooltip:SetOwner(CharB, "ANCHOR_RIGHT", 0, 29)
-			GameTooltip:SetText(CHARACTER_BUTTON)
-			GameTooltip:Show()
-			Letter_OnEnter()
-		end)
-		
-		CharB:HookScript("OnLeave", function(self)
-			GameTooltip:Hide()
+function AB:CreateSymbolButton(name, text, tooltip, click)
+	local button = CreateFrame("Button", name, microbarS)
+	button:SetScript("OnClick", click)
+	if tooltip then
+		button:SetScript("OnEnter", function(self)
 			Letter_OnLeave()
-		end)
-	end
-	
-	--Spellbook
-	do
-		SpellB:SetScript("OnClick", function(self)
-			if SpellBookFrame:IsShown() then
-				HideUIPanel(SpellBookFrame)
-			else
-				ShowUIPanel(SpellBookFrame)
-			end
-		end)
-		
-		SpellB:HookScript('OnEnter', function(self)
-			GameTooltip:SetOwner(SpellB, "ANCHOR_RIGHT", 0, 29)
-			GameTooltip:SetText(SPELLBOOK_ABILITIES_BUTTON)
+			GameTooltip:SetOwner(self)
+			GameTooltip:AddLine(tooltip, 1, 1, 1, 1, 1, 1)
 			GameTooltip:Show()
-			Letter_OnEnter()
 		end)
-		
-		SpellB:HookScript("OnLeave", function(self)
-			GameTooltip:Hide()
+		button:SetScript("OnLeave", function(self)
 			Letter_OnLeave()
+			GameTooltip:Hide() 
 		end)
+	else
+		button:HookScript('OnEnter', Letter_OnEnter)
+		button:HookScript('OnEnter', Letter_OnLeave)
 	end
-	
-	--Talents
-	do
-		TalentB:SetScript("OnClick", function(self)
-			if UnitLevel("player") >= 10 then
-				if PlayerTalentFrame then
-					if PlayerTalentFrame:IsShown() then
-						HideUIPanel(PlayerTalentFrame)
-					else
-						ShowUIPanel(PlayerTalentFrame)
-					end
-				else
-					LoadAddOn("Blizzard_TalentUI")
-				
-					ShowUIPanel(PlayerTalentFrame)
-				end
-			end
-		end)
-		
-		TalentB:HookScript('OnEnter', function(self)
-			GameTooltip:SetOwner(TalentB, "ANCHOR_RIGHT", 0, 29)
-			GameTooltip:SetText(TALENTS_BUTTON)
-			GameTooltip:Show()
-			Letter_OnEnter()
-		end)
-		
-		TalentB:HookScript("OnLeave", function(self)
-			GameTooltip:Hide()
-			Letter_OnLeave()
-		end)
-	end
-	
-	--Achievements
-	do
-		AchievB:SetScript("OnClick", function(self)
-			ToggleAchievementFrame()
-		end)
-		
-		AchievB:HookScript('OnEnter', function(self)
-			GameTooltip:SetOwner(AchievB, "ANCHOR_RIGHT", 0, 29)
-			GameTooltip:SetText(ACHIEVEMENT_BUTTON)
-			GameTooltip:Show()
-			Letter_OnEnter()
-		end)
-		
-		AchievB:HookScript("OnLeave", function(self)
-			GameTooltip:Hide()
-			Letter_OnLeave()
-		end)
-	end
-	
-	--Questlog
-	do
-		QuestB:SetScript("OnClick", function(self)
-			if WorldMapFrame:IsShown() then
-				HideUIPanel(WorldMapFrame)
-			else
-				ShowUIPanel(WorldMapFrame)
-			end
-		end)
-		
-		QuestB:HookScript('OnEnter', function(self)
-			GameTooltip:SetOwner(QuestB, "ANCHOR_RIGHT", 0, 29)
-			GameTooltip:SetText(QUESTLOG_BUTTON)
-			GameTooltip:Show()
-			Letter_OnEnter()
-		end)
-		
-		QuestB:HookScript("OnLeave", function(self)
-			GameTooltip:Hide()
-			Letter_OnLeave()
-		end)
-	end
-	
-	--Guild
-	do
-		GuildB:SetScript("OnClick", function(self)
-			if GuildFrame or LookingForGuildFrame then
-				if GuildFrame:IsShown() or (LookingForGuildFrame and LookingForGuildFrame:IsShown()) then
-						if IsInGuild() then HideUIPanel(GuildFrame) else HideUIPanel(LookingForGuildFrame) end
-					else
-						if IsInGuild() then ShowUIPanel(GuildFrame) else ShowUIPanel(LookingForGuildFrame) end
-				end
-			else
-				LoadAddOn("Blizzard_GuildUI")
-				LoadAddOn("Blizzard_LookingForGuildUI")
-				if IsInGuild() then
-					ShowUIPanel(GuildFrame)
-				else
-					ShowUIPanel(LookingForGuildFrame)
-				end
-			end
-		end)
-		
-		GuildB:HookScript('OnEnter', function(self)
-			GameTooltip:SetOwner(GuildB, "ANCHOR_RIGHT", 0, 29)
-			GameTooltip:SetText(GUILD)
-			GameTooltip:Show()
-			Letter_OnEnter()
-		end)
-		
-		GuildB:HookScript("OnLeave", function(self)
-			GameTooltip:Hide()
-			Letter_OnLeave()
-		end)
-	end
-	
-	--LFD
-	do
-		LFDB:SetScript("OnClick", function(self)
-			ToggleLFDParentFrame()
-		end)
-		
-		LFDB:HookScript('OnEnter', function(self)
-			GameTooltip:SetOwner(LFDB, "ANCHOR_RIGHT", 0, 29)
-			GameTooltip:SetText(DUNGEONS_BUTTON)
-			GameTooltip:Show()
-			Letter_OnEnter()
-		end)
-		
-		LFDB:HookScript("OnLeave", function(self)
-			GameTooltip:Hide()
-			Letter_OnLeave()
-		end)
-	end
-	
-	--Mounts and pets
-	do
-		CompB:SetScript("OnClick", function(self)
-			TogglePetJournal()
-		end)
-		
-		CompB:HookScript('OnEnter', function(self)
-			GameTooltip:SetOwner(CompB, "ANCHOR_RIGHT", 0, 29)
-			GameTooltip:SetText(MOUNTS_AND_PETS)
-			GameTooltip:Show()
-			Letter_OnEnter()
-		end)
-		
-		CompB:HookScript("OnLeave", function(self)
-			GameTooltip:Hide()
-			Letter_OnLeave()
-		end)
-	end
-	
-	--Journal
-	do
-		EJB:SetScript("OnClick", function(self)
-			if EncounterJournal then
-				if EncounterJournal:IsShown() then
-					HideUIPanel(EncounterJournal)
-				else
-					ShowUIPanel(EncounterJournal)
-				end
-			else
-				LoadAddOn("Blizzard_EncounterJournal")
-				
-				ShowUIPanel(EncounterJournal)
-			end
-		end)
-		
-		EJB:HookScript('OnEnter', function(self)
-			GameTooltip:SetOwner(EJB, "ANCHOR_RIGHT", 0, 29)
-			GameTooltip:SetText(ENCOUNTER_JOURNAL)
-			GameTooltip:Show()
-			Letter_OnEnter()
-		end)
-		
-		EJB:HookScript("OnLeave", function(self)
-			GameTooltip:Hide()
-			Letter_OnLeave()
-		end)
-	end
-	
-	--Menu
-	do
-		MenuB:SetScript("OnClick", function(self)
-			if GameMenuFrame:IsShown() then
-					HideUIPanel(GameMenuFrame)
-				else
-					ShowUIPanel(GameMenuFrame)
-				end
-		end)
-		
-		MenuB:HookScript('OnEnter', function(self)
-			GameTooltip:SetOwner(MenuB, "ANCHOR_RIGHT", 0, 29)
-			GameTooltip:SetText(MAINMENU_BUTTON)
-			GameTooltip:Show()
-			Letter_OnEnter()
-		end)
-		
-		MenuB:HookScript("OnLeave", function(self)
-			GameTooltip:Hide()
-			Letter_OnLeave()
-		end)
-	end
-	
-	--Help/Shop
-	do
-		if E.db.actionbar.microbar.shop then
-			HelpB:SetScript("OnClick", function(self)
-				ToggleStoreUI()
-			end)
-		else
-			HelpB:SetScript("OnClick", function(self)
-				ToggleHelpFrame()
-			end)
-		end
-		
-		HelpB:HookScript('OnEnter', function(self)
-			GameTooltip:SetOwner(HelpB, "ANCHOR_RIGHT", 0, 29)
-			if E.db.actionbar.microbar.shop then
-				GameTooltip:SetText(StoreMicroButton.tooltipText)
-			else
-				GameTooltip:SetText(HELP_BUTTON)
-			end
-			GameTooltip:Show()
-			Letter_OnEnter()
-		end)
-		
-		HelpB:HookScript("OnLeave", function(self)
-			GameTooltip:Hide()
-			Letter_OnLeave()
-		end)
-	end
-end
-
-function AB:HandleSymbolbuttons(button)
-	assert(button, 'Invalid micro button name.')
-	button:SetParent(microbarS)
-	button:CreateBackdrop()
-	button:HookScript('OnEnter', Letter_OnEnter)
-	button:HookScript('OnLeave', Letter_OnLeave)
-	
-	button.text = button:CreateFontString(nil, 'OVERLAY')
-	button.text:SetFont(E["media"].normFont, 10)
-	for b, s in pairs (Sletters) do
-		if b == button:GetName() then
-			button.text:SetText(s)
-			break
-		end
-	end
-	button.text:SetPoint("CENTER", button)
-
 	S:HandleButton(button)
+	
+	if text then
+		local t = button:CreateFontString(nil,"OVERLAY",button)
+		t:FontTemplate()
+		t:SetPoint("CENTER", button, 'CENTER', 0, -1)
+		t:SetJustifyH("CENTER")
+		t:SetText(text)
+		button:SetFontString(t)
+	end
+
+	tinsert(Sbuttons, button)
 end
 
 function AB:SetupSymbolBar()
 	microbarS = CreateFrame("Frame", "MicroParentS", E.UIParent)
-
-	CharB = CreateFrame("Button", "CharacterB", microbarS)
-	SpellB = CreateFrame("Button", "SpellbookB", microbarS)
-	TalentB = CreateFrame("Button", "TalentsB", microbarS)
-	AchievB = CreateFrame("Button", "AchievementB", microbarS)
-	QuestB = CreateFrame("Button", "QuestB", microbarS)
-	GuildB = CreateFrame("Button", "GuildB", microbarS)
-	LFDB = CreateFrame("Button", "LFDB", microbarS)
-	CompB = CreateFrame("Button", "CompanionB", microbarS)
-	EJB = CreateFrame("Button", "JournalB", microbarS)
-	MenuB = CreateFrame("Button", "MenuSysB", microbarS)
-	HelpB = CreateFrame("Button", "TicketB", microbarS)
-	
-	Sbuttons = {
-		CharB,
-		SpellB,
-		TalentB,
-		AchievB,
-		QuestB,
-		GuildB,
-		LFDB,
-		EJB,
-		CompB,
-		HelpB,
-		MenuB
-	}
-	
 	microbarS:SetPoint("CENTER", ElvUI_MicroBar, 0, 0)
 	microbarS:SetScript('OnEnter', Letter_OnEnter)
 	microbarS:SetScript('OnLeave', Letter_OnLeave)
-	for i=1, #Sbuttons do
-		self:HandleSymbolbuttons(Sbuttons[i])
-	end
-	E.FrameLocks['MicroParentS'] = true
-	microbarS:SetScript('OnShow', AB.MicroScale)
-	ElvUI_MicroBar:SetScript('OnShow', AB.MicroScale)
+
+	AB:CreateSymbolButton("EMB_Character", "C", CHARACTER_BUTTON,  function() 
+		if CharacterFrame:IsShown() then
+			HideUIPanel(CharacterFrame)
+		else
+			ShowUIPanel(CharacterFrame)
+		end
+	end)
+	AB:CreateSymbolButton("EMB_Spellbook", "S", SPELLBOOK_ABILITIES_BUTTON,  function() 
+		if SpellBookFrame:IsShown() then
+			HideUIPanel(SpellBookFrame)
+		else
+			ShowUIPanel(SpellBookFrame)
+		end
+	end)
+	AB:CreateSymbolButton("EMB_Talents", "T", TALENTS_BUTTON,  function()
+		if UnitLevel("player") >= 10 then
+			if PlayerTalentFrame then
+				if PlayerTalentFrame:IsShown() then
+					HideUIPanel(PlayerTalentFrame)
+				else
+					ShowUIPanel(PlayerTalentFrame)
+				end
+			else
+				LoadAddOn("Blizzard_TalentUI")
+			
+				ShowUIPanel(PlayerTalentFrame)
+			end
+		end
+	end)
+	AB:CreateSymbolButton("EMB_Achievement", "A", ACHIEVEMENT_BUTTON,  function() ToggleAchievementFrame() end)
+	AB:CreateSymbolButton("EMB_Quest", "Q", QUESTLOG_BUTTON,  function()
+		if WorldMapFrame:IsShown() then
+			HideUIPanel(WorldMapFrame)
+		else
+			ShowUIPanel(WorldMapFrame)
+		end
+	end)
+	AB:CreateSymbolButton("EMB_Guild", "G", GUILD,  function()
+		if GuildFrame or LookingForGuildFrame then
+			if GuildFrame:IsShown() or (LookingForGuildFrame and LookingForGuildFrame:IsShown()) then
+					if IsInGuild() then HideUIPanel(GuildFrame) else HideUIPanel(LookingForGuildFrame) end
+				else
+					if IsInGuild() then ShowUIPanel(GuildFrame) else ShowUIPanel(LookingForGuildFrame) end
+			end
+		else
+			LoadAddOn("Blizzard_GuildUI")
+			LoadAddOn("Blizzard_LookingForGuildUI")
+			if IsInGuild() then
+				ShowUIPanel(GuildFrame)
+			else
+				ShowUIPanel(LookingForGuildFrame)
+			end
+		end
+	end)
+	AB:CreateSymbolButton("EMB_LFD", "L", DUNGEONS_BUTTON,  function() ToggleLFDParentFrame() end)
+	AB:CreateSymbolButton("EMB_Journal", "J", ENCOUNTER_JOURNAL,  function()
+		if EncounterJournal then
+			if EncounterJournal:IsShown() then
+				HideUIPanel(EncounterJournal)
+			else
+				ShowUIPanel(EncounterJournal)
+			end
+		else
+			LoadAddOn("Blizzard_EncounterJournal")
+			
+			ShowUIPanel(EncounterJournal)
+		end
+	end)
+	AB:CreateSymbolButton("EMB_Companions", "MP", MOUNTS_AND_PETS,  function() TogglePetJournal() end)
+	AB:CreateSymbolButton("EMB_MenuSys", "M", MAINMENU_BUTTON,  function()
+		if GameMenuFrame:IsShown() then
+				HideUIPanel(GameMenuFrame)
+			else
+				ShowUIPanel(GameMenuFrame)
+			end
+	end)
+	AB:CreateSymbolButton("EMB_Shop", "Sh", StoreMicroButton.tooltipText,  function() ToggleStoreUI() end)
+	AB:CreateSymbolButton("EMB_Help", "?", HELP_BUTTON,  function() ToggleHelpFrame() end)
+	
 	AB:UpdateMicroPositionDimensions()
 end
 
@@ -474,58 +246,79 @@ if(C_StorePublic.IsEnabled()) then
 		__buttons[i + 1] = MICRO_BUTTONS[i]
 	end
 end
+local __Sbuttons = {}
+if(C_StorePublic.IsEnabled()) then
+	__Sbuttons[11] = EMB_Shop
+end
 
-AB.UpdateMicroPositionDimensionsMB = AB.UpdateMicroPositionDimensions
 function AB:UpdateMicroPositionDimensions()
-	AB.UpdateMicroPositionDimensionsMB(self)
-	if not CharB then return end
-	microbarS:SetAlpha(AB.db.microbar.alpha)
-	AB:MenuShow()
+	if not ElvUI_MicroBar then return; end
 	local numRows = 1
+	local prevButton = ElvUI_MicroBar
+	for i=1, (#MICRO_BUTTONS - 1) do
+		local button = _G[__buttons[i]] or _G[MICRO_BUTTONS[i]]
+		local lastColumnButton = i-self.db.microbar.buttonsPerRow;
+		lastColumnButton = _G[__buttons[lastColumnButton]] or _G[MICRO_BUTTONS[lastColumnButton]]
+		button:Width(28)
+		button:Height(58)
+		button:ClearAllPoints();
+
+		if prevButton == ElvUI_MicroBar then
+			button:SetPoint("TOPLEFT", prevButton, "TOPLEFT", -2, 28)
+		elseif (i - 1) % self.db.microbar.buttonsPerRow == 0 then
+			button:Point('TOP', lastColumnButton, 'BOTTOM', 0, 27 - self.db.microbar.yoffset);	
+			numRows = numRows + 1
+		else
+			button:Point('LEFT', prevButton, 'RIGHT', -3 + self.db.microbar.xoffset, 0);
+		end
+
+		prevButton = button
+	end
+
+	if AB.db.microbar.mouseover then
+		ElvUI_MicroBar:SetAlpha(0)
+	else
+		ElvUI_MicroBar:SetAlpha(self.db.microbar.alpha)
+	end	
+	local barWidth = (((CharacterMicroButton:GetWidth() - 0.5) * (#MICRO_BUTTONS - 2)) - 3) / numRows
+	local barHeight = (CharacterMicroButton:GetHeight() - 27) * numRows
+	ElvUI_MicroBar:SetWidth(barWidth)
+	ElvUI_MicroBar:Height(barHeight)
+	
+
+	if self.db.microbar.enabled then
+		ElvUI_MicroBar:Show()
+	else
+		ElvUI_MicroBar:Hide()
+	end		
+
+	if not Sbuttons[1] then return end
+	AB:MenuShow()
 	local numRowsS = 1
-	for i=1, #Sbuttons do
-		local button = Sbuttons[i]
-		local prevButton = Sbuttons[i-1] or microbarS
-		local lastColumnButton = Sbuttons[i-AB.db.microbar.buttonsPerRow];
+	local prevButtonS = microbarS
+	for i=1, (#Sbuttons - 1) do
+		local button = __Sbuttons[i] or Sbuttons[i]
 		
+		local lastColumnButton = i-self.db.microbar.buttonsPerRow
+		lastColumnButton = __Sbuttons[lastColumnButton] or Sbuttons[lastColumnButton]
 		button:Width(bw)
 		button:Height(bh)
 		button:ClearAllPoints();
 
-		if prevButton == microbarS then
-			button:SetPoint("TOPLEFT", prevButton, "TOPLEFT", E.PixelMode and 1 or 2, E.PixelMode and -1 or -2)
+		if prevButtonS == microbarS then
+			button:SetPoint("TOPLEFT", prevButtonS, "TOPLEFT", E.PixelMode and 1 or 2, E.PixelMode and -1 or -2)
 		elseif (i - 1) % AB.db.microbar.buttonsPerRow == 0 then
 			button:Point('TOP', lastColumnButton, 'BOTTOM', 0, (E.PixelMode and -3 or -5)- AB.db.microbar.yoffset);	
 			numRowsS = numRowsS + 1
 		else
-			button:Point('LEFT', prevButton, 'RIGHT', (E.PixelMode and 3 or 5) + AB.db.microbar.xoffset, 0);
+			button:Point('LEFT', prevButtonS, 'RIGHT', (E.PixelMode and 3 or 5) + AB.db.microbar.xoffset, 0);
 		end
+		prevButtonS = button
 	end
-	
-	if AB.db.microbar.xoffset ~= 0 or AB.db.microbar.yoffset ~= 0 then
-		local prevButton = ElvUI_MicroBar
-		for i=1, (#MICRO_BUTTONS - 1) do
-			local button = _G[__buttons[i]] or _G[MICRO_BUTTONS[i]]
-			local lastColumnButton = i-self.db.microbar.buttonsPerRow;
-			lastColumnButton = _G[__buttons[lastColumnButton]] or _G[MICRO_BUTTONS[lastColumnButton]]
 
-			button:ClearAllPoints();
+	microbarS:SetWidth(barWidth)
+	microbarS:SetHeight(barHeight)
 	
-			if prevButton == ElvUI_MicroBar then
-				button:SetPoint("TOPLEFT", prevButton, "TOPLEFT", -2, 28)
-			elseif (i - 1) % self.db.microbar.buttonsPerRow == 0 then
-				button:Point('TOP', lastColumnButton, 'BOTTOM', 0, 27 - AB.db.microbar.yoffset);	
-				numRows = numRows + 1
-			else
-				button:Point('LEFT', prevButton, 'RIGHT', -3 + AB.db.microbar.xoffset, 0);
-			end
-	
-			prevButton = button
-		end
-	end
-	
-	microbarS:SetWidth(ElvUI_MicroBar:GetWidth())
-	microbarS:SetHeight(ElvUI_MicroBar:GetHeight())
 	if AB.db.microbar.mouseover then
 		microbarS:SetAlpha(0)
 	elseif not AB.db.microbar.mouseover and  AB.db.microbar.symbolic then
@@ -555,15 +348,32 @@ end
 
 AB.InitializeMB = AB.Initialize
 function AB:Initialize()
-	if E.db.actionbar.microbar.shop then
-		Sletters.TicketB = "Sh"
-	else
-		Sletters.TicketB = "?"
-	end
 	AB.InitializeMB(self)
 	EP:RegisterPlugin(addon,AB.GetOptions)
 	AB:SetupSymbolBar()
-	AB:SbuttonButtonsScripts()
 	AB:MicroScale()
 	AB:MenuShow()
+	hooksecurefunc("UpdateMicroButtons", function()
+		if E.db.actionbar.microbar.shop then 
+			__buttons[10] = "StoreMicroButton"
+			for i=10, #MICRO_BUTTONS do
+				__buttons[i + 1] = MICRO_BUTTONS[i]
+			end
+			HelpMicroButton:Hide();
+			StoreMicroButton:Show();
+			__Sbuttons[11] = EMB_Shop
+			EMB_Shop:Show()
+			EMB_Help:Hide()
+		else
+			for i=1, #MICRO_BUTTONS do
+				__buttons[i] = MICRO_BUTTONS[i]
+			end
+			HelpMicroButton:Show();
+			StoreMicroButton:Hide();
+			__Sbuttons[11] = EMB_Help
+			EMB_Shop:Hide()
+			EMB_Help:Show()
+		end
+		AB:UpdateMicroPositionDimensions()
+	end)
 end
