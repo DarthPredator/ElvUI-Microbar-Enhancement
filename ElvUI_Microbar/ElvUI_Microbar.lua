@@ -124,7 +124,7 @@ function AB:CreateSymbolButton(name, text, tooltip, click)
 	button:SetScript("OnClick", click)
 	if tooltip then
 		button:SetScript("OnEnter", function(self)
-			Letter_OnLeave()
+			Letter_OnEnter()
 			GameTooltip:SetOwner(self)
 			GameTooltip:AddLine(tooltip, 1, 1, 1, 1, 1, 1)
 			GameTooltip:Show()
