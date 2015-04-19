@@ -225,7 +225,7 @@ function AB:SetupSymbolBar()
 			ShowUIPanel(EncounterJournal)
 		end
 	end)
-	AB:CreateSymbolButton("EMB_Companions", "MP", MOUNTS_AND_PETS,  function() TogglePetJournal() end)
+	AB:CreateSymbolButton("EMB_Companions", "MP", MOUNTS_AND_PETS,  function() ToggleCollectionsJournal() end)
 	AB:CreateSymbolButton("EMB_MenuSys", "M", MAINMENU_BUTTON,  function()
 		if GameMenuFrame:IsShown() then
 				HideUIPanel(GameMenuFrame)
