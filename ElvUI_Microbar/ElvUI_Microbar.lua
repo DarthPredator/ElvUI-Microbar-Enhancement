@@ -29,7 +29,7 @@ P.actionbar.microbar.shop = true
 P.actionbar.microbar.xoffset = 0
 P.actionbar.microbar.yoffset = 0
 
-local bw, bh = E.PixelMode and 22 or 20, E.PixelMode and 28 or 26
+local bw, bh = E.PixelMode and 23 or 21, E.PixelMode and 30 or 28
 
 local Sbuttons = {}
 
@@ -50,8 +50,16 @@ E.Options.args.actionbar.args.microbar.args.spacer = {
 	type = "description",
 	name = "",
 }
-E.Options.args.actionbar.args.microbar.args.symbolic = {
+E.Options.args.actionbar.args.microbar.args.backdrop = {
 	order = 7,
+	type = 'toggle',
+	name = L["Backdrop"],
+	disabled = function() return not AB.db.microbar.enabled end,
+	get = function(info) return AB.db.microbar.backdrop end,
+	set = function(info, value) AB.db.microbar.backdrop = value; AB:UpdateMicroPositionDimensions() end,
+}
+E.Options.args.actionbar.args.microbar.args.symbolic = {
+	order = 8,
 	type = 'toggle',
 	name = L["As Letters"],
 	desc = L["Replace icons with just letters.\n|cffFF0000Warning:|r this will disable original Blizzard's tooltips for microbar."],
@@ -60,7 +68,7 @@ E.Options.args.actionbar.args.microbar.args.symbolic = {
 	set = function(info, value) AB.db.microbar.symbolic = value; AB:MenuShow(); end,
 }
 E.Options.args.actionbar.args.microbar.args.shop = {
-	order = 8,
+	order = 9,
 	type = "toggle",
 	name = StoreMicroButton.tooltipText,
 	desc = L["Show in game shop button, if disabled will show help button instead."],
@@ -69,12 +77,12 @@ E.Options.args.actionbar.args.microbar.args.shop = {
 	set = function(info, value) AB.db.microbar.shop = value; UpdateMicroButtons() end,
 }
 E.Options.args.actionbar.args.microbar.args.spacer2 = {
-	order = 9,
+	order = 10,
 	type = "description",
 	name = "",
 }
 E.Options.args.actionbar.args.microbar.args.xoffset = {
-	order = 10,
+	order = 11,
 	type = "range",
 	name = L["X-Offset"],
 	min = -20, max = 20, step = 1,
@@ -82,7 +90,7 @@ E.Options.args.actionbar.args.microbar.args.xoffset = {
 	set = function(info, value) AB.db.microbar.xoffset = value; AB:UpdateMicroPositionDimensions() end,
 }
 E.Options.args.actionbar.args.microbar.args.yoffset = {
-	order = 11,
+	order = 12,
 	type = "range",
 	name = L["Y-Offset"],
 	min = -20, max = 20, step = 1,
@@ -95,8 +103,8 @@ end
 function AB:MicroScale()
 	local height = floor(12/AB.db.microbar.buttonsPerRow)
 	ElvUI_MicroBar:SetScale(AB.db.microbar.scale)
-	ElvUI_MicroBar.mover:SetWidth(AB.db.microbar.scale * (ElvUI_MicroBar:GetWidth() + AB.db.microbar.xoffset*(AB.db.microbar.buttonsPerRow-1)))
-	ElvUI_MicroBar.mover:SetHeight(AB.db.microbar.scale * (ElvUI_MicroBar:GetHeight() + AB.db.microbar.yoffset*(height-1)) + 1);
+	ElvUI_MicroBar.mover:SetWidth(AB.MicroWidth)
+	ElvUI_MicroBar.mover:SetHeight(AB.MicroHeight);
 	microbarS:SetScale(AB.db.microbar.scale)
 end
 
@@ -264,7 +272,7 @@ function AB:UpdateMicroPositionDimensions()
 		button:ClearAllPoints();
 
 		if prevButton == ElvUI_MicroBar then
-			button:SetPoint("TOPLEFT", prevButton, "TOPLEFT", -2, 28)
+			button:SetPoint("TOPLEFT", prevButton, "TOPLEFT", -1, 27)
 		elseif (i - 1) % self.db.microbar.buttonsPerRow == 0 then
 			button:Point('TOP', lastColumnButton, 'BOTTOM', 0, 27 - self.db.microbar.yoffset);	
 			numRows = numRows + 1
@@ -280,11 +288,14 @@ function AB:UpdateMicroPositionDimensions()
 	else
 		ElvUI_MicroBar:SetAlpha(self.db.microbar.alpha)
 	end	
-	local barWidth = (((CharacterMicroButton:GetWidth() - 0.5) * (#MICRO_BUTTONS - 2)) - 3) / numRows
-	local barHeight = (CharacterMicroButton:GetHeight() - 27) * numRows
-	ElvUI_MicroBar:SetWidth(barWidth)
-	ElvUI_MicroBar:Height(barHeight)
+	AB.MicroWidth = ((CharacterMicroButton:GetWidth() - 3) * self.db.microbar.buttonsPerRow)+(self.db.microbar.xoffset*(self.db.microbar.buttonsPerRow-1))+1
+	AB.MicroHeight = ((CharacterMicroButton:GetHeight() - 26) * numRows)+((numRows-1)*self.db.microbar.yoffset)-(numRows-1)
+	ElvUI_MicroBar:Width(AB.MicroWidth)
+	ElvUI_MicroBar:Height(AB.MicroHeight)
 	
+	if not ElvUI_MicroBar.backdrop then
+		ElvUI_MicroBar:CreateBackdrop("Transparent")
+	end
 
 	if self.db.microbar.enabled then
 		ElvUI_MicroBar:Show()
@@ -306,24 +317,37 @@ function AB:UpdateMicroPositionDimensions()
 		button:ClearAllPoints();
 
 		if prevButtonS == microbarS then
-			button:SetPoint("TOPLEFT", prevButtonS, "TOPLEFT", E.PixelMode and 1 or 2, E.PixelMode and -1 or -2)
+			button:SetPoint("TOPLEFT", prevButtonS, "TOPLEFT", 1, -1)
 		elseif (i - 1) % AB.db.microbar.buttonsPerRow == 0 then
-			button:Point('TOP', lastColumnButton, 'BOTTOM', 0, (E.PixelMode and -3 or -5)- AB.db.microbar.yoffset);	
+			button:Point('TOP', lastColumnButton, 'BOTTOM', 0, (E.PixelMode and -1 or -3)- AB.db.microbar.yoffset);	
 			numRowsS = numRowsS + 1
 		else
-			button:Point('LEFT', prevButtonS, 'RIGHT', (E.PixelMode and 3 or 5) + AB.db.microbar.xoffset, 0);
+			button:Point('LEFT', prevButtonS, 'RIGHT', (E.PixelMode and 2 or 4) + AB.db.microbar.xoffset, 0);
 		end
 		prevButtonS = button
 	end
 
-	microbarS:SetWidth(barWidth)
-	microbarS:SetHeight(barHeight)
+	microbarS:Width(AB.MicroWidth)
+	microbarS:Height(AB.MicroHeight)
+	
+	if not microbarS.backdrop then
+		microbarS:CreateBackdrop("Transparent")
+	end
+	
+	if AB.db.microbar.backdrop then
+		ElvUI_MicroBar.backdrop:Show()
+		microbarS.backdrop:Show()
+	else
+		ElvUI_MicroBar.backdrop:Hide()
+		microbarS.backdrop:Hide()
+	end
 	
 	if AB.db.microbar.mouseover then
 		microbarS:SetAlpha(0)
 	elseif not AB.db.microbar.mouseover and  AB.db.microbar.symbolic then
 		microbarS:SetAlpha(AB.db.microbar.alpha)
 	end
+	
 	AB:MicroScale()
 end
 
@@ -346,13 +370,12 @@ function AB:MenuShow()
 	end
 end
 
-AB.InitializeMB = AB.Initialize
-function AB:Initialize()
-	AB.InitializeMB(self)
+function AB:EnhancementInit()
 	EP:RegisterPlugin(addon,AB.GetOptions)
 	AB:SetupSymbolBar()
 	AB:MicroScale()
 	AB:MenuShow()
+	
 	hooksecurefunc("UpdateMicroButtons", function()
 		if E.db.actionbar.microbar.shop then 
 			__buttons[10] = "StoreMicroButton"
@@ -377,3 +400,5 @@ function AB:Initialize()
 		AB:UpdateMicroPositionDimensions()
 	end)
 end
+
+hooksecurefunc(AB, "Initialize", AB.EnhancementInit)
