@@ -46,7 +46,7 @@ E.Options.args.actionbar.args.microbar.args.scale = {
 	isPercent = true,
 	min = 0.3, max = 2, step = 0.01,
 	get = function(info) return AB.db.microbar.scale end,
-	set = function(info, value) AB.db.microbar.scale = value; AB:MicroScale(); end,
+	set = function(info, value) AB.db.microbar.scale = value; AB:UpdateMicroPositionDimensions() end,
 }
 E.Options.args.actionbar.args.microbar.args.spacer = {
 	order = 6,
@@ -105,9 +105,9 @@ end
 --Set Scale
 function AB:MicroScale()
 	local height = floor(12/AB.db.microbar.buttonsPerRow)
+	ElvUI_MicroBar.mover:SetWidth(AB.MicroWidth*AB.db.microbar.scale)
+	ElvUI_MicroBar.mover:SetHeight(AB.MicroHeight*AB.db.microbar.scale);
 	ElvUI_MicroBar:SetScale(AB.db.microbar.scale)
-	ElvUI_MicroBar.mover:SetWidth(AB.MicroWidth)
-	ElvUI_MicroBar.mover:SetHeight(AB.MicroHeight);
 	microbarS:SetScale(AB.db.microbar.scale)
 end
 
