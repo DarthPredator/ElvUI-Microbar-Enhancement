@@ -22,12 +22,15 @@ local AB = E:GetModule('ActionBars');
 local EP = LibStub("LibElvUIPlugin-1.0")
 local S = E:GetModule('Skins')
 local addon = ...
+local UB
 
 P.actionbar.microbar.scale = 1
 P.actionbar.microbar.symbolic = false
 P.actionbar.microbar.shop = true
 P.actionbar.microbar.xoffset = 0
 P.actionbar.microbar.yoffset = 0
+P.actionbar.microbar.backdrop = false
+
 
 local bw, bh = E.PixelMode and 23 or 21, E.PixelMode and 30 or 28
 
@@ -370,6 +373,10 @@ function AB:MenuShow()
 	end
 end
 
+-- function AB:CreateUIButton()
+	-- UB:CreateDropdownButton(true, "Addon", "Microbar", L["Micro Bar"], L["Micro Bar"], nil, function() E:ToggleConfig(); LibStub("AceConfigDialog-3.0"):SelectGroup("ElvUI", "actionbar", "microbar") end)
+-- end
+
 function AB:EnhancementInit()
 	EP:RegisterPlugin(addon,AB.GetOptions)
 	AB:SetupSymbolBar()
@@ -399,6 +406,9 @@ function AB:EnhancementInit()
 		end
 		AB:UpdateMicroPositionDimensions()
 	end)
+	-- if not IsAddOnLoaded("ElvUI_SLE") then return end
+	-- UB = E:GetModule('SLE_UIButtons');
+	-- hooksecurefunc(UB, "InsertButtons", AB.CreateUIButton)
 end
 
 hooksecurefunc(AB, "Initialize", AB.EnhancementInit)
