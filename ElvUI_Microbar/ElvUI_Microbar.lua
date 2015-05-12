@@ -30,11 +30,14 @@ P.actionbar.microbar.shop = true
 P.actionbar.microbar.xoffset = 0
 P.actionbar.microbar.yoffset = 0
 P.actionbar.microbar.backdrop = false
+P.actionbar.microbar.colorS = {r = 1,g = 1,b = 1 }
+P.actionbar.microbar.classColor = false
 
 
 local bw, bh = E.PixelMode and 23 or 21, E.PixelMode and 30 or 28
 
 local Sbuttons = {}
+local ColorTable
 
 --Options
 function AB:GetOptions()
@@ -100,6 +103,36 @@ E.Options.args.actionbar.args.microbar.args.yoffset = {
 	get = function(info) return AB.db.microbar.yoffset end,
 	set = function(info, value) AB.db.microbar.yoffset = value; AB:UpdateMicroPositionDimensions() end,
 }
+E.Options.args.actionbar.args.microbar.args.spacer3 = {
+	order = 13,
+	type = "description",
+	name = "",
+}
+E.Options.args.actionbar.args.microbar.args.color = {
+	order = 14,
+	type = 'color',
+	name = L["Text Color"],
+	get = function(info)
+		local t = AB.db.microbar.colorS
+		local d = P.actionbar.microbar.colorS
+		return t.r, t.g, t.b, d.r, d.g, d.b
+	end,
+	set = function(info, r, g, b)
+		E.db.sle.minimap.instance.colorS = {}
+		local t = AB.db.microbar.colorS
+		t.r, t.g, t.b = r, g, b
+		AB:SetSymbloColor()
+	end,
+	disabled = function() return not AB.db.microbar.enabled or AB.db.microbar.classColor end,
+}
+E.Options.args.actionbar.args.microbar.args.shop = {
+	order = 15,
+	type = "toggle",
+	name = CLASS,
+	disabled = function() return not AB.db.microbar.enabled end,
+	get = function(info) return AB.db.microbar.classColor end,
+	set = function(info, value) AB.db.microbar.classColor = value; AB:SetSymbloColor() end,
+}
 end
 
 --Set Scale
@@ -151,15 +184,27 @@ function AB:CreateSymbolButton(name, text, tooltip, click)
 	S:HandleButton(button)
 	
 	if text then
-		local t = button:CreateFontString(nil,"OVERLAY",button)
-		t:FontTemplate()
-		t:SetPoint("CENTER", button, 'CENTER', 0, -1)
-		t:SetJustifyH("CENTER")
-		t:SetText(text)
-		button:SetFontString(t)
+		button.text = button:CreateFontString(nil,"OVERLAY",button)
+		button.text:FontTemplate()
+		button.text:SetPoint("CENTER", button, 'CENTER', 0, -1)
+		button.text:SetJustifyH("CENTER")
+		button.text:SetText(text)
+		button:SetFontString(button.text)
 	end
 
 	tinsert(Sbuttons, button)
+end
+
+local function GetColor()
+	local color = AB.db.microbar.colorS
+	return color.r*255, color.g*255, color.b*255
+end
+
+function AB:SetSymbloColor()
+	local color = AB.db.microbar.classColor and ColorTable or AB.db.microbar.colorS
+	for i = 1, #Sbuttons do
+		Sbuttons[i].text:SetTextColor(color.r, color.g, color.b)
+	end
 end
 
 function AB:SetupSymbolBar()
@@ -352,6 +397,7 @@ function AB:UpdateMicroPositionDimensions()
 	end
 	
 	AB:MicroScale()
+	AB:SetSymbloColor()
 end
 
 function AB:MenuShow()
@@ -378,6 +424,7 @@ end
 -- end
 
 function AB:EnhancementInit()
+	ColorTable = E.myclass == 'PRIEST' and E.PriestColors or RAID_CLASS_COLORS[E.myclass]
 	EP:RegisterPlugin(addon,AB.GetOptions)
 	AB:SetupSymbolBar()
 	AB:MicroScale()
