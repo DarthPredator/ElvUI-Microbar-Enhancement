@@ -1,9 +1,9 @@
-## Interface: 60200
+п»ї## Interface: 60200
 ## Title: |cff1784d1ElvUI |rMicrobar Enhancement
 ## Author: Darth Predator
 ## Version: 1.77
 ## Notes: A module for enhancing |cff1784d1ElvUI|r's microbar.
-## Notes-ruRU: Модуль для улучшения микроменю |cff1784d1ElvUI|r.
+## Notes-ruRU: РњРѕРґСѓР»СЊ РґР»СЏ СѓР»СѓС‡С€РµРЅРёСЏ РјРёРєСЂРѕРјРµРЅСЋ |cff1784d1ElvUI|r.
 ## eMail: darthpred@gmail.com
 ## URL: shadowmage.ru
 ## RequiredDeps: ElvUI
