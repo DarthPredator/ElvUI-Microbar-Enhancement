@@ -33,11 +33,37 @@ P.actionbar.microbar.backdrop = false
 P.actionbar.microbar.colorS = {r = 1,g = 1,b = 1 }
 P.actionbar.microbar.classColor = false
 
-
+-- GLOBALS: MICRO_BUTTONS, ElvUI_MicroBar, PlayerTalentFrame_Toggle
+local _G = _G
 local bw, bh = E.PixelMode and 23 or 21, E.PixelMode and 30 or 28
+local CLASS = CLASS
+local floor, tinsert = floor, tinsert
+local HideUIPanel, ShowUIPanel = HideUIPanel, ShowUIPanel
+local GameTooltip = GameTooltip
+local RAID_CLASS_COLORS = RAID_CLASS_COLORS
+local CHARACTER_BUTTON, SPELLBOOK_ABILITIES_BUTTON, TALENTS_BUTTON, ACHIEVEMENT_BUTTON, QUESTLOG_BUTTON, GUILD, DUNGEONS_BUTTON, ENCOUNTER_JOURNAL, COLLECTIONS, MAINMENU_BUTTON, HELP_BUTTON = CHARACTER_BUTTON, SPELLBOOK_ABILITIES_BUTTON, TALENTS_BUTTON, ACHIEVEMENT_BUTTON, QUESTLOG_BUTTON, GUILD, DUNGEONS_BUTTON, ENCOUNTER_JOURNAL, COLLECTIONS, MAINMENU_BUTTON, HELP_BUTTON
+local UnitLevel = UnitLevel
+local ToggleCharacter, ToggleSpellBook, ToggleAchievementFrame, ToggleQuestLog, ToggleGuildFrame, ToggleLFDParentFrame, ToggleEncounterJournal, ToggleCollectionsJournal, ToggleStoreUI, ToggleHelpFrame = ToggleCharacter, ToggleSpellBook, ToggleAchievementFrame, ToggleQuestLog, ToggleGuildFrame, ToggleLFDParentFrame, ToggleEncounterJournal, ToggleCollectionsJournal, ToggleStoreUI, ToggleHelpFrame
+local LoadAddOn = LoadAddOn
+local PERFORMANCEBAR_UPDATE_INTERVAL, PERFORMANCEBAR_MEDIUM_LATENCY, PERFORMANCEBAR_LOW_LATENCY = PERFORMANCEBAR_UPDATE_INTERVAL, PERFORMANCEBAR_MEDIUM_LATENCY, PERFORMANCEBAR_LOW_LATENCY
+local GetFileStreamingStatus, GetBackgroundLoadingStatus, GetNetStats = GetFileStreamingStatus, GetBackgroundLoadingStatus, GetNetStats
+local MainMenuBarPerformanceBarFrame_OnEnter = MainMenuBarPerformanceBarFrame_OnEnter
+local MicroButtonTooltipText = MicroButtonTooltipText
+local BLIZZARD_STORE = BLIZZARD_STORE
 
 local Sbuttons = {}
 local ColorTable
+local microbarS
+local __buttons = {}
+if(C_StorePublic.IsEnabled()) then
+	__buttons[10] = "StoreMicroButton"
+	for j = 1, 9 do
+		__buttons[j] = MICRO_BUTTONS[j]
+	end
+	for i=10, #MICRO_BUTTONS do
+		__buttons[i + 1] = MICRO_BUTTONS[i]
+	end
+end
 
 --Options
 function AB:GetOptions()
@@ -76,11 +102,11 @@ E.Options.args.actionbar.args.microbar.args.symbolic = {
 E.Options.args.actionbar.args.microbar.args.shop = {
 	order = 9,
 	type = "toggle",
-	name = StoreMicroButton.tooltipText,
+	name = BLIZZARD_STORE,
 	desc = L["Show in game shop button, if disabled will show help button instead."],
 	disabled = function() return not AB.db.microbar.enabled end,
 	get = function(info) return AB.db.microbar.shop end,
-	set = function(info, value) AB.db.microbar.shop = value; UpdateMicroButtons() end,
+	set = function(info, value) AB.db.microbar.shop = value; AB:UpdateMicroButtons() end,
 }
 E.Options.args.actionbar.args.microbar.args.spacer2 = {
 	order = 10,
@@ -125,7 +151,7 @@ E.Options.args.actionbar.args.microbar.args.color = {
 	end,
 	disabled = function() return not AB.db.microbar.enabled or AB.db.microbar.classColor end,
 }
-E.Options.args.actionbar.args.microbar.args.shop = {
+E.Options.args.actionbar.args.microbar.args.class = {
 	order = 15,
 	type = "toggle",
 	name = CLASS,
@@ -166,15 +192,20 @@ end
 function AB:CreateSymbolButton(name, text, tooltip, click)
 	local button = CreateFrame("Button", name, microbarS)
 	button:SetScript("OnClick", click)
+	button.tooltip = tooltip
+	button.updateInterval = 0
 	if tooltip then
 		button:SetScript("OnEnter", function(self)
 			Letter_OnEnter()
+			button.hover = 1
+			button.updateInterval = 0
 			GameTooltip:SetOwner(self)
-			GameTooltip:AddLine(tooltip, 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddLine(button.tooltip, 1, 1, 1, 1, 1, 1)
 			GameTooltip:Show()
 		end)
 		button:SetScript("OnLeave", function(self)
 			Letter_OnLeave()
+			button.hover = nil
 			GameTooltip:Hide() 
 		end)
 	else
@@ -213,98 +244,31 @@ function AB:SetupSymbolBar()
 	microbarS:SetScript('OnEnter', Letter_OnEnter)
 	microbarS:SetScript('OnLeave', Letter_OnLeave)
 
-	AB:CreateSymbolButton("EMB_Character", "C", CHARACTER_BUTTON,  function() 
-		if CharacterFrame:IsShown() then
-			HideUIPanel(CharacterFrame)
-		else
-			ShowUIPanel(CharacterFrame)
-		end
-	end)
-	AB:CreateSymbolButton("EMB_Spellbook", "S", SPELLBOOK_ABILITIES_BUTTON,  function() 
-		if SpellBookFrame:IsShown() then
-			HideUIPanel(SpellBookFrame)
-		else
-			ShowUIPanel(SpellBookFrame)
-		end
-	end)
-	AB:CreateSymbolButton("EMB_Talents", "T", TALENTS_BUTTON,  function()
+	AB:CreateSymbolButton("EMB_Character", "C", MicroButtonTooltipText(CHARACTER_BUTTON, "TOGGLECHARACTER0"),  function() ToggleCharacter("PaperDollFrame") end)
+	AB:CreateSymbolButton("EMB_Spellbook", "S", MicroButtonTooltipText(SPELLBOOK_ABILITIES_BUTTON, "TOGGLESPELLBOOK"),  function() ToggleSpellBook("spell") end)
+	AB:CreateSymbolButton("EMB_Talents", "T", MicroButtonTooltipText(TALENTS_BUTTON, "TOGGLETALENTS"),  function()
 		if UnitLevel("player") >= 10 then
-			if PlayerTalentFrame then
-				if PlayerTalentFrame:IsShown() then
-					HideUIPanel(PlayerTalentFrame)
-				else
-					ShowUIPanel(PlayerTalentFrame)
-				end
-			else
-				LoadAddOn("Blizzard_TalentUI")
-			
-				ShowUIPanel(PlayerTalentFrame)
-			end
+			if not _G["PlayerTalentFrame"] then LoadAddOn("Blizzard_TalentUI") end
+			PlayerTalentFrame_Toggle()
 		end
 	end)
-	AB:CreateSymbolButton("EMB_Achievement", "A", ACHIEVEMENT_BUTTON,  function() ToggleAchievementFrame() end)
-	AB:CreateSymbolButton("EMB_Quest", "Q", QUESTLOG_BUTTON,  function()
-		if WorldMapFrame:IsShown() then
-			HideUIPanel(WorldMapFrame)
-		else
-			ShowUIPanel(WorldMapFrame)
-		end
-	end)
-	AB:CreateSymbolButton("EMB_Guild", "G", GUILD,  function()
-		if GuildFrame or LookingForGuildFrame then
-			if GuildFrame:IsShown() or (LookingForGuildFrame and LookingForGuildFrame:IsShown()) then
-					if IsInGuild() then HideUIPanel(GuildFrame) else HideUIPanel(LookingForGuildFrame) end
-				else
-					if IsInGuild() then ShowUIPanel(GuildFrame) else ShowUIPanel(LookingForGuildFrame) end
-			end
-		else
-			LoadAddOn("Blizzard_GuildUI")
-			LoadAddOn("Blizzard_LookingForGuildUI")
-			if IsInGuild() then
-				ShowUIPanel(GuildFrame)
+	AB:CreateSymbolButton("EMB_Achievement", "A", MicroButtonTooltipText(ACHIEVEMENT_BUTTON, "TOGGLEACHIEVEMENT"),  function() ToggleAchievementFrame() end)
+	AB:CreateSymbolButton("EMB_Quest", "Q", MicroButtonTooltipText(QUESTLOG_BUTTON, "TOGGLEQUESTLOG"),  function() ToggleQuestLog() end)
+	AB:CreateSymbolButton("EMB_Guild", "G", MicroButtonTooltipText(GUILD, "TOGGLEGUILDTAB"),  function() ToggleGuildFrame() end)
+	AB:CreateSymbolButton("EMB_LFD", "L", MicroButtonTooltipText(DUNGEONS_BUTTON, "TOGGLEGROUPFINDER"),  function() ToggleLFDParentFrame() end)
+	AB:CreateSymbolButton("EMB_Journal", "J", MicroButtonTooltipText(ENCOUNTER_JOURNAL, "TOGGLEENCOUNTERJOURNAL"),  function() ToggleEncounterJournal() end)
+	AB:CreateSymbolButton("EMB_Collections", "Col", MicroButtonTooltipText(COLLECTIONS, "TOGGLECOLLECTIONS"),  function() ToggleCollectionsJournal() end)
+	AB:CreateSymbolButton("EMB_Shop", "Sh", BLIZZARD_STORE,  function() ToggleStoreUI() end)
+	AB:CreateSymbolButton("EMB_MenuSys", "M", "",  function()
+		if _G["GameMenuFrame"]:IsShown() then
+				HideUIPanel(_G["GameMenuFrame"])
 			else
-				ShowUIPanel(LookingForGuildFrame)
-			end
-		end
-	end)
-	AB:CreateSymbolButton("EMB_LFD", "L", DUNGEONS_BUTTON,  function() ToggleLFDParentFrame() end)
-	AB:CreateSymbolButton("EMB_Journal", "J", ENCOUNTER_JOURNAL,  function()
-		if EncounterJournal then
-			if EncounterJournal:IsShown() then
-				HideUIPanel(EncounterJournal)
-			else
-				ShowUIPanel(EncounterJournal)
-			end
-		else
-			LoadAddOn("Blizzard_EncounterJournal")
-			
-			ShowUIPanel(EncounterJournal)
-		end
-	end)
-	AB:CreateSymbolButton("EMB_Collections", "Col", COLLECTIONS,  function() ToggleCollectionsJournal() end)
-	AB:CreateSymbolButton("EMB_MenuSys", "M", MAINMENU_BUTTON,  function()
-		if GameMenuFrame:IsShown() then
-				HideUIPanel(GameMenuFrame)
-			else
-				ShowUIPanel(GameMenuFrame)
+				ShowUIPanel(_G["GameMenuFrame"])
 			end
 	end)
-	AB:CreateSymbolButton("EMB_Shop", "Sh", StoreMicroButton.tooltipText,  function() ToggleStoreUI() end)
 	AB:CreateSymbolButton("EMB_Help", "?", HELP_BUTTON,  function() ToggleHelpFrame() end)
 	
 	AB:UpdateMicroPositionDimensions()
-end
-
-local __buttons = {}
-if(C_StorePublic.IsEnabled()) then
-	__buttons[10] = "StoreMicroButton"
-	for i=10, #MICRO_BUTTONS do
-		__buttons[i + 1] = MICRO_BUTTONS[i]
-	end
-end
-local __Sbuttons = {}
-if(C_StorePublic.IsEnabled()) then
-	__Sbuttons[11] = EMB_Shop
 end
 
 function AB:UpdateMicroPositionDimensions()
@@ -336,8 +300,8 @@ function AB:UpdateMicroPositionDimensions()
 	else
 		ElvUI_MicroBar:SetAlpha(self.db.microbar.alpha)
 	end	
-	AB.MicroWidth = ((CharacterMicroButton:GetWidth() - 3) * self.db.microbar.buttonsPerRow)+(self.db.microbar.xoffset*(self.db.microbar.buttonsPerRow-1))+1
-	AB.MicroHeight = ((CharacterMicroButton:GetHeight() - 26) * numRows)+((numRows-1)*self.db.microbar.yoffset)-(numRows-1)
+	AB.MicroWidth = ((_G["CharacterMicroButton"]:GetWidth() - 3) * self.db.microbar.buttonsPerRow)+(self.db.microbar.xoffset*(self.db.microbar.buttonsPerRow-1))+1
+	AB.MicroHeight = ((_G["CharacterMicroButton"]:GetHeight() - 26) * numRows)+((numRows-1)*self.db.microbar.yoffset)-(numRows-1)
 	ElvUI_MicroBar:Width(AB.MicroWidth)
 	ElvUI_MicroBar:Height(AB.MicroHeight)
 	
@@ -349,17 +313,17 @@ function AB:UpdateMicroPositionDimensions()
 		ElvUI_MicroBar:Show()
 	else
 		ElvUI_MicroBar:Hide()
-	end		
+	end
 
 	if not Sbuttons[1] then return end
 	AB:MenuShow()
 	local numRowsS = 1
 	local prevButtonS = microbarS
 	for i=1, (#Sbuttons - 1) do
-		local button = __Sbuttons[i] or Sbuttons[i]
+		local button = Sbuttons[i]
 		
 		local lastColumnButton = i-self.db.microbar.buttonsPerRow
-		lastColumnButton = __Sbuttons[lastColumnButton] or Sbuttons[lastColumnButton]
+		lastColumnButton = Sbuttons[lastColumnButton]
 		button:Width(bw)
 		button:Height(bh)
 		button:ClearAllPoints();
@@ -423,39 +387,112 @@ end
 	-- UB:CreateDropdownButton(true, "Addon", "Microbar", L["Micro Bar"], L["Micro Bar"], nil, function() E:ToggleConfig(); LibStub("AceConfigDialog-3.0-ElvUI"):SelectGroup("ElvUI", "actionbar", "microbar") end)
 -- end
 
+function AB:UpdateMicroButtons()
+	_G["GuildMicroButtonTabard"]:ClearAllPoints()
+	_G["GuildMicroButtonTabard"]:SetPoint("TOP", _G["GuildMicroButton"].backdrop, "TOP", 0, 25)
+	if E.db.actionbar.microbar.shop then 
+		__buttons[10] = "StoreMicroButton"
+		for i=10, #MICRO_BUTTONS do
+			__buttons[i + 1] = MICRO_BUTTONS[i]
+		end
+		_G["HelpMicroButton"]:Hide();
+		_G["StoreMicroButton"]:Show();
+		Sbuttons[10] = _G["EMB_Shop"]
+		Sbuttons[11] = _G["EMB_MenuSys"]
+		_G["EMB_Shop"]:Show()
+		_G["EMB_Help"]:Hide()
+	else
+		for i=1, #MICRO_BUTTONS do
+			__buttons[i] = MICRO_BUTTONS[i]
+		end
+		_G["HelpMicroButton"]:Show();
+		_G["StoreMicroButton"]:Hide();
+		Sbuttons[10] = _G["EMB_MenuSys"]
+		Sbuttons[11] = _G["EMB_Help"]
+		_G["EMB_Shop"]:Hide()
+		_G["EMB_Help"]:Show()
+	end
+	self:UpdateMicroPositionDimensions()
+end
+
+local NewReassignBindings = AB.ReassignBindings
+function AB:ReassignBindings(event)
+	NewReassignBindings(self, event)
+	if event ~= "UPDATE_BINDINGS" then return end
+	_G["EMB_Character"].tooltip = MicroButtonTooltipText(CHARACTER_BUTTON, "TOGGLECHARACTER0")
+	_G["EMB_Spellbook"].tooltip = MicroButtonTooltipText(SPELLBOOK_ABILITIES_BUTTON, "TOGGLESPELLBOOK")
+	_G["EMB_Talents"].tooltip = MicroButtonTooltipText(TALENTS_BUTTON, "TOGGLETALENTS")
+	_G["EMB_Achievement"].tooltip = MicroButtonTooltipText(ACHIEVEMENT_BUTTON, "TOGGLEACHIEVEMENT")
+	_G["EMB_Quest"].tooltip = MicroButtonTooltipText(QUESTLOG_BUTTON, "TOGGLEQUESTLOG")
+	_G["EMB_Guild"].tooltip = MicroButtonTooltipText(GUILD, "TOGGLEGUILDTAB")
+	_G["EMB_LFD"].tooltip = MicroButtonTooltipText(DUNGEONS_BUTTON, "TOGGLEGROUPFINDER")
+	_G["EMB_Journal"].tooltip = MicroButtonTooltipText(ENCOUNTER_JOURNAL, "TOGGLEENCOUNTERJOURNAL");
+	_G["EMB_Collections"].tooltip = MicroButtonTooltipText(COLLECTIONS, "TOGGLECOLLECTIONS")
+end
+
 function AB:EnhancementInit()
 	ColorTable = E.myclass == 'PRIEST' and E.PriestColors or RAID_CLASS_COLORS[E.myclass]
 	EP:RegisterPlugin(addon,AB.GetOptions)
 	AB:SetupSymbolBar()
 	AB:MicroScale()
 	AB:MenuShow()
-	
-	hooksecurefunc("UpdateMicroButtons", function()
-		if E.db.actionbar.microbar.shop then 
-			__buttons[10] = "StoreMicroButton"
-			for i=10, #MICRO_BUTTONS do
-				__buttons[i + 1] = MICRO_BUTTONS[i]
-			end
-			HelpMicroButton:Hide();
-			StoreMicroButton:Show();
-			__Sbuttons[11] = EMB_Shop
-			EMB_Shop:Show()
-			EMB_Help:Hide()
-		else
-			for i=1, #MICRO_BUTTONS do
-				__buttons[i] = MICRO_BUTTONS[i]
-			end
-			HelpMicroButton:Show();
-			StoreMicroButton:Hide();
-			__Sbuttons[11] = EMB_Help
-			EMB_Shop:Hide()
-			EMB_Help:Show()
-		end
-		AB:UpdateMicroPositionDimensions()
-	end)
+
 	-- if not IsAddOnLoaded("ElvUI_SLE") then return end
 	-- UB = E:GetModule('SLE_UIButtons');
 	-- hooksecurefunc(UB, "InsertButtons", AB.CreateUIButton)
+
+	_G["MainMenuMicroButton"]:SetScript("OnUpdate", function(self, elapsed)
+		if (self.updateInterval > 0) then
+			self.updateInterval = self.updateInterval - elapsed;
+		else
+			self.updateInterval = PERFORMANCEBAR_UPDATE_INTERVAL;
+			local status = GetFileStreamingStatus();
+			if(status==0) then
+				status = (GetBackgroundLoadingStatus()~=0) and 1 or 0;
+			end
+			if(status == 0) then
+				_G["MainMenuBarDownload"]:Hide();
+				self:SetNormalTexture("Interface\\Buttons\\UI-MicroButton-World-Up");
+				self:SetPushedTexture("Interface\\Buttons\\UI-MicroButton-World-Down");
+				self:SetDisabledTexture("Interface\\Buttons\\UI-MicroButton-World-Disabled");
+			else
+				self:SetNormalTexture("Interface\\Buttons\\UI-MicroButtonStreamDL-Up");
+				self:SetPushedTexture("Interface\\Buttons\\UI-MicroButtonStreamDL-Down");
+				self:SetDisabledTexture("Interface\\Buttons\\UI-MicroButtonStreamDL-Up");
+				if (status == 1) then
+					_G["MainMenuBarDownload"]:SetTexture("Interface\\BUTTONS\\UI-MicroStream-Green");
+				elseif (status == 2) then
+					_G["MainMenuBarDownload"]:SetTexture("Interface\\BUTTONS\\UI-MicroStream-Yellow");
+				elseif (status == 3) then
+					_G["MainMenuBarDownload"]:SetTexture("Interface\\BUTTONS\\UI-MicroStream-Red");
+				end
+				_G["MainMenuBarDownload"]:Show();
+			end
+			local bandwidthIn, bandwidthOut, latencyHome, latencyWorld = GetNetStats();
+			local latency = latencyHome > latencyWorld and latencyHome or latencyWorld;
+			if (latency > PERFORMANCEBAR_MEDIUM_LATENCY) then
+				_G["MainMenuBarPerformanceBar"]:SetVertexColor(1, 0, 0);
+			elseif (latency > PERFORMANCEBAR_LOW_LATENCY) then
+				_G["MainMenuBarPerformanceBar"]:SetVertexColor(1, 1, 0);
+			else
+				_G["MainMenuBarPerformanceBar"]:SetVertexColor(0, 1, 0);
+			end
+			if (self.hover) then
+				MainMenuBarPerformanceBarFrame_OnEnter(self);
+			end
+		end
+	end)
+	
+	_G["EMB_MenuSys"]:SetScript("OnUpdate", function(self, elapsed)
+		if (self.updateInterval > 0) then
+			self.updateInterval = self.updateInterval - elapsed;
+		else
+			self.updateInterval = PERFORMANCEBAR_UPDATE_INTERVAL;
+			if (self.hover) then
+				MainMenuBarPerformanceBarFrame_OnEnter(_G["MainMenuMicroButton"]);
+			end
+		end
+	end)
 end
 
 hooksecurefunc(AB, "Initialize", AB.EnhancementInit)
