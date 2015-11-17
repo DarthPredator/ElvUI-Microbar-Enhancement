@@ -437,52 +437,6 @@ function AB:EnhancementInit()
 	AB:MicroScale()
 	AB:MenuShow()
 
-	-- if not IsAddOnLoaded("ElvUI_SLE") then return end
-	-- UB = E:GetModule('SLE_UIButtons');
-	-- hooksecurefunc(UB, "InsertButtons", AB.CreateUIButton)
-
-	_G["MainMenuMicroButton"]:SetScript("OnUpdate", function(self, elapsed)
-		if (self.updateInterval > 0) then
-			self.updateInterval = self.updateInterval - elapsed;
-		else
-			self.updateInterval = PERFORMANCEBAR_UPDATE_INTERVAL;
-			local status = GetFileStreamingStatus();
-			if(status==0) then
-				status = (GetBackgroundLoadingStatus()~=0) and 1 or 0;
-			end
-			if(status == 0) then
-				_G["MainMenuBarDownload"]:Hide();
-				self:SetNormalTexture("Interface\\Buttons\\UI-MicroButton-World-Up");
-				self:SetPushedTexture("Interface\\Buttons\\UI-MicroButton-World-Down");
-				self:SetDisabledTexture("Interface\\Buttons\\UI-MicroButton-World-Disabled");
-			else
-				self:SetNormalTexture("Interface\\Buttons\\UI-MicroButtonStreamDL-Up");
-				self:SetPushedTexture("Interface\\Buttons\\UI-MicroButtonStreamDL-Down");
-				self:SetDisabledTexture("Interface\\Buttons\\UI-MicroButtonStreamDL-Up");
-				if (status == 1) then
-					_G["MainMenuBarDownload"]:SetTexture("Interface\\BUTTONS\\UI-MicroStream-Green");
-				elseif (status == 2) then
-					_G["MainMenuBarDownload"]:SetTexture("Interface\\BUTTONS\\UI-MicroStream-Yellow");
-				elseif (status == 3) then
-					_G["MainMenuBarDownload"]:SetTexture("Interface\\BUTTONS\\UI-MicroStream-Red");
-				end
-				_G["MainMenuBarDownload"]:Show();
-			end
-			local bandwidthIn, bandwidthOut, latencyHome, latencyWorld = GetNetStats();
-			local latency = latencyHome > latencyWorld and latencyHome or latencyWorld;
-			if (latency > PERFORMANCEBAR_MEDIUM_LATENCY) then
-				_G["MainMenuBarPerformanceBar"]:SetVertexColor(1, 0, 0);
-			elseif (latency > PERFORMANCEBAR_LOW_LATENCY) then
-				_G["MainMenuBarPerformanceBar"]:SetVertexColor(1, 1, 0);
-			else
-				_G["MainMenuBarPerformanceBar"]:SetVertexColor(0, 1, 0);
-			end
-			if (self.hover) then
-				MainMenuBarPerformanceBarFrame_OnEnter(self);
-			end
-		end
-	end)
-	
 	_G["EMB_MenuSys"]:SetScript("OnUpdate", function(self, elapsed)
 		if (self.updateInterval > 0) then
 			self.updateInterval = self.updateInterval - elapsed;
