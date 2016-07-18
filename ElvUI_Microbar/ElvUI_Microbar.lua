@@ -33,7 +33,7 @@ P.actionbar.microbar.backdrop = false
 P.actionbar.microbar.colorS = {r = 1,g = 1,b = 1 }
 P.actionbar.microbar.classColor = false
 
--- GLOBALS: MICRO_BUTTONS, ElvUI_MicroBar, PlayerTalentFrame_Toggle
+-- GLOBALS: MICRO_BUTTONS, PlayerTalentFrame_Toggle, CreateFrame
 local _G = _G
 local bw, bh = E.PixelMode and 23 or 21, E.PixelMode and 30 or 28
 local CLASS = CLASS
@@ -164,9 +164,9 @@ end
 --Set Scale
 function AB:MicroScale()
 	local height = floor(12/AB.db.microbar.buttonsPerRow)
-	ElvUI_MicroBar.mover:SetWidth(AB.MicroWidth*AB.db.microbar.scale)
-	ElvUI_MicroBar.mover:SetHeight(AB.MicroHeight*AB.db.microbar.scale);
-	ElvUI_MicroBar:SetScale(AB.db.microbar.scale)
+	_G["ElvUI_MicroBar"].mover:SetWidth(AB.MicroWidth*AB.db.microbar.scale)
+	_G["ElvUI_MicroBar"].mover:SetHeight(AB.MicroHeight*AB.db.microbar.scale);
+	_G["ElvUI_MicroBar"]:SetScale(AB.db.microbar.scale)
 	microbarS:SetScale(AB.db.microbar.scale)
 end
 
@@ -240,7 +240,7 @@ end
 
 function AB:SetupSymbolBar()
 	microbarS = CreateFrame("Frame", "MicroParentS", E.UIParent)
-	microbarS:SetPoint("CENTER", ElvUI_MicroBar, 0, 0)
+	microbarS:SetPoint("CENTER", _G["ElvUI_MicroBar"], 0, 0)
 	microbarS:SetScript('OnEnter', Letter_OnEnter)
 	microbarS:SetScript('OnLeave', Letter_OnLeave)
 
@@ -272,9 +272,9 @@ function AB:SetupSymbolBar()
 end
 
 function AB:UpdateMicroPositionDimensions()
-	if not ElvUI_MicroBar then return; end
+	if not _G["ElvUI_MicroBar"] then return; end
 	local numRows = 1
-	local prevButton = ElvUI_MicroBar
+	local prevButton = _G["ElvUI_MicroBar"]
 	for i=1, (#MICRO_BUTTONS - 1) do
 		local button = _G[__buttons[i]] or _G[MICRO_BUTTONS[i]]
 		local lastColumnButton = i-self.db.microbar.buttonsPerRow;
@@ -283,7 +283,7 @@ function AB:UpdateMicroPositionDimensions()
 		button:Height(58)
 		button:ClearAllPoints();
 
-		if prevButton == ElvUI_MicroBar then
+		if prevButton == _G["ElvUI_MicroBar"] then
 			button:SetPoint("TOPLEFT", prevButton, "TOPLEFT", -1, 27)
 		elseif (i - 1) % self.db.microbar.buttonsPerRow == 0 then
 			button:Point('TOP', lastColumnButton, 'BOTTOM', 0, 27 - self.db.microbar.yoffset);	
@@ -296,23 +296,23 @@ function AB:UpdateMicroPositionDimensions()
 	end
 
 	if AB.db.microbar.mouseover then
-		ElvUI_MicroBar:SetAlpha(0)
+		_G["ElvUI_MicroBar"]:SetAlpha(0)
 	else
-		ElvUI_MicroBar:SetAlpha(self.db.microbar.alpha)
+		_G["ElvUI_MicroBar"]:SetAlpha(self.db.microbar.alpha)
 	end	
 	AB.MicroWidth = ((_G["CharacterMicroButton"]:GetWidth() - 3) * self.db.microbar.buttonsPerRow)+(self.db.microbar.xoffset*(self.db.microbar.buttonsPerRow-1))+1
 	AB.MicroHeight = ((_G["CharacterMicroButton"]:GetHeight() - 26) * numRows)+((numRows-1)*self.db.microbar.yoffset)-(numRows-1)
-	ElvUI_MicroBar:Width(AB.MicroWidth)
-	ElvUI_MicroBar:Height(AB.MicroHeight)
+	_G["ElvUI_MicroBar"]:Width(AB.MicroWidth)
+	_G["ElvUI_MicroBar"]:Height(AB.MicroHeight)
 	
-	if not ElvUI_MicroBar.backdrop then
-		ElvUI_MicroBar:CreateBackdrop("Transparent")
+	if not _G["ElvUI_MicroBar"].backdrop then
+		_G["ElvUI_MicroBar"]:CreateBackdrop("Transparent")
 	end
 
 	if self.db.microbar.enabled then
-		ElvUI_MicroBar:Show()
+		_G["ElvUI_MicroBar"]:Show()
 	else
-		ElvUI_MicroBar:Hide()
+		_G["ElvUI_MicroBar"]:Hide()
 	end
 
 	if not Sbuttons[1] then return end
@@ -347,10 +347,10 @@ function AB:UpdateMicroPositionDimensions()
 	end
 	
 	if AB.db.microbar.backdrop then
-		ElvUI_MicroBar.backdrop:Show()
+		_G["ElvUI_MicroBar"].backdrop:Show()
 		microbarS.backdrop:Show()
 	else
-		ElvUI_MicroBar.backdrop:Hide()
+		_G["ElvUI_MicroBar"].backdrop:Hide()
 		microbarS.backdrop:Hide()
 	end
 	
@@ -367,7 +367,7 @@ end
 function AB:MenuShow()
 	if AB.db.microbar.symbolic then
 		if AB.db.microbar.enabled then
-			ElvUI_MicroBar:Hide()
+			_G["ElvUI_MicroBar"]:Hide()
 			microbarS:Show()
 			if not AB.db.microbar.mouseover then
 				E:UIFrameFadeIn(microbarS, 0.2, microbarS:GetAlpha(), AB.db.microbar.alpha)
@@ -377,7 +377,7 @@ function AB:MenuShow()
 		end
 	else
 		if AB.db.microbar.enabled then
-			ElvUI_MicroBar:Show()
+			_G["ElvUI_MicroBar"]:Show()
 		end
 		microbarS:Hide()
 	end
