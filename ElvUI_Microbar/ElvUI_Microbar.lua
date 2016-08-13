@@ -198,9 +198,9 @@ local function Letter_OnLeave()
 	end
 end
 
-function AB:CreateSymbolButton(name, text, tooltip, click)
+function AB:CreateSymbolButton(name, text, tooltip, click, macrotext)
 	local button = CreateFrame("Button", name, microbarS)
-	button:SetScript("OnClick", click)
+	if click then button:SetScript("OnClick", click) end
 	button.tooltip = tooltip
 	button.updateInterval = 0
 	if tooltip then
@@ -253,12 +253,12 @@ function AB:SetupSymbolBar()
 	microbarS:SetScript('OnEnter', Letter_OnEnter)
 	microbarS:SetScript('OnLeave', Letter_OnLeave)
 
-	AB:CreateSymbolButton("EMB_Character", "C", MicroButtonTooltipText(CHARACTER_BUTTON, "TOGGLECHARACTER0"),  function() ToggleCharacter("PaperDollFrame") end)
-	AB:CreateSymbolButton("EMB_Spellbook", "S", MicroButtonTooltipText(SPELLBOOK_ABILITIES_BUTTON, "TOGGLESPELLBOOK"),  function() ToggleSpellBook("spell") end)
+	AB:CreateSymbolButton("EMB_Character", "C", MicroButtonTooltipText(CHARACTER_BUTTON, "TOGGLECHARACTER0"),  function() ToggleFrame(_G["CharacterFrame"]) end)
+	AB:CreateSymbolButton("EMB_Spellbook", "S", MicroButtonTooltipText(SPELLBOOK_ABILITIES_BUTTON, "TOGGLESPELLBOOK"),  function() ToggleFrame(_G["SpellBookFrame"]) end)
 	AB:CreateSymbolButton("EMB_Talents", "T", MicroButtonTooltipText(TALENTS_BUTTON, "TOGGLETALENTS"),  function()
 		if UnitLevel("player") >= 10 then
 			if not _G["PlayerTalentFrame"] then LoadAddOn("Blizzard_TalentUI") end
-			PlayerTalentFrame_Toggle()
+			ToggleFrame(_G["PlayerTalentFrame"])
 		end
 	end)
 	AB:CreateSymbolButton("EMB_Achievement", "A", MicroButtonTooltipText(ACHIEVEMENT_BUTTON, "TOGGLEACHIEVEMENT"),  function() ToggleAchievementFrame() end)
@@ -444,19 +444,23 @@ function AB:EnterCombat()
 		_G["ElvUI_MicroBar"]:Hide()
 		microbarS:Hide()
 	else
-		if AB.db.microbar.symbolic then
-			microbarS:Show()
-		else
-			_G["ElvUI_MicroBar"]:Show()
+		if AB.db.microbar.enabled then
+			if AB.db.microbar.symbolic then
+				microbarS:Show()
+			else
+				_G["ElvUI_MicroBar"]:Show()
+			end
 		end
 	end
 end
 
 function AB:LeaveCombat()
-	if AB.db.microbar.symbolic then
-		microbarS:Show()
-	else
-		_G["ElvUI_MicroBar"]:Show()
+	if AB.db.microbar.enabled then
+		if AB.db.microbar.symbolic then
+			microbarS:Show()
+		else
+			_G["ElvUI_MicroBar"]:Show()
+		end
 	end
 end
 
