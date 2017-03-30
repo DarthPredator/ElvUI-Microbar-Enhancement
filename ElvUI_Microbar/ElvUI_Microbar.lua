@@ -55,16 +55,6 @@ local BLIZZARD_STORE = BLIZZARD_STORE
 local Sbuttons = {}
 local ColorTable
 local microbarS
-local __buttons = {}
-if(C_StorePublic.IsEnabled()) then
-	__buttons[10] = "StoreMicroButton"
-	for j = 1, 9 do
-		__buttons[j] = MICRO_BUTTONS[j]
-	end
-	for i=10, #MICRO_BUTTONS do
-		__buttons[i + 1] = MICRO_BUTTONS[i]
-	end
-end
 
 --Options
 function AB:GetOptions()
@@ -275,7 +265,6 @@ function AB:SetupSymbolBar()
 				ShowUIPanel(_G["GameMenuFrame"])
 			end
 	end)
-	AB:CreateSymbolButton("EMB_Help", "?", HELP_BUTTON,  function() ToggleHelpFrame() end)
 
 	AB:UpdateMicroPositionDimensions()
 end
@@ -284,10 +273,10 @@ function AB:UpdateMicroPositionDimensions()
 	if not _G["ElvUI_MicroBar"] then return; end
 	local numRows = 1
 	local prevButton = _G["ElvUI_MicroBar"]
-	for i=1, (#MICRO_BUTTONS - 1) do
-		local button = _G[__buttons[i]] or _G[MICRO_BUTTONS[i]]
+	for i=1, (#MICRO_BUTTONS) do
+		local button = _G[MICRO_BUTTONS[i]]
 		local lastColumnButton = i-self.db.microbar.buttonsPerRow;
-		lastColumnButton = _G[__buttons[lastColumnButton]] or _G[MICRO_BUTTONS[lastColumnButton]]
+		lastColumnButton = _G[MICRO_BUTTONS[lastColumnButton]]
 		button:Width(28)
 		button:Height(58)
 		button:ClearAllPoints();
@@ -328,7 +317,7 @@ function AB:UpdateMicroPositionDimensions()
 	AB:MenuShow()
 	local numRowsS = 1
 	local prevButtonS = microbarS
-	for i=1, (#Sbuttons - 1) do
+	for i=1, (#Sbuttons) do
 		local button = Sbuttons[i]
 
 		local lastColumnButton = i-self.db.microbar.buttonsPerRow
@@ -399,28 +388,6 @@ end
 function AB:UpdateMicroButtons()
 	_G["GuildMicroButtonTabard"]:ClearAllPoints()
 	_G["GuildMicroButtonTabard"]:SetPoint("TOP", _G["GuildMicroButton"].backdrop, "TOP", 0, 25)
-	if E.db.actionbar.microbar.shop then
-		__buttons[10] = "StoreMicroButton"
-		for i=10, #MICRO_BUTTONS do
-			__buttons[i + 1] = MICRO_BUTTONS[i]
-		end
-		_G["HelpMicroButton"]:Hide();
-		_G["StoreMicroButton"]:Show();
-		Sbuttons[10] = _G["EMB_Shop"]
-		Sbuttons[11] = _G["EMB_MenuSys"]
-		_G["EMB_Shop"]:Show()
-		_G["EMB_Help"]:Hide()
-	else
-		for i=1, #MICRO_BUTTONS do
-			__buttons[i] = MICRO_BUTTONS[i]
-		end
-		_G["HelpMicroButton"]:Show();
-		_G["StoreMicroButton"]:Hide();
-		Sbuttons[10] = _G["EMB_MenuSys"]
-		Sbuttons[11] = _G["EMB_Help"]
-		_G["EMB_Shop"]:Hide()
-		_G["EMB_Help"]:Show()
-	end
 	self:UpdateMicroPositionDimensions()
 end
 
