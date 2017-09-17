@@ -12,7 +12,3 @@
 
 locales\load_locales.xml
 ElvUI_Microbar.lua
- 
- 
-## X-Tukui-ProjectID: 100
-## X-Tukui-ProjectFolders: ElvUI_Microbar
