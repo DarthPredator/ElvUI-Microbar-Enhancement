@@ -1,23 +1,4 @@
-﻿-------------------------------------------------
---
--- ElvUI Microbar Enhancement by Darth Predator
--- Дартпредатор - Вечная Песня (Eversong) RU
---
--------------------------------------------------
---
--- Thanks to / Благодарности:
--- Elv and ElvUI community
--- Blazeflack for helping with option storage and profile changing
---
--------------------------------------------------
---
--- Usage / Использование:
--- Just install and configure for yourself
--- Устанавливаем, настраиваем и получаем профит
---
--------------------------------------------------
-
-local E, L, V, P, G, _ =  unpack(ElvUI);
+﻿local E, L, V, P, G, _ =  unpack(ElvUI);
 local AB = E:GetModule('ActionBars');
 local EP = LibStub("LibElvUIPlugin-1.0")
 local S = E:GetModule('Skins')
@@ -26,7 +7,6 @@ local UB
 
 P.actionbar.microbar.scale = 1
 P.actionbar.microbar.symbolic = false
-P.actionbar.microbar.shop = true
 P.actionbar.microbar.xoffset = 0
 P.actionbar.microbar.yoffset = 0
 P.actionbar.microbar.backdrop = false
@@ -90,15 +70,6 @@ E.Options.args.actionbar.args.microbar.args.symbolic = {
 	get = function(info) return AB.db.microbar.symbolic end,
 	set = function(info, value) AB.db.microbar.symbolic = value; AB:MenuShow(); end,
 }
-E.Options.args.actionbar.args.microbar.args.shop = {
-	order = 9,
-	type = "toggle",
-	name = BLIZZARD_STORE,
-	desc = L["Show in game shop button, if disabled will show help button instead."],
-	disabled = function() return not AB.db.microbar.enabled end,
-	get = function(info) return AB.db.microbar.shop end,
-	set = function(info, value) AB.db.microbar.shop = value; AB:UpdateMicroButtons() end,
-}
 E.Options.args.actionbar.args.microbar.args.spacer2 = {
 	order = 10,
 	type = "description",
@@ -135,7 +106,6 @@ E.Options.args.actionbar.args.microbar.args.color = {
 		return t.r, t.g, t.b, d.r, d.g, d.b
 	end,
 	set = function(info, r, g, b)
-		E.db.sle.minimap.instance.colorS = {}
 		local t = AB.db.microbar.colorS
 		t.r, t.g, t.b = r, g, b
 		AB:SetSymbloColor()
