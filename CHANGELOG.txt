@@ -1,2 +1,3 @@
 v1.84
 - Patch 8.0.1 bump
+- Accommodate to changes in ElvUI
