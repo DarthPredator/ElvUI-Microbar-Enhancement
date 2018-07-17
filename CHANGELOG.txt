@@ -1,4 +1,2 @@
-v1.83
-- Patch 7.3 bump
-- Fixed some copy-paste fails
-- Removed obsolite option
+v1.84
+- Patch 8.0.1 bump
