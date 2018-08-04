@@ -363,7 +363,7 @@ end
 
 function AB:UpdateMicroButtons()
 	_G["GuildMicroButtonTabard"]:ClearAllPoints()
-	_G["GuildMicroButtonTabard"]:SetPoint("TOP", _G["GuildMicroButton"].backdrop, "TOP", 0, 25)
+	_G["GuildMicroButtonTabard"]:SetPoint("TOP", _G["GuildMicroButton"].backdrop, "TOP", 0, 3)
 	self:UpdateMicroPositionDimensions()
 end
 
