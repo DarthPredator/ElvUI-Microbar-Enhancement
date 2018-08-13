@@ -1,3 +1,2 @@
-v1.84
-- Patch 8.0.1 bump
-- Accommodate to changes in ElvUI
+v1.85
+- Fixed guld button acting up (by Trid3nt)
