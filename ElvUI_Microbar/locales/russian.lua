@@ -1,6 +1,5 @@
 ﻿--Файл локализации для ruRU
-local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
-local L = AceLocale:NewLocale("ElvUI", "ruRU")
+local L = ElvUI[1].Libs.ACL:NewLocale("ElvUI", "ruRU")
 if not L then return; end
 
 L["Set Scale"] = "Масштаб"
