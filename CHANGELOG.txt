@@ -1,2 +1,2 @@
-v1.85
-- Fixed guld button acting up (by Trid3nt)
+v1.86
+- Preventing locales to error due to changes in ElvUI 11.22
