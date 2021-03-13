@@ -37,7 +37,7 @@ local microbarS
 
 --Options
 function AB:GetOptions()
-E.Options.args.actionbar.args.microbar.args.buttonSpacing.min = -10
+E.Options.args.actionbar.args.microbar.args.buttonGroup.args.buttonSpacing.min = -10
 E.Options.args.actionbar.args.microbar.args.scale = {
 	order = 20,
 	type = "range",
