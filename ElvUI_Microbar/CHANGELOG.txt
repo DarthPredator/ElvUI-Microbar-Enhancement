@@ -1,2 +1,3 @@
-v1.86
-- Preventing locales to error due to changes in ElvUI 11.22
+v1.87
+- Shadowlands version bump
+- Accounted for changes of how ElvUI's actionbars work, making this addon functional again
