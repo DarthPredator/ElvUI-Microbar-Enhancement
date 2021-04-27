@@ -1,3 +1,0 @@
-v1.87
-- Shadowlands version bump
-- Accounted for changes of how ElvUI's actionbars work, making this addon functional again

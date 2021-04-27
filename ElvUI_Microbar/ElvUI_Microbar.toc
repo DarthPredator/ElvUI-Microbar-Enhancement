@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: |cff1784d1ElvUI |rMicrobar Enhancement 
 ## Version: 1.87
 ## Author: Darth Predator
