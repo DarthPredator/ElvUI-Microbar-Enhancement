@@ -253,12 +253,14 @@ function AB:UpdateMicroPositionDimensions()
 	if not microBar then return; end
 	local db = AB.db.microbar
 	microBar.db = db
-	if microbarS then microbarS.db = db end
+	
 
 	microBar.backdrop:SetShown(db.backdrop)
 	microBar.backdrop:ClearAllPoints()
 
 	AB:MoverMagic(microBar)
+
+	db.buttons = #_G.MICRO_BUTTONS-1
 
 	local backdropSpacing = db.backdropSpacing
 
@@ -303,6 +305,7 @@ function AB:UpdateMicroPositionDimensions()
 	self:UpdateMicroBarVisibility()
 
 	if not microbarS then return end
+	microbarS.db = db
 
 	if self.db.microbar.enabled then
 		_G["ElvUI_MicroBar"]:Show()
