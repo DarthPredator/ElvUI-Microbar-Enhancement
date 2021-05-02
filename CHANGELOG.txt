@@ -1,3 +1,2 @@
-v1.87
-- Shadowlands version bump
-- Accounted for changes of how ElvUI's actionbars work, making this addon functional again
+v1.88
+- Fixed an error caused by a profile variable missing in some cases
