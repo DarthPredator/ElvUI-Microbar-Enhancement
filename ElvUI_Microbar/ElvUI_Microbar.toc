@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: |cff1784d1ElvUI |rMicrobar Enhancement 
 ## Version: 1.88
 ## Author: Darth Predator
@@ -9,6 +9,7 @@
 ## RequiredDeps: ElvUI
 ## OptionalDeps: ElvUI_SLE
 ## DefaultState: Enabled
+## X-Curse-Project-ID: 35686
 
 locales\load_locales.xml
 ElvUI_Microbar.lua
