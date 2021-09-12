@@ -136,14 +136,6 @@ function AB:MicroScale()
 	microbarS:SetScale(AB.db.microbar.Enh.scale)
 end
 
-E.UpdateAllMB = E.UpdateAll
-function E:UpdateAll()
-	if not AB.db.microbar.Enh or not AB.db.microbar.Enh.symbolic then ConvertDB() end
-	E.UpdateAllMB(self)
-	AB:MicroScale()
-	AB:MenuShow()
-end
-
 local function Letter_OnEnter()
 	if AB.db.microbar.mouseover then
 		E:UIFrameFadeIn(microbarS, 0.2, microbarS:GetAlpha(), AB.db.microbar.alpha)
@@ -155,6 +147,13 @@ local function Letter_OnLeave()
 		E:UIFrameFadeOut(microbarS, 0.2, microbarS:GetAlpha(), 0)
 	end
 end
+
+local function Symbol_UpdateAll(self)
+	if not AB.db.microbar.Enh or not AB.db.microbar.Enh.symbolic then ConvertDB() end
+	AB:MicroScale()
+	AB:MenuShow()
+end
+
 
 function AB:CreateSymbolButton(name, text, tooltip, click, macrotext)
 	local button = CreateFrame("Button", name, microbarS)
@@ -249,60 +248,9 @@ local __buttonIndex = {
 	[11] = "MainMenuMicroButton"
 }
 
-function AB:UpdateMicroPositionDimensions()
+local function Symbol_UpdateMicroPositionDimensions(self)
 	if not microBar then return; end
 	local db = AB.db.microbar
-	microBar.db = db
-	
-
-	microBar.backdrop:SetShown(db.backdrop)
-	microBar.backdrop:ClearAllPoints()
-
-	AB:MoverMagic(microBar)
-
-	db.buttons = #_G.MICRO_BUTTONS-1
-
-	local backdropSpacing = db.backdropSpacing
-
-	local _, horizontal, anchorUp, anchorLeft = AB:GetGrowth(db.point)
-	local lastButton, anchorRowButton = microBar
-
-	for i = 1, #_G.MICRO_BUTTONS-1 do
-		local button = _G[__buttonIndex[i]] or _G[_G.MICRO_BUTTONS[i]]
-		local lastColumnButton = i - db.buttonsPerRow
-		lastColumnButton = _G[__buttonIndex[lastColumnButton]] or _G[_G.MICRO_BUTTONS[lastColumnButton]]
-		button.db = db
-
-		if i == 1 or i == db.buttonsPerRow then
-			anchorRowButton = button
-		end
-
-		button.handleBackdrop = true -- keep over HandleButton
-		AB:HandleButton(microBar, button, i, lastButton, lastColumnButton)
-
-		lastButton = button
-	end
-
-	if AB.db.microbar.mouseover then
-		_G["ElvUI_MicroBar"]:SetAlpha(0)
-	else
-		_G["ElvUI_MicroBar"]:SetAlpha(self.db.microbar.alpha)
-	end
-
-	microBar:SetAlpha((db.mouseover and not microBar.IsMouseOvered and 0) or db.alpha)
-
-	AB:HandleBackdropMultiplier(microBar, backdropSpacing, db.buttonSpacing, db.widthMult, db.heightMult, anchorUp, anchorLeft, horizontal, lastButton, anchorRowButton)
-	AB:HandleBackdropMover(microBar, backdropSpacing)
-
-	if ElvUI_MicroBar.mover then
-		if self.db.microbar.enabled then
-			E:EnableMover(ElvUI_MicroBar.mover:GetName())
-		else
-			E:DisableMover(ElvUI_MicroBar.mover:GetName())
-		end
-	end
-
-	self:UpdateMicroBarVisibility()
 
 	if not microbarS then return end
 	microbarS.db = db
@@ -373,27 +321,6 @@ function AB:MenuShow()
 	end
 end
 
-function AB:UpdateMicroButtons()
-	_G["GuildMicroButtonTabard"]:ClearAllPoints()
-	_G["GuildMicroButtonTabard"]:SetPoint("TOP", _G["GuildMicroButton"].backdrop, "TOP", 0, 3)
-	self:UpdateMicroPositionDimensions()
-end
-
-local NewReassignBindings = AB.ReassignBindings
-function AB:ReassignBindings(event)
-	NewReassignBindings(self, event)
-	if event ~= "UPDATE_BINDINGS" then return end
-	_G["EMB_Character"].tooltip = MicroButtonTooltipText(CHARACTER_BUTTON, "TOGGLECHARACTER0")
-	_G["EMB_Spellbook"].tooltip = MicroButtonTooltipText(SPELLBOOK_ABILITIES_BUTTON, "TOGGLESPELLBOOK")
-	_G["EMB_Talents"].tooltip = MicroButtonTooltipText(TALENTS_BUTTON, "TOGGLETALENTS")
-	_G["EMB_Achievement"].tooltip = MicroButtonTooltipText(ACHIEVEMENT_BUTTON, "TOGGLEACHIEVEMENT")
-	_G["EMB_Quest"].tooltip = MicroButtonTooltipText(QUESTLOG_BUTTON, "TOGGLEQUESTLOG")
-	_G["EMB_Guild"].tooltip = MicroButtonTooltipText(GUILD, "TOGGLEGUILDTAB")
-	_G["EMB_LFD"].tooltip = MicroButtonTooltipText(DUNGEONS_BUTTON, "TOGGLEGROUPFINDER")
-	_G["EMB_Journal"].tooltip = MicroButtonTooltipText(ENCOUNTER_JOURNAL, "TOGGLEENCOUNTERJOURNAL");
-	_G["EMB_Collections"].tooltip = MicroButtonTooltipText(COLLECTIONS, "TOGGLECOLLECTIONS")
-end
-
 function AB:EnterCombat()
 	if AB.db.microbar.Enh.combat then
 		_G["ElvUI_MicroBar"]:Hide()
@@ -419,6 +346,19 @@ function AB:LeaveCombat()
 	end
 end
 
+function Symbol_ReassignBindings(self, event)
+	if event ~= "UPDATE_BINDINGS" then return end
+	_G["EMB_Character"].tooltip = MicroButtonTooltipText(CHARACTER_BUTTON, "TOGGLECHARACTER0")
+	_G["EMB_Spellbook"].tooltip = MicroButtonTooltipText(SPELLBOOK_ABILITIES_BUTTON, "TOGGLESPELLBOOK")
+	_G["EMB_Talents"].tooltip = MicroButtonTooltipText(TALENTS_BUTTON, "TOGGLETALENTS")
+	_G["EMB_Achievement"].tooltip = MicroButtonTooltipText(ACHIEVEMENT_BUTTON, "TOGGLEACHIEVEMENT")
+	_G["EMB_Quest"].tooltip = MicroButtonTooltipText(QUESTLOG_BUTTON, "TOGGLEQUESTLOG")
+	_G["EMB_Guild"].tooltip = MicroButtonTooltipText(GUILD, "TOGGLEGUILDTAB")
+	_G["EMB_LFD"].tooltip = MicroButtonTooltipText(DUNGEONS_BUTTON, "TOGGLEGROUPFINDER")
+	_G["EMB_Journal"].tooltip = MicroButtonTooltipText(ENCOUNTER_JOURNAL, "TOGGLEENCOUNTERJOURNAL");
+	_G["EMB_Collections"].tooltip = MicroButtonTooltipText(COLLECTIONS, "TOGGLECOLLECTIONS")
+end
+
 function AB:EnhancementInit()
 	ConvertDB()
 	ColorTable = E.myclass == 'PRIEST' and E.PriestColors or RAID_CLASS_COLORS[E.myclass]
@@ -426,6 +366,10 @@ function AB:EnhancementInit()
 	AB:SetupSymbolBar()
 	AB:MicroScale()
 	AB:MenuShow()
+	
+	hooksecurefunc(E, 'UpdateAll', Symbol_UpdateAll)
+	hooksecurefunc(AB, "UpdateMicroPositionDimensions", Symbol_UpdateMicroPositionDimensions)
+	hooksecurefunc(AB, "ReassignBindings", Symbol_ReassignBindings)
 
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "EnterCombat")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", "LeaveCombat")
