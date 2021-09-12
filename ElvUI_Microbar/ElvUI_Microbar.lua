@@ -154,7 +154,6 @@ local function Symbol_UpdateAll(self)
 	AB:MenuShow()
 end
 
-
 function AB:CreateSymbolButton(name, text, tooltip, click, macrotext)
 	local button = CreateFrame("Button", name, microbarS)
 	if click then button:SetScript("OnClick", click) end
@@ -373,6 +372,8 @@ function AB:EnhancementInit()
 
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "EnterCombat")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", "LeaveCombat")
+	
+	_G.UIParent:HookScript("OnShow", function(self) AB:MenuShow() end) --This is actually stupid, but works for now
 
 	_G["EMB_MenuSys"]:SetScript("OnUpdate", function(self, elapsed)
 		if (self.updateInterval > 0) then
