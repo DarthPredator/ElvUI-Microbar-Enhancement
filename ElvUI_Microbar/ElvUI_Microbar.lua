@@ -118,7 +118,7 @@ E.Options.args.actionbar.args.microbar.args.MicrobarEnh = {
 			isPercent = true,
 			min = 0.3, max = 2, step = 0.01,
 			get = function(info) return AB.db.microbar.Enh.scale end,
-			set = function(info, value) AB.db.microbar.Enh.scale = value; AB:UpdateMicroPositionDimensions() end,
+			set = function(info, value) AB.db.microbar.Enh.scale = value; AB:UpdateMicroButtons() end,
 		}
 	},
 }
@@ -237,7 +237,7 @@ function AB:SetupSymbolBar()
 			end
 	end)
 
-	AB:UpdateMicroPositionDimensions()
+	AB:UpdateMicroButtons()
 end
 
 local __buttonIndex = {
@@ -247,7 +247,7 @@ local __buttonIndex = {
 	[11] = "MainMenuMicroButton"
 }
 
-local function Symbol_UpdateMicroPositionDimensions(self)
+local function Symbol_UpdateMicroButtons(self)
 	if not microBar then return; end
 	local db = AB.db.microbar
 
@@ -367,7 +367,7 @@ function AB:EnhancementInit()
 	AB:MenuShow()
 	
 	hooksecurefunc(E, 'UpdateAll', Symbol_UpdateAll)
-	hooksecurefunc(AB, "UpdateMicroPositionDimensions", Symbol_UpdateMicroPositionDimensions)
+	hooksecurefunc(AB, "UpdateMicroButtons", Symbol_UpdateMicroButtons)
 	hooksecurefunc(AB, "ReassignBindings", Symbol_ReassignBindings)
 
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "EnterCombat")
