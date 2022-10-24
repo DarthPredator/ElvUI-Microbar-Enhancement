@@ -1,6 +1,6 @@
-## Interface: 90105
-## Title: |cff1784d1ElvUI |rMicrobar Enhancement 
-## Version: 1.89
+## Interface: 100000
+## Title: |cff1784d1ElvUI |rMicrobar Enhancement
+## Version: 1.9
 ## Author: Darth Predator
 ## Notes: A module for enhancing |cff1784d1ElvUI|r's microbar.
 ## Notes-ruRU: Модуль для улучшения микроменю |cff1784d1ElvUI|r.
@@ -9,7 +9,6 @@
 ## RequiredDeps: ElvUI
 ## OptionalDeps: ElvUI_SLE
 ## DefaultState: Enabled
-## X-Curse-Project-ID: 35686
 
 locales\load_locales.xml
 ElvUI_Microbar.lua
