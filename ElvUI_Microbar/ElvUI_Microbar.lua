@@ -180,7 +180,7 @@ function AB:CreateSymbolButton(name, text, tooltip, click, macrotext)
 	S:HandleButton(button)
 
 	if text then
-		button.text = button:CreateFontString(nil,"OVERLAY",button)
+		button.text = button:CreateFontString(nil,"OVERLAY")
 		button.text:FontTemplate()
 		button.text:SetPoint("CENTER", button, 'CENTER', 0, -1)
 		button.text:SetJustifyH("CENTER")
@@ -222,13 +222,8 @@ function AB:SetupSymbolBar()
 	AB:CreateSymbolButton("EMB_Quest", "Q", MicroButtonTooltipText(QUESTLOG_BUTTON, "TOGGLEQUESTLOG"),  function() ToggleQuestLog() end)
 	AB:CreateSymbolButton("EMB_Guild", "G", MicroButtonTooltipText(GUILD, "TOGGLEGUILDTAB"),  function() ToggleGuildFrame() end)
 	AB:CreateSymbolButton("EMB_LFD", "L", MicroButtonTooltipText(DUNGEONS_BUTTON, "TOGGLEGROUPFINDER"),  function() ToggleLFDParentFrame() end)
-	AB:CreateSymbolButton("EMB_Collections", "Col", MicroButtonTooltipText(COLLECTIONS, "TOGGLECOLLECTIONS"),  function() ToggleCollectionsJournal() end)
 	AB:CreateSymbolButton("EMB_Journal", "J", MicroButtonTooltipText(ENCOUNTER_JOURNAL, "TOGGLEENCOUNTERJOURNAL"),  function() ToggleEncounterJournal() end)
-	if not C_StorePublic_IsEnabled() and GetCurrentRegionName() == "CN" then
-		AB:CreateSymbolButton("EMB_Help", "?", HELP_BUTTON,  function() ToggleHelpFrame() end)
-	else
-		AB:CreateSymbolButton("EMB_Shop", "Sh", BLIZZARD_STORE,  function() ToggleStoreUI() end)
-	end
+	AB:CreateSymbolButton("EMB_Collections", "Col", MicroButtonTooltipText(COLLECTIONS, "TOGGLECOLLECTIONS"),  function() ToggleCollectionsJournal() end)
 	AB:CreateSymbolButton("EMB_MenuSys", "M", "",  function()
 		if _G["GameMenuFrame"]:IsShown() then
 				HideUIPanel(_G["GameMenuFrame"])
@@ -236,6 +231,11 @@ function AB:SetupSymbolBar()
 				ShowUIPanel(_G["GameMenuFrame"])
 			end
 	end)
+	if not C_StorePublic_IsEnabled() and GetCurrentRegionName() == "CN" then
+		AB:CreateSymbolButton("EMB_Help", "?", HELP_BUTTON,  function() ToggleHelpFrame() end)
+	else
+		AB:CreateSymbolButton("EMB_Shop", "Sh", BLIZZARD_STORE,  function() ToggleStoreUI() end)
+	end
 
 	AB:UpdateMicroButtons()
 end
@@ -376,7 +376,7 @@ function AB:EnhancementInit()
 	_G.UIParent:HookScript("OnShow", function(self) AB:MenuShow() end) --This is actually stupid, but works for now
 
 	_G["EMB_MenuSys"]:SetScript("OnUpdate", function(self, elapsed)
-		if (self.updateInterval > 0) then
+		if (self.updateInterval and self.updateInterval > 0) then
 			self.updateInterval = self.updateInterval - elapsed;
 		else
 			self.updateInterval = PERFORMANCEBAR_UPDATE_INTERVAL;
