@@ -1,2 +1,2 @@
-v1.89
-- Fixed some stuff I missed while being offline af
+v1.9
+- Dragonflight pre-patch changes
