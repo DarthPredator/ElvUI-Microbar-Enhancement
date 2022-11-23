@@ -214,8 +214,8 @@ function AB:SetupSymbolBar()
 	AB:CreateSymbolButton("EMB_Spellbook", "S", MicroButtonTooltipText(SPELLBOOK_ABILITIES_BUTTON, "TOGGLESPELLBOOK"),  function() ToggleFrame(_G["SpellBookFrame"]) end)
 	AB:CreateSymbolButton("EMB_Talents", "T", MicroButtonTooltipText(TALENTS_BUTTON, "TOGGLETALENTS"),  function()
 		if UnitLevel("player") >= 10 then
-			if not _G["PlayerTalentFrame"] then LoadAddOn("Blizzard_TalentUI") end
-			ToggleFrame(_G["PlayerTalentFrame"])
+			if not _G["ClassTalentFrame"] then LoadAddOn("Blizzard_ClassTalentUI") end
+			ToggleFrame(_G["ClassTalentFrame"])
 		end
 	end)
 	AB:CreateSymbolButton("EMB_Achievement", "A", MicroButtonTooltipText(ACHIEVEMENT_BUTTON, "TOGGLEACHIEVEMENT"),  function() ToggleAchievementFrame() end)

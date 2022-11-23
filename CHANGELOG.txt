@@ -1,2 +1,2 @@
-v1.9
-- Dragonflight pre-patch changes
+v1.91
+- Fixed opening wrong talent frame on click
