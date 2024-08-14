@@ -21,16 +21,17 @@ local floor, tinsert = floor, tinsert
 local HideUIPanel, ShowUIPanel = HideUIPanel, ShowUIPanel
 local GameTooltip = GameTooltip
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-local CHARACTER_BUTTON, SPELLBOOK_ABILITIES_BUTTON, TALENTS_BUTTON, ACHIEVEMENT_BUTTON, QUESTLOG_BUTTON, GUILD, DUNGEONS_BUTTON, ENCOUNTER_JOURNAL, COLLECTIONS, MAINMENU_BUTTON, HELP_BUTTON = CHARACTER_BUTTON, SPELLBOOK_ABILITIES_BUTTON, TALENTS_BUTTON, ACHIEVEMENT_BUTTON, QUESTLOG_BUTTON, GUILD, DUNGEONS_BUTTON, ENCOUNTER_JOURNAL, COLLECTIONS, MAINMENU_BUTTON, HELP_BUTTON
+local RED_FONT_COLOR = RED_FONT_COLOR
+local CHARACTER_BUTTON, PROFESSIONS_BUTTON, PLAYERSPELLS_BUTTON, ACHIEVEMENT_BUTTON, QUESTLOG_BUTTON, GUILD_AND_COMMUNITIES, DUNGEONS_BUTTON, ADVENTURE_JOURNAL, COLLECTIONS, MAINMENU_BUTTON, HELP_BUTTON = CHARACTER_BUTTON, PROFESSIONS_BUTTON, PLAYERSPELLS_BUTTON, ACHIEVEMENT_BUTTON, QUESTLOG_BUTTON, GUILD_AND_COMMUNITIES, DUNGEONS_BUTTON, ADVENTURE_JOURNAL, COLLECTIONS, MAINMENU_BUTTON, HELP_BUTTON
 local UnitLevel = UnitLevel
-local ToggleCharacter, ToggleSpellBook, ToggleAchievementFrame, ToggleQuestLog, ToggleGuildFrame, ToggleLFDParentFrame, ToggleEncounterJournal, ToggleCollectionsJournal, ToggleStoreUI, ToggleHelpFrame = ToggleCharacter, ToggleSpellBook, ToggleAchievementFrame, ToggleQuestLog, ToggleGuildFrame, ToggleLFDParentFrame, ToggleEncounterJournal, ToggleCollectionsJournal, ToggleStoreUI, ToggleHelpFrame
-local LoadAddOn = LoadAddOn
+local ToggleCharacter, ToggleProfessionsBook, ToggleAchievementFrame, ToggleQuestLog, ToggleGuildFrame, ToggleLFDParentFrame, ToggleEncounterJournal, ToggleCollectionsJournal, ToggleStoreUI, ToggleHelpFrame = ToggleCharacter, ToggleProfessionsBook, ToggleAchievementFrame, ToggleQuestLog, ToggleGuildFrame, ToggleLFDParentFrame, ToggleEncounterJournal, ToggleCollectionsJournal, ToggleStoreUI, ToggleHelpFrame
 local PERFORMANCEBAR_UPDATE_INTERVAL, PERFORMANCEBAR_MEDIUM_LATENCY, PERFORMANCEBAR_LOW_LATENCY = PERFORMANCEBAR_UPDATE_INTERVAL, PERFORMANCEBAR_MEDIUM_LATENCY, PERFORMANCEBAR_LOW_LATENCY
 local GetFileStreamingStatus, GetBackgroundLoadingStatus, GetNetStats = GetFileStreamingStatus, GetBackgroundLoadingStatus, GetNetStats
 local MainMenuBarPerformanceBarFrame_OnEnter = MainMenuBarPerformanceBarFrame_OnEnter
 local MicroButtonTooltipText = MicroButtonTooltipText
 local BLIZZARD_STORE, GAMEMENU_HELP = BLIZZARD_STORE, GAMEMENU_HELP
 local C_StorePublic_IsEnabled = C_StorePublic.IsEnabled
+local GetValueOrCallFunction = GetValueOrCallFunction
 
 local Sbuttons = {}
 local ColorTable
@@ -154,7 +155,26 @@ local function Symbol_UpdateAll(self)
 	AB:MenuShow()
 end
 
-function AB:CreateSymbolButton(name, text, tooltip, click, macrotext)
+local function ClickTalentsSymbolButton()
+	if _G.PlayerSpellsMicroButton.jumpToSpellID and (not _G.PlayerSpellsMicroButton.suggestedTab or _G.PlayerSpellsMicroButton.suggestedTab == _G.PlayerSpellsUtil.FrameTabs.SpellBook) then
+		local knownSpellsOnly, toggleFlyout, flyoutReason = true, false, nil;
+		_G.PlayerSpellsUtil.OpenToSpellBookTabAtSpell(_G.PlayerSpellsMicroButton.jumpToSpellID, knownSpellsOnly, toggleFlyout, flyoutReason)
+		_G.PlayerSpellsMicroButton.jumpToSpellID = nil;
+	else
+		_G.PlayerSpellsUtil.TogglePlayerSpellsFrame(_G.PlayerSpellsMicroButton.suggestedTab);
+	end
+end
+
+local function ClickMenuSymbolButton()
+	if _G["GameMenuFrame"]:IsShown() then
+		HideUIPanel(_G["GameMenuFrame"])
+	else
+		ShowUIPanel(_G["GameMenuFrame"])
+	end
+end
+
+
+function AB:CreateSymbolButton(name, text, tooltip, click, parent)
 	local button = CreateFrame("Button", name, microbarS)
 	if click then button:SetScript("OnClick", click) end
 	button.tooltip = tooltip
@@ -166,6 +186,10 @@ function AB:CreateSymbolButton(name, text, tooltip, click, macrotext)
 			button.updateInterval = 0
 			GameTooltip:SetOwner(self)
 			GameTooltip:AddLine(button.tooltip, 1, 1, 1, 1, 1, 1)
+			if parent and parent.disabledTooltip then
+				local disabledTooltipText = GetValueOrCallFunction(parent, "disabledTooltip");
+				GameTooltip:AddLine(disabledTooltipText, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, true);
+			end
 			GameTooltip:Show()
 		end)
 		button:SetScript("OnLeave", function(self)
@@ -210,31 +234,21 @@ function AB:SetupSymbolBar()
 	microbarS:SetScript('OnLeave', Letter_OnLeave)
 	microbarS:CreateBackdrop("Transparent")
 
-	AB:CreateSymbolButton("EMB_Character", "C", MicroButtonTooltipText(CHARACTER_BUTTON, "TOGGLECHARACTER0"),  function() ToggleFrame(_G["CharacterFrame"]) end)
-	AB:CreateSymbolButton("EMB_Spellbook", "S", MicroButtonTooltipText(SPELLBOOK_ABILITIES_BUTTON, "TOGGLESPELLBOOK"),  function() ToggleFrame(_G["SpellBookFrame"]) end)
-	AB:CreateSymbolButton("EMB_Talents", "T", MicroButtonTooltipText(TALENTS_BUTTON, "TOGGLETALENTS"),  function()
-		if UnitLevel("player") >= 10 then
-			if not _G["ClassTalentFrame"] then LoadAddOn("Blizzard_ClassTalentUI") end
-			ToggleFrame(_G["ClassTalentFrame"])
-		end
-	end)
-	AB:CreateSymbolButton("EMB_Achievement", "A", MicroButtonTooltipText(ACHIEVEMENT_BUTTON, "TOGGLEACHIEVEMENT"),  function() ToggleAchievementFrame() end)
-	AB:CreateSymbolButton("EMB_Quest", "Q", MicroButtonTooltipText(QUESTLOG_BUTTON, "TOGGLEQUESTLOG"),  function() ToggleQuestLog() end)
-	AB:CreateSymbolButton("EMB_Guild", "G", MicroButtonTooltipText(GUILD, "TOGGLEGUILDTAB"),  function() ToggleGuildFrame() end)
-	AB:CreateSymbolButton("EMB_LFD", "L", MicroButtonTooltipText(DUNGEONS_BUTTON, "TOGGLEGROUPFINDER"),  function() ToggleLFDParentFrame() end)
-	AB:CreateSymbolButton("EMB_Journal", "J", MicroButtonTooltipText(ENCOUNTER_JOURNAL, "TOGGLEENCOUNTERJOURNAL"),  function() ToggleEncounterJournal() end)
-	AB:CreateSymbolButton("EMB_Collections", "Col", MicroButtonTooltipText(COLLECTIONS, "TOGGLECOLLECTIONS"),  function() ToggleCollectionsJournal() end)
-	AB:CreateSymbolButton("EMB_MenuSys", "M", "",  function()
-		if _G["GameMenuFrame"]:IsShown() then
-				HideUIPanel(_G["GameMenuFrame"])
-			else
-				ShowUIPanel(_G["GameMenuFrame"])
-			end
-	end)
+	AB:CreateSymbolButton("EMB_Character", "C", MicroButtonTooltipText(CHARACTER_BUTTON, "TOGGLECHARACTER0"),  function() ToggleCharacter("PaperDollFrame") end, _G.CharacterMicroButton)
+	AB:CreateSymbolButton("EMB_Profs", "S", MicroButtonTooltipText(PROFESSIONS_BUTTON, "TOGGLESPELLBOOK"), function() ToggleProfessionsBook() end, _G.ProfessionMicroButton)
+	AB:CreateSymbolButton("EMB_Talents", "T", MicroButtonTooltipText(PLAYERSPELLS_BUTTON, "TOGGLETALENTS"), function() ClickTalentsSymbolButton() end, _G.PlayerSpellsMicroButton)
+	AB:CreateSymbolButton("EMB_Achievement", "A", MicroButtonTooltipText(ACHIEVEMENT_BUTTON, "TOGGLEACHIEVEMENT"), function() ToggleAchievementFrame() end, _G.AchievementMicroButton)
+	AB:CreateSymbolButton("EMB_Quest", "Q", MicroButtonTooltipText(QUESTLOG_BUTTON, "TOGGLEQUESTLOG"), function() ToggleQuestLog() end, _G.QuestLogMicroButton)
+	AB:CreateSymbolButton("EMB_Guild", "G", MicroButtonTooltipText(GUILD_AND_COMMUNITIES, "TOGGLEGUILDTAB"), function() ToggleGuildFrame() end, _G.QuestLogMicroButton)
+	AB:CreateSymbolButton("EMB_LFD", "L", MicroButtonTooltipText(DUNGEONS_BUTTON, "TOGGLEGROUPFINDER"),  function() ToggleLFDParentFrame() end, _G.LFDMicroButton)
+	AB:CreateSymbolButton("EMB_Journal", "J", MicroButtonTooltipText(ADVENTURE_JOURNAL, "TOGGLEENCOUNTERJOURNAL"), function() ToggleEncounterJournal() end, _G.EJMicroButton)
+	AB:CreateSymbolButton("EMB_Collections", "Col", MicroButtonTooltipText(COLLECTIONS, "TOGGLECOLLECTIONS"), function() ToggleCollectionsJournal() end, _G.CollectionMicroButton)
+	AB:CreateSymbolButton("EMB_MenuSys", "M", "", function() ClickMenuSymbolButton() end, _G.MainMenuMicroButton)
+	
 	if not C_StorePublic_IsEnabled() and GetCurrentRegionName() == "CN" then
-		AB:CreateSymbolButton("EMB_Help", "?", HELP_BUTTON,  function() ToggleHelpFrame() end)
+		AB:CreateSymbolButton("EMB_Help", "?", HELP_BUTTON, function() ToggleHelpFrame() end)
 	else
-		AB:CreateSymbolButton("EMB_Shop", "Sh", BLIZZARD_STORE,  function() ToggleStoreUI() end)
+		AB:CreateSymbolButton("EMB_Shop", "Sh", BLIZZARD_STORE, function() ToggleStoreUI() end, _G.StoreMicroButton)
 	end
 
 	AB:UpdateMicroButtons()
@@ -348,13 +362,13 @@ end
 function Symbol_ReassignBindings(self, event)
 	if event ~= "UPDATE_BINDINGS" then return end
 	_G["EMB_Character"].tooltip = MicroButtonTooltipText(CHARACTER_BUTTON, "TOGGLECHARACTER0")
-	_G["EMB_Spellbook"].tooltip = MicroButtonTooltipText(SPELLBOOK_ABILITIES_BUTTON, "TOGGLESPELLBOOK")
-	_G["EMB_Talents"].tooltip = MicroButtonTooltipText(TALENTS_BUTTON, "TOGGLETALENTS")
+	_G["EMB_Profs"].tooltip = MicroButtonTooltipText(PROFESSIONS_BUTTON, "TOGGLESPELLBOOK")
+	_G["EMB_Talents"].tooltip = MicroButtonTooltipText(PLAYERSPELLS_BUTTON, "TOGGLETALENTS")
 	_G["EMB_Achievement"].tooltip = MicroButtonTooltipText(ACHIEVEMENT_BUTTON, "TOGGLEACHIEVEMENT")
 	_G["EMB_Quest"].tooltip = MicroButtonTooltipText(QUESTLOG_BUTTON, "TOGGLEQUESTLOG")
-	_G["EMB_Guild"].tooltip = MicroButtonTooltipText(GUILD, "TOGGLEGUILDTAB")
+	_G["EMB_Guild"].tooltip = MicroButtonTooltipText(GUILD_AND_COMMUNITIES, "TOGGLEGUILDTAB")
 	_G["EMB_LFD"].tooltip = MicroButtonTooltipText(DUNGEONS_BUTTON, "TOGGLEGROUPFINDER")
-	_G["EMB_Journal"].tooltip = MicroButtonTooltipText(ENCOUNTER_JOURNAL, "TOGGLEENCOUNTERJOURNAL");
+	_G["EMB_Journal"].tooltip = MicroButtonTooltipText(ADVENTURE_JOURNAL, "TOGGLEENCOUNTERJOURNAL");
 	_G["EMB_Collections"].tooltip = MicroButtonTooltipText(COLLECTIONS, "TOGGLECOLLECTIONS")
 end
 
