@@ -1,2 +1,2 @@
-v1.91
-- Fixed opening wrong talent frame on click
+v1.92
+- Fixed to work with TWW
