@@ -123,7 +123,7 @@ E.Options.args.actionbar.args.microbar.args.MicrobarEnh = {
 		}
 	},
 }
-E.Options.args.actionbar.args.microbar.args.buttonGroup.args.buttonSpacing.min = -10
+-- E.Options.args.actionbar.args.microbar.args.buttonGroup.args.buttonSpacing.min = -10
 end
 
 --Set Scale
@@ -234,22 +234,36 @@ function AB:SetupSymbolBar()
 	microbarS:SetScript('OnLeave', Letter_OnLeave)
 	microbarS:CreateBackdrop("Transparent")
 
+	--Character
 	AB:CreateSymbolButton("EMB_Character", "C", MicroButtonTooltipText(CHARACTER_BUTTON, "TOGGLECHARACTER0"),  function() ToggleCharacter("PaperDollFrame") end, _G.CharacterMicroButton)
+	--Professions
 	AB:CreateSymbolButton("EMB_Profs", "S", MicroButtonTooltipText(PROFESSIONS_BUTTON, "TOGGLESPELLBOOK"), function() ToggleProfessionsBook() end, _G.ProfessionMicroButton)
+	--Spellbook/Talents
 	AB:CreateSymbolButton("EMB_Talents", "T", MicroButtonTooltipText(PLAYERSPELLS_BUTTON, "TOGGLETALENTS"), function() ClickTalentsSymbolButton() end, _G.PlayerSpellsMicroButton)
+	--Achievements
 	AB:CreateSymbolButton("EMB_Achievement", "A", MicroButtonTooltipText(ACHIEVEMENT_BUTTON, "TOGGLEACHIEVEMENT"), function() ToggleAchievementFrame() end, _G.AchievementMicroButton)
+	--Quest log
 	AB:CreateSymbolButton("EMB_Quest", "Q", MicroButtonTooltipText(QUESTLOG_BUTTON, "TOGGLEQUESTLOG"), function() ToggleQuestLog() end, _G.QuestLogMicroButton)
+	--Guild
 	AB:CreateSymbolButton("EMB_Guild", "G", MicroButtonTooltipText(GUILD_AND_COMMUNITIES, "TOGGLEGUILDTAB"), function() ToggleGuildFrame() end, _G.QuestLogMicroButton)
+	--LFD
 	AB:CreateSymbolButton("EMB_LFD", "L", MicroButtonTooltipText(DUNGEONS_BUTTON, "TOGGLEGROUPFINDER"),  function() ToggleLFDParentFrame() end, _G.LFDMicroButton)
-	AB:CreateSymbolButton("EMB_Journal", "J", MicroButtonTooltipText(ADVENTURE_JOURNAL, "TOGGLEENCOUNTERJOURNAL"), function() ToggleEncounterJournal() end, _G.EJMicroButton)
+	--Collections
 	AB:CreateSymbolButton("EMB_Collections", "Col", MicroButtonTooltipText(COLLECTIONS, "TOGGLECOLLECTIONS"), function() ToggleCollectionsJournal() end, _G.CollectionMicroButton)
-	AB:CreateSymbolButton("EMB_MenuSys", "M", "", function() ClickMenuSymbolButton() end, _G.MainMenuMicroButton)
-	
+	--Journal
+	AB:CreateSymbolButton("EMB_Journal", "J", MicroButtonTooltipText(ADVENTURE_JOURNAL, "TOGGLEENCOUNTERJOURNAL"), function() ToggleEncounterJournal() end, _G.EJMicroButton)
+	--Housing
+	AB:CreateSymbolButton("EMB_Housing", "H", MicroButtonTooltipText(HOUSING_MICRO_BUTTON, "TOGGLEHOUSINGDASHBOARD"), function(button) HousingMicroButton:OnClick(button) end, _G.EJMicroButton)
+	--Shop
 	if not C_StorePublic_IsEnabled() and GetCurrentRegionName() == "CN" then
 		AB:CreateSymbolButton("EMB_Help", "?", HELP_BUTTON, function() ToggleHelpFrame() end)
 	else
 		AB:CreateSymbolButton("EMB_Shop", "Sh", BLIZZARD_STORE, function() ToggleStoreUI() end, _G.StoreMicroButton)
 	end
+	--System
+	AB:CreateSymbolButton("EMB_MenuSys", "M", "", function() ClickMenuSymbolButton() end, _G.MainMenuMicroButton)
+	
+	
 
 	AB:UpdateMicroButtons()
 end
@@ -382,7 +396,7 @@ function AB:EnhancementInit()
 	
 	hooksecurefunc(E, 'UpdateAll', Symbol_UpdateAll)
 	hooksecurefunc(AB, "UpdateMicroButtons", Symbol_UpdateMicroButtons)
-	hooksecurefunc(AB, "ReassignBindings", Symbol_ReassignBindings)
+	hooksecurefunc(AB, "UpdateAllBinds", Symbol_ReassignBindings)
 
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "EnterCombat")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", "LeaveCombat")
