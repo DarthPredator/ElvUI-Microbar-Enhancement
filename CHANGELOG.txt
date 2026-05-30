@@ -1,2 +1,2 @@
-v1.92
-- Fixed to work with TWW
+v1.93
+- Now should be able to function for Midnight

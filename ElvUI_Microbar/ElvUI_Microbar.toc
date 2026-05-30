@@ -1,6 +1,6 @@
-## Interface: 110002
+## Interface: 120005
 ## Title: |cff1784d1ElvUI |rMicrobar Enhancement
-## Version: 1.92
+## Version: 1.93
 ## Author: Darth Predator
 ## Notes: A module for enhancing |cff1784d1ElvUI|r's microbar.
 ## Notes-ruRU: Модуль для улучшения микроменю |cff1784d1ElvUI|r.
